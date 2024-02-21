@@ -17,8 +17,10 @@ Este projeto foi desenvolvido com as seguintes tecnologias e bibliotecas:
 - **Spring Boot Starter Security**: Para autenticação e segurança da aplicação.
 - **Spring Boot Starter Web**: Para construção de aplicações web, usando o Spring MVC.
 - **Spring Boot Starter Data Jpa**: Para auxílio na persistência no Banco de Dados.
+- **Spring Boot Validation**: Para validação de campos.
 - **Springdoc OpenAPI**: Para documentação da API REST com Swagger.
 - **Lombok**: Para reduzir o código boilerplate, como getters e setters.
+- **PostgreSQL**: banco de dados relacional.
 
 
 ## Como Executar
