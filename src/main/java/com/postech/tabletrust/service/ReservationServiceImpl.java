@@ -1,6 +1,6 @@
 package com.postech.tabletrust.service;
 
-import com.postech.tabletrust.Repository.ReservationRepository;
+import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.entities.Reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
