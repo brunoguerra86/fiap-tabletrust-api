@@ -37,6 +37,37 @@ public class ReservationController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> UpdateReservation(
+            @PathVariable String id,
+            @RequestBody @Valid Reservation reservation) {
+        log.info("PutMapping - updateReservation");
+        try {
+            UUID uuid = UUID.fromString(id);
+            Reservation newReservation = reservationService.UpdateReservation(uuid, reservation);
+            return new ResponseEntity<>(newReservation, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("ID inválido");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> DeleteReservation(@PathVariable String id) {
+        log.info("DeleteMapping - deleteReservation");
+        try {
+            var uuid = UUID.fromString(id);
+            reservationService.DeleteReservation(uuid);
+            return new ResponseEntity<>("reserva removida", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("ID inválido");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
     @GetMapping("/all")
     public ResponseEntity<?> ListReservations() {
         log.info("GetMapping - listReservations");
@@ -86,34 +117,5 @@ public class ReservationController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> UpdateReservation(
-            @PathVariable String id,
-            @RequestBody @Valid Reservation reservation) {
-        log.info("PutMapping - updateReservation");
-        try {
-            UUID uuid = UUID.fromString(id);
-            Reservation newReservation = reservationService.UpdateReservation(uuid, reservation);
-            return new ResponseEntity<>(newReservation, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("ID inválido");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> DeleteReservation(@PathVariable String id) {
-        log.info("DeleteMapping - deleteReservation");
-        try {
-            var uuid = UUID.fromString(id);
-            reservationService.DeleteReservation(uuid);
-            return new ResponseEntity<>("reserva removida", HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("ID inválido");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
 }
 
