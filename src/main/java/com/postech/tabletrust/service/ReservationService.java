@@ -7,11 +7,13 @@ import java.util.UUID;
 public interface ReservationService {
     Reservation NewReservation(Reservation reservation);
 
-    Reservation findReservation(UUID id);
+    Reservation FindReservation(UUID id);
+    List<Reservation> FindCustomerReservation(UUID customerId);
+    List<Reservation> FindRestaurantReservation(UUID restaurantId);
 
-    Reservation updateReservation(UUID id, Reservation newReservation);
+    Reservation UpdateReservation(UUID id, Reservation newReservation);
 
-    void deleteReservation(UUID id);
+    void DeleteReservation(UUID id);
 
-    List<Reservation> listReservations();
+    List<Reservation> ListReservations();
 }

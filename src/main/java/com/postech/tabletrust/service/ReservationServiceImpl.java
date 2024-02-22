@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
 
     @Override
-    public Reservation NewReservation(Reservation reservation){
+    public Reservation NewReservation(Reservation reservation) {
         reservation.setId(UUID.randomUUID());
 
         //TODO
@@ -29,34 +30,48 @@ public class ReservationServiceImpl implements ReservationService {
          */
         return reservationRepository.save(reservation);
     }
+
     @Override
-    public Reservation findReservation(UUID id){
-        return reservationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("reserva não encontrada"));
-    }
-    @Override
-    public Reservation updateReservation(UUID id, Reservation newReservation){
-        Reservation reservation = findReservation(id);
+    public Reservation UpdateReservation(UUID id, Reservation newReservation) {
+        Reservation reservation = FindReservation(id);
         if (newReservation.getId() != null && !reservation.getId().equals(newReservation.getId())) {
             throw new IllegalArgumentException("reserva não apresenta o ID correto");
         }
         newReservation.setId(id);
-        if (newReservation.getRestaurantId() == null ){
+        if (newReservation.getRestaurantId() == null) {
             throw new IllegalArgumentException("reserva não apresenta o RestaurantId correto");
         }
-        if (newReservation.getCustomerId() == null ){
+        if (newReservation.getCustomerId() == null) {
             throw new IllegalArgumentException("reserva não apresenta o CustomerId correto");
         }
         reservation = newReservation;
         return reservationRepository.save(reservation);
     }
+
     @Override
-    public void deleteReservation(UUID id){
-        Reservation reservation = findReservation(id);
+    public void DeleteReservation(UUID id) {
+        Reservation reservation = FindReservation(id);
         reservationRepository.delete(reservation);
     }
+
     @Override
-    public List<Reservation> listReservations() {
+    public Reservation FindReservation(UUID id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("reserva não encontrada"));
+    }
+
+    @Override
+    public List<Reservation> FindCustomerReservation(UUID customerId) {
+        return reservationRepository.findAllByCustomerId(customerId);
+    }
+
+    @Override
+    public List<Reservation> FindRestaurantReservation(UUID restaurantId) {
+        return reservationRepository.findAllByRestaurantId(restaurantId);
+    }
+
+    @Override
+    public List<Reservation> ListReservations() {
         return reservationRepository.findAll();
     }
 }

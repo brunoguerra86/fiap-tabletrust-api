@@ -56,6 +56,7 @@ class ReservationControllerTest {
     void tearDown() throws Exception {
         openMocks.close();
     }
+
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
@@ -63,6 +64,7 @@ class ReservationControllerTest {
             throw new RuntimeException(e);
         }
     }
+
     @Nested
     class NewReservation {
         @Test
@@ -71,24 +73,21 @@ class ReservationControllerTest {
             when(ReservationService.NewReservation(any(Reservation.class)))
                     .thenAnswer(i -> i.getArgument(0));
 
-            mockMvc.perform(post("/reservation" +
-                            "?customerId=2435c00c-e3cf-4c9f-9d34-d96a8f2f1f12" +
-                            "&restaurantId=ea07e372-39b2-4d01-b98f-5a76045f4f73")
+            mockMvc.perform(post("/reservation")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(reservationRequest)))
                     .andExpect(status().isCreated());
             verify(ReservationService, times(1))
                     .NewReservation(any(Reservation.class));
         }
+
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_DataNula() throws Exception {
             ReservationRequest reservationRequest = ReservationHelper.gerarReservationRequest();
             when(ReservationService.NewReservation(any(Reservation.class)))
                     .thenAnswer(i -> i.getArgument(0));
             reservationRequest.setReservationDate(null);
-            mockMvc.perform(post("/reservation" +
-                            "?customerId=2435c00c-e3cf-4c9f-9d34-d96a8f2f1f12" +
-                            "&restaurantId=ea07e372-39b2-4d01-b98f-5a76045f4f73")
+            mockMvc.perform(post("/reservation")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(reservationRequest)))
                     .andExpect(status().isBadRequest())
@@ -100,15 +99,14 @@ class ReservationControllerTest {
             verify(ReservationService, never())
                     .NewReservation(any(Reservation.class));
         }
+
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_QuantidadeNula() throws Exception {
             ReservationRequest reservationRequest = ReservationHelper.gerarReservationRequest();
             when(ReservationService.NewReservation(any(Reservation.class)))
                     .thenAnswer(i -> i.getArgument(0));
             reservationRequest.setQuantity(null);
-            mockMvc.perform(post("/reservation" +
-                            "?customerId=2435c00c-e3cf-4c9f-9d34-d96a8f2f1f12" +
-                            "&restaurantId=ea07e372-39b2-4d01-b98f-5a76045f4f73")
+            mockMvc.perform(post("/reservation")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(reservationRequest)))
                     .andExpect(status().isBadRequest())
