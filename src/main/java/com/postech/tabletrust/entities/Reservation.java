@@ -7,25 +7,44 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 @Data
 @Builder(toBuilder = true)
 @Entity
-@Table(name = "tb_reservation")
+@Table(name = "Reservation")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Reservation {
+@Jacksonized
 
+public class Reservation {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "uuid")
     private UUID id;
-    private UUID restaurantId;
-    private UUID customerId;
+
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    private Restaurant restaurant;
+
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    private Customer customer;
+
     @NotNull(message = "A data não pode ser nula.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime reservationDate;
+
     @NotNull(message = "A quantidade de lugares não pode ser nula.")
     private Integer quantity;
+
+    public UUID getCustomerId() {
+        return customer != null ? customer.getId() : null;
+    }
+
+    public UUID getRestaurantId() {
+        return restaurant != null ? restaurant.getId() : null;
+    }
 }

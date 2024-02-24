@@ -12,18 +12,20 @@ import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "tb_restaurant")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "Restaurant")
 @Jacksonized
 public class Restaurant {
     @Id
+    @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "uuid")
     private UUID id;
 
@@ -33,18 +35,23 @@ public class Restaurant {
     @NotEmpty(message = "[address] não pode estar vazio")
     private String address;
 
+    @Enumerated(EnumType.STRING) // Usar EnumType.STRING para corresponder ao tipo ENUM do PostgreSQL
     @NotEmpty(message = "[kitchenType] não pode estar vazio")
-    private String kitchenType; //TODO enum ou tabela de domínio
+    private KitchenType kitchenType;
+
+    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalTime openTime;
+
+    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalTime closeTime;
+
+    @NotEmpty(message = "[capacity] não pode estar vazio")
+    private Integer capacity;
+
+    private Integer stars;
 
     @CreationTimestamp
-    @JsonFormat(pattern = "HH:mm:ss")
-    private LocalTime openingTime;
-
-    @CreationTimestamp
-    @JsonFormat(pattern = "HH:mm:ss")
-    private LocalTime closingTime;
-
-    @NotNull(message = "[availableCapacity] não pode ser nula")
-    private Integer availableCapacity;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
 }
