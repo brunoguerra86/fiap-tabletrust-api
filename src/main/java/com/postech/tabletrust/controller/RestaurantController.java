@@ -1,19 +1,18 @@
 package com.postech.tabletrust.controller;
 
+import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.service.RestaurantService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -23,13 +22,69 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<Restaurant>> listRestaurants(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        log.info("Requisição para listar restaurantes foi efetuada: Página={}, Tamanho={}", page, size);
-        Page<Restaurant> restaurants = restaurantService.listRestaurants(pageable);
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> newRestaurant(@Valid @RequestBody Restaurant restaurant) {
+        log.info("PostMapping - createRestaurant");
+        try {
+            Restaurant restaurantCreated = restaurantService.newRestaurant(restaurant);
+            return new ResponseEntity<>(restaurantCreated, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("ID inválido");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> listRestaurants() {
+        log.info("GetMapping - listRestaurants");
+        List<Restaurant> restaurants = restaurantService.listRestaurants();
         return new ResponseEntity<>(restaurants, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findRestaurant(@PathVariable String id) {
+        log.info("GetMapping - findRestaurant ");
+        try {
+            UUID uuid = UUID.fromString(id);
+            Restaurant restaurant = restaurantService.findRestaurant(uuid);
+            return new ResponseEntity<>(restaurant, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("ID inválido");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateRestaurant(
+            @PathVariable String id,
+            @RequestBody @Valid Restaurant restaurant) {
+        log.info("PutMapping - updateRestaurant");
+        try {
+            UUID uuid = UUID.fromString(id);
+            Restaurant newRestaurant = restaurantService.updateRestaurant(uuid, restaurant);
+            return new ResponseEntity<>(newRestaurant, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("ID inválido");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRestaurant(@PathVariable String id) {
+        log.info("DeleteMapping - deleteRestaurant");
+        try {
+            var uuid = UUID.fromString(id);
+            restaurantService.deleteRestaurant(uuid);
+            return new ResponseEntity<>("Restaurante removido", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("ID inválido");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
