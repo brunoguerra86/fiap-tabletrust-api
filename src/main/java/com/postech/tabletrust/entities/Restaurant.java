@@ -3,6 +3,7 @@ package com.postech.tabletrust.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,7 +43,7 @@ public class Restaurant {
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime closingTime;
 
-    @NotEmpty(message = "[availableCapacity] não pode estar vazio")
+    @NotNull(message = "[availableCapacity] não pode ser nula")
     private Integer availableCapacity;
 
 }

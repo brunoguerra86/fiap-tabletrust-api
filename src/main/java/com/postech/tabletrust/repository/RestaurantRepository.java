@@ -11,6 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, UUID> {
-    @Query("SELECT r FROM Restaurant r ORDER BY r.name ASC")
-    Page<Restaurant> listRestaurants(Pageable pageable);
+
 }
