@@ -10,10 +10,7 @@ public interface ReservationService {
     Reservation FindReservation(UUID id);
     List<Reservation> FindCustomerReservation(UUID customerId);
     List<Reservation> FindRestaurantReservation(UUID restaurantId);
-
     Reservation UpdateReservation(UUID id, Reservation newReservation);
-
     void DeleteReservation(UUID id);
-
     List<Reservation> ListReservations();
 }

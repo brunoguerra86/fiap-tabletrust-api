@@ -1,6 +1,5 @@
 package com.postech.tabletrust.controller;
 
-import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.service.RestaurantService;
 import jakarta.validation.Valid;
@@ -38,9 +37,13 @@ public class RestaurantController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> listRestaurants() {
-        log.info("GetMapping - listRestaurants");
-        List<Restaurant> restaurants = restaurantService.listRestaurants();
+    public ResponseEntity<?> findRestaurantsByNameAndAddressAndKitchenType(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String kitchenType
+    ) {
+        log.info("GetMapping - findRestaurantsByNameAndAddressAndKitchenType");
+        List<Restaurant> restaurants = restaurantService.findRestaurantsByNameAndAddressAndKitchenType(name, address, kitchenType);
         return new ResponseEntity<>(restaurants, HttpStatus.OK);
     }
 
