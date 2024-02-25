@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Table(name = "tb_restaurant")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
