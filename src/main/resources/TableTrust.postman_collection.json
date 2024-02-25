@@ -1,4 +1,4 @@
-{
+g{
 	"info": {
 		"_postman_id": "816ff07d-da0d-4153-bb98-5215459f81db",
 		"name": "Fiap - Tech Challenge - API TableTrust",
@@ -41,7 +41,7 @@
 					"response": []
 				},
 				{
-					"name": "1.1 Get all Restaurants",
+					"name": "1.1 Get Restaurants By Name, Address, kitchenType",
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -49,7 +49,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/restaurants",
+							"raw": "http://localhost:8080/restaurants?name=Ristorante",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -57,6 +57,22 @@
 							"port": "8080",
 							"path": [
 								"restaurants"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Ristorante"
+								},
+								{
+									"key": "address",
+									"value": "Tietê",
+									"disabled": true
+								},
+								{
+									"key": "kitchenType",
+									"value": "vegetariano",
+									"disabled": true
+								}
 							]
 						}
 					},
