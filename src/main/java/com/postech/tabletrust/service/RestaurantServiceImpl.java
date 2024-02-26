@@ -23,11 +23,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Restaurant findRestaurant(UUID id) {
-        try {
-            UUID.fromString(id.toString());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("ID inválido");
-        }
         return restaurantRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado"));
     }
@@ -38,19 +33,18 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant updateRestaurant(UUID id, Restaurant newRestaurant) {
+    public Restaurant updateRestaurant(UUID id, Restaurant newRestaurant) { //TODO refacto avec DTO pour validation
         Restaurant restaurant = findRestaurant(id);
         if (newRestaurant.getId() != null && !restaurant.getId().equals(newRestaurant.getId())) {
-            throw new IllegalArgumentException("Restaurante não apresenta o ID correto");
+            throw new EntityNotFoundException("Os Ids nao correspondem e o restaurante nao foi atualizado");
         }
         newRestaurant.setId(id);
-        restaurant = newRestaurant;
-        return restaurantRepository.save(restaurant);
+        return restaurantRepository.save(newRestaurant);
     }
 
     @Override
-    public void deleteRestaurant(UUID id) {
-        Restaurant restaurant = findRestaurant(id);
-        restaurantRepository.delete(restaurant);
+    public boolean deleteRestaurant(UUID id) {
+        restaurantRepository.deleteById(id);
+        return true;
     }
 }
