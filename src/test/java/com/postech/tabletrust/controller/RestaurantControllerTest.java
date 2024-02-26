@@ -1,16 +1,28 @@
 package com.postech.tabletrust.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.postech.tabletrust.dto.ReservationRequest;
+import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
 import com.postech.tabletrust.service.RestaurantService;
+import com.postech.tabletrust.utils.ReservationHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RestaurantControllerTest {
 
@@ -52,6 +64,16 @@ public class RestaurantControllerTest {
 
         @Test
         void deveConsultarRestaurantePorId(){
+
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoConsultarRestaurante_IdNaoEncontrado() {
+
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoConsultarRestaurante_IdInvalido() {
 
         }
 

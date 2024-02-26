@@ -1,8 +1,8 @@
 package com.postech.tabletrust.service;
 
-import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.repository.RestaurantRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +23,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Restaurant findRestaurant(UUID id) {
+        try {
+            UUID.fromString(id.toString());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("ID inválido");
+        }
         return restaurantRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado"));
     }
 
     @Override
