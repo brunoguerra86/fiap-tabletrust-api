@@ -319,4 +319,48 @@ public class RestaurantControllerTest {
             verify(restaurantService, times(1)).deleteRestaurant(notFoundUuid);
         }
     }
+
+    @Nested
+    class PutRestaurant{
+        @Test
+        void deveAtualizarRestauranteComIdValidoERestauranteValido() {
+            // Arrange
+            UUID validUuid = UUID.randomUUID();
+            Restaurant updatedRestaurant = new Restaurant();
+            when(restaurantService.updateRestaurant(validUuid, updatedRestaurant)).thenReturn(updatedRestaurant);
+
+            // Act
+            ResponseEntity<?> response = restaurantController.updateRestaurant(validUuid.toString(), updatedRestaurant);
+
+            // Assertions
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(updatedRestaurant, response.getBody());
+            verify(restaurantService, times(1)).updateRestaurant(validUuid, updatedRestaurant);
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoAtualizarRestaurante_IdInvalido() {
+            // Act
+            ResponseEntity<?> response = restaurantController.updateRestaurant("invalid-uuid", new Restaurant());
+
+            // Assertions
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals("ID inválido", response.getBody());
+            verify(restaurantService, never()).updateRestaurant(any(), any());
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoAtualizarRestaurante_IdNaoEncontrado() {
+            // Arrange
+            UUID notFoundUuid = UUID.randomUUID();
+            when(restaurantService.updateRestaurant(notFoundUuid, new Restaurant())).thenThrow(RuntimeException.class);
+
+            // Act
+            ResponseEntity<?> response = restaurantController.updateRestaurant(notFoundUuid.toString(), new Restaurant());
+
+            // Assertions
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            verify(restaurantService, times(1)).updateRestaurant(notFoundUuid, new Restaurant());
+        }
+    }
 }
