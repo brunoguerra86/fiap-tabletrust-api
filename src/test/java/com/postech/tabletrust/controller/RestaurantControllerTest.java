@@ -1,54 +1,46 @@
 package com.postech.tabletrust.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.postech.tabletrust.dto.ReservationRequest;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.exception.GlobalExceptionHandler;
+import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.service.RestaurantService;
-import com.postech.tabletrust.utils.ReservationHelper;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 public class RestaurantControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
-    private com.postech.tabletrust.service.RestaurantService RestaurantService;
+    private RestaurantService restaurantService;
+
+    @InjectMocks
+    private RestaurantController restaurantController;
 
     AutoCloseable openMocks;
 
     @BeforeEach
     void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
-        RestaurantController RestaurantController = new RestaurantController(RestaurantService);
-        mockMvc = MockMvcBuilders.standaloneSetup(RestaurantController)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .addFilter((request, response, chain) -> {
-                    response.setCharacterEncoding("UTF-8");
-                    chain.doFilter(request, response);
-                }, "/*")
-                .build();
+        MockitoAnnotations.openMocks(this);
     }
 
     @AfterEach
     void tearDown() throws Exception {
-        openMocks.close();
+        //openMocks.close();
     }
 
     public static String asJsonString(final Object obj) {
@@ -64,17 +56,43 @@ public class RestaurantControllerTest {
 
         @Test
         void deveConsultarRestaurantePorId(){
+            // Arrange
+            UUID validUuid = UUID.randomUUID();
+            Restaurant mockRestaurant = new Restaurant();
+            when(restaurantService.findRestaurant(validUuid)).thenReturn(mockRestaurant);
 
+            // Act
+            ResponseEntity<?> response = restaurantController.findRestaurant(validUuid.toString());
+
+            // Assertions
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(mockRestaurant, response.getBody());
+            verify(restaurantService, times(1)).findRestaurant(validUuid);
         }
 
         @Test
         void deveGerarExcecao_QuandoConsultarRestaurante_IdNaoEncontrado() {
+            // Arrange
+            UUID notFoundUuid = UUID.randomUUID();
+            when(restaurantService.findRestaurant(notFoundUuid)).thenThrow(EntityNotFoundException.class);
 
+            // Act
+            ResponseEntity<?> response = restaurantController.findRestaurant(notFoundUuid.toString());
+
+            // Assertions
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            verify(restaurantService, times(1)).findRestaurant(notFoundUuid);
         }
 
         @Test
         void deveGerarExcecao_QuandoConsultarRestaurante_IdInvalido() {
+            // Act
+            ResponseEntity<?> response = restaurantController.findRestaurant("invalid-uuid");
 
+            // Assertions
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals("ID inválido", response.getBody());
+            verify(restaurantService, never()).findRestaurant(any());
         }
 
         @Test
@@ -117,5 +135,49 @@ public class RestaurantControllerTest {
 
         }
 
+    }
+
+    @Nested
+    class PutRestaurant{
+        @Test
+        void deveAtualizarRestauranteComIdValidoERestauranteValido() {
+            // Arrange
+            UUID validUuid = UUID.randomUUID();
+            Restaurant updatedRestaurant = new Restaurant();
+            when(restaurantService.updateRestaurant(validUuid, updatedRestaurant)).thenReturn(updatedRestaurant);
+
+            // Act
+            ResponseEntity<?> response = restaurantController.updateRestaurant(validUuid.toString(), updatedRestaurant);
+
+            // Assertions
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(updatedRestaurant, response.getBody());
+            verify(restaurantService, times(1)).updateRestaurant(validUuid, updatedRestaurant);
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoAtualizarRestaurante_IdInvalido() {
+            // Act
+            ResponseEntity<?> response = restaurantController.updateRestaurant("invalid-uuid", new Restaurant());
+
+            // Assertions
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals("ID inválido", response.getBody());
+            verify(restaurantService, never()).updateRestaurant(any(), any());
+        }
+
+        @Test
+        void deveGerarExcecao_QuandoAtualizarRestaurante_IdNaoEncontrado() {
+            // Arrange
+            UUID notFoundUuid = UUID.randomUUID();
+            when(restaurantService.updateRestaurant(notFoundUuid, new Restaurant())).thenThrow(RuntimeException.class);
+
+            // Act
+            ResponseEntity<?> response = restaurantController.updateRestaurant(notFoundUuid.toString(), new Restaurant());
+
+            // Assertions
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            verify(restaurantService, times(1)).updateRestaurant(notFoundUuid, new Restaurant());
+        }
     }
 }
