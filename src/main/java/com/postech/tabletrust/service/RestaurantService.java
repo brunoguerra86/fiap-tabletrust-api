@@ -10,5 +10,5 @@ public interface RestaurantService {
     Restaurant findRestaurant(UUID id);
     List<Restaurant> findRestaurantsByNameAndAddressAndKitchenType(String name, String address, String kitchenType);
     Restaurant updateRestaurant(UUID id, Restaurant newRestaurant);
-    void deleteRestaurant(UUID id);
+    boolean deleteRestaurant(UUID id);
 }

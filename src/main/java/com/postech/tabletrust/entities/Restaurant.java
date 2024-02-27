@@ -22,9 +22,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Jacksonized
-public class Restaurant {
+public class Restaurant implements Cloneable{
     @Id
-    @GenericGenerator(name = "uuid")
+    @GenericGenerator(name = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NotEmpty(message = "[name] não pode estar vazio")
@@ -36,15 +37,23 @@ public class Restaurant {
     @NotEmpty(message = "[kitchenType] não pode estar vazio")
     private String kitchenType; //TODO enum ou tabela de domínio
 
-    @CreationTimestamp
+    //@CreationTimestamp
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime openingTime;
 
-    @CreationTimestamp
+    //@CreationTimestamp corrigir
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime closingTime;
 
     @NotNull(message = "[availableCapacity] não pode ser nula")
     private Integer availableCapacity;
 
+    @Override
+    public Restaurant clone() {
+        try {
+            return (Restaurant) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

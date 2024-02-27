@@ -26,7 +26,7 @@ public class ReservationController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> NewReservation(@Valid @RequestBody Reservation reservation) {
-        log.info("PostMapping - createReservation");
+        //log.info("PostMapping - createReservation");
         try {
             Reservation reservationCreated = reservationService.NewReservation(reservation);
             return new ResponseEntity<>(reservationCreated, HttpStatus.CREATED);
