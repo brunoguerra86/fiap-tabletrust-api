@@ -1,10 +1,7 @@
 package com.postech.tabletrust.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,19 +13,17 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Table(name = "tb_customer")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Jacksonized
-public class Comments {
-
+public class Customer {
     @Id
+    @GenericGenerator(name = "UUID")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotEmpty(message = "[restaurantId] não pode estar vazio")
-    private String restaurantId;
-
-    @NotEmpty(message = "[comment] não pode estar vazio")
-    private String comment;
+    @NotNull
+    private String name;
 }
