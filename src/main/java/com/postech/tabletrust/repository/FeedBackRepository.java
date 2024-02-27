@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface FeedBackRepository extends JpaRepository<FeedBack, UUID> {
 
-    @Query("SELECT c FROM Comments c ORDER BY c.restaurantId ASC")
+    @Query("SELECT f FROM FeedBack f ORDER BY f.restaurantId ASC")
     Page<FeedBack> listFeedback(Pageable pageable);
 }
