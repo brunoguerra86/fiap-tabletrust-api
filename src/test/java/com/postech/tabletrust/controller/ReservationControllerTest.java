@@ -4,14 +4,13 @@ package com.postech.tabletrust.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.postech.tabletrust.gateways.ReservationGateway;
 import com.postech.tabletrust.service.CustomerService;
-import com.postech.tabletrust.utils.ReservationHelper;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -71,7 +70,7 @@ class ReservationControllerTest {
     class NewReservation {
         @Test
         void devePermitirRegistrarReservation() throws Exception {
-            ReservationDTO reservationDTO = ReservationHelper.gerarReservationInsertRequest();
+            ReservationDTO reservationDTO = NewEntititesHelper.gerarReservationInsertRequest();
             mockMvc.perform(post("/reservations")
                     .contentType(MediaType.APPLICATION_JSON).content(asJsonString(reservationDTO)))
                     .andExpect(status().isCreated());
@@ -79,7 +78,7 @@ class ReservationControllerTest {
 
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_DataNula() throws Exception {
-            ReservationDTO reservationDTO = ReservationHelper.gerarReservationInsertRequest();
+            ReservationDTO reservationDTO = NewEntititesHelper.gerarReservationInsertRequest();
             reservationDTO.setReservationDate(null);
             mockMvc.perform(post("/reservations").contentType(MediaType.APPLICATION_JSON).content(asJsonString(reservationDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
                 String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
@@ -90,7 +89,7 @@ class ReservationControllerTest {
 
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_QuantidadeNula() throws Exception {
-            ReservationDTO reservationDTO = ReservationHelper.gerarReservationInsertRequest();
+            ReservationDTO reservationDTO = NewEntititesHelper.gerarReservationInsertRequest();
             reservationDTO.setQuantity(null);
             mockMvc.perform(post("/reservations").contentType(MediaType.APPLICATION_JSON).content(asJsonString(reservationDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
                 String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);

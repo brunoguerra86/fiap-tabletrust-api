@@ -1,6 +1,6 @@
 package com.postech.tabletrust.utils;
 
-import com.postech.tabletrust.dto.ReservationRequest;
+import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entities.FeedBack;
 import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.entities.Restaurant;
@@ -17,13 +17,13 @@ public class NewEntititesHelper {
     private static UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
     private static UUID feedbackID = UUID.fromString("7cad184d-6b00-4e20-bdeb-d4e224cf3bbd");
 
-    public static ReservationRequest gerarReservationRequest() {
-        return ReservationRequest.builder()
-                .id("ae3ccc0e-106e-4445-a0f4-b700b009e018")
+    public static ReservationDTO gerarReservationInsertRequest() {
+        return ReservationDTO.builder()
+                .id(UUID.randomUUID().toString())
                 .restaurantId("2b9c1a1e-c257-4bc6-8efe-c1db33d4c52c")
                 .customerId("cecad256-a3c3-4c09-833c-36586cd00f45")
-                .reservationDate("2024-02-20 20:30")
-                .quantity("14")
+                .reservationDate("2024-02-20T20:30")
+                .quantity(4)
                 .build();
     }
 
