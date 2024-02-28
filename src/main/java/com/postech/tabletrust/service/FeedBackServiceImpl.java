@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class FeedBackServiceImpl implements FeedBackService{
     private final ReservationRepository reservationRepository;
 
     @Override
-    public Page<FeedBack> listFeedback(Pageable pageable) {
+    public Page<FeedBack> listFeedbackByRestaurant(Pageable pageable, UUID restaurantId) {
         return null;
     }
 
@@ -34,15 +35,15 @@ public class FeedBackServiceImpl implements FeedBackService{
         //A regra criada é de que o customer so pode dar seu feedback 3 horas depois de iniciada a reserva
         // E se o status da reserva é approved = true senao quer dizer que ela foi anulada e o feedback nao pode ser feito
 
-        Optional<Reservation> reservation = reservationRepository.findById(feedBackCreateDTO.reservationId());
+        Optional<Reservation> reservation = this.reservationRepository.findById(feedBackCreateDTO.reservationId());
         if (! reservation.isPresent()) {
             throw new EntityNotFoundException("A reserva informada nao foi encontrada");
         }
 
         Reservation resa = reservation.get();
 
-        if ( !resa.getApproved() && !resa.getReservationDate().isBefore(threeHoursAgo)){
-            throw new Exception("A reserva informada foi anulada ou ainda nao terminou");
+        if ( !resa.getApproved() || !resa.getReservationDate().isBefore(threeHoursAgo)){
+            throw new IllegalArgumentException("A reserva informada foi anulada ou ainda nao terminou");
         }
 
         FeedBack newFeedback = new FeedBack(feedBackCreateDTO);
@@ -55,8 +56,14 @@ public class FeedBackServiceImpl implements FeedBackService{
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public Boolean deleteById(UUID id) {
         this.feedBackRepository.deleteById(id);
+        return true;
+    }
+
+    @Override
+    public List<FeedBack> getFeedBackByRestaurantId(UUID id) {
+        return this.feedBackRepository.getFeedBackByRestaurantId(id);
     }
 
 }

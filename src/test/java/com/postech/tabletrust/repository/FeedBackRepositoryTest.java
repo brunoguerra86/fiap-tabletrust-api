@@ -1,8 +1,6 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entities.FeedBack;
-import com.postech.tabletrust.entities.Restaurant;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +13,13 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class FeedBackRepositoryTest {
 
@@ -59,6 +60,43 @@ public class FeedBackRepositoryTest {
         assertTrue(result.getContent().containsAll(feedBackList));
     }
 
+    @Test
+    void shouldCreateAFeedBack(){
+        var feedback = createAFeedBack();
+        UUID id = feedback.getId();
+
+        when(feedBackRepository.save(feedback)).thenReturn(feedback);
+
+        var fbFound = feedBackRepository.save(feedback);
+
+        assertThat(fbFound).isNotNull().isInstanceOf(FeedBack.class);
+        assertThat(fbFound).isEqualTo(feedback);
+    }
+
+    @Test
+    void shouldFindById(){
+        var feedback = createAFeedBack();
+        UUID id = feedback.getId();
+
+        when(feedBackRepository.findById(id)).thenReturn(Optional.of(feedback));
+
+        var fbFound = feedBackRepository.findById(id);
+
+        assertThat(fbFound).isPresent().containsSame(feedback);
+    }
+
+    @Test
+    void shouldDeleteById(){
+        var feedback = createAFeedBack();
+        UUID id = feedback.getId();
+
+        doNothing().when(feedBackRepository).deleteById(any(UUID.class));
+
+        feedBackRepository.deleteById(id);
+
+        verify(feedBackRepository, times(1)).deleteById(any(UUID.class));
+    }
+
     private FeedBack createAFeedBack(){
         UUID customerID = UUID.fromString("b732236c-3c25-4290-bfe2-93ec920bcfa9");
         UUID restaurantID = UUID.fromString("c68b4872-6073-4dff-8199-a24c74d4c763");
@@ -74,5 +112,4 @@ public class FeedBackRepositoryTest {
                 .stars(5)
                 .build();
     }
-
 }
