@@ -16,9 +16,9 @@ public class SecurityConfigurations {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/reservation","/reservation/**",
+                        .requestMatchers("/reservations","/reservations/**",
                                 "/restaurants", "/restaurants/**",
-                                "/feedBack", "/feedBack/**", "/feedBack/create",
+                                "/customers", "/customers/**",
                                 "/swagger-ui/**", "/v3/api-docs",
                                 "/v3/api-docs/**", "/swagger-resources/**",
                                 "/webjars/**")
