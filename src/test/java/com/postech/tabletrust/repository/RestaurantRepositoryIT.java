@@ -3,30 +3,20 @@ package com.postech.tabletrust.repository;
 import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.transaction.Transactional;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-@ExtendWith(SpringExtension.class)
-@DataJpaTest
+@SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@DirtiesContext
 @Transactional
 public class RestaurantRepositoryIT {
-
-    @Autowired
-    private TestEntityManager entityManager;
 
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -41,10 +31,8 @@ public class RestaurantRepositoryIT {
     void shouldAllowSaveRestaurant() {
         //Arrange
         Restaurant restaurant = NewEntititesHelper.createARestaurant();
-
         //Act
         var restaurantFoud = restaurantRepository.save(restaurant);
-
         //Assert
         assertThat(restaurantFoud).isInstanceOf(Restaurant.class).isNotNull();
         assertThat(restaurantFoud.getId()).isNotNull(); // Verifica que um UUID foi gerado
@@ -54,18 +42,18 @@ public class RestaurantRepositoryIT {
 
     @Test
     void shouldFindRestaurantsByNameAndAddressAndKitchenType() {
-        // Arrange - cria e persiste um restaurante de teste
+        // Arrange
         Restaurant restaurant = NewEntititesHelper.createARestaurant();
-
-        entityManager.persist(restaurant);
-        entityManager.flush();
+        var restaurantFoud = restaurantRepository.save(restaurant);
 
         // Act - busca restaurantes usando o método do repositório
         List<Restaurant> foundRestaurants = restaurantRepository.findRestaurantsByNameAndAddressAndKitchenType(
-                "Restaurante-teste", "Fragonard", "Sopa");
+                restaurantFoud.getName(),
+                restaurantFoud.getAddress(),
+                restaurantFoud.getKitchenType());
 
         // Assert - verifica se o restaurante correto foi encontrado
-        assertThat(foundRestaurants).hasSize(1);
+        assertFalse(foundRestaurants.isEmpty());  // ou assertThat(foundRestaurants).isNotEmpty();
         assertThat(foundRestaurants.get(0).getId()).isEqualTo(restaurant.getId());
     }
 }

@@ -55,7 +55,6 @@ public class NewEntititesHelper {
                 .build();
     }
 
-
     public static Reservation createAReservation() {
         LocalDateTime in3HoursAgo = LocalDateTime.now().minusHours(3);
 
