@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.postech.tabletrust.service.ReservationService;
-import com.postech.tabletrust.dto.ReservationRequest;
+import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
 
 import java.nio.charset.StandardCharsets;
@@ -69,27 +69,27 @@ class ReservationControllerTest {
     class NewReservation {
         @Test
         void devePermitirRegistrarReservation() throws Exception {
-            ReservationRequest reservationRequest = ReservationHelper.gerarReservationRequest();
-            when(ReservationService.NewReservation(any(Reservation.class)))
+            ReservationDTO reservationDTO = ReservationHelper.gerarReservationRequest();
+            when(ReservationService.createReservation(any(ReservationDTO.class)))
                     .thenAnswer(i -> i.getArgument(0));
 
             mockMvc.perform(post("/reservation")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(reservationRequest)))
+                            .content(asJsonString(reservationDTO)))
                     .andExpect(status().isCreated());
             verify(ReservationService, times(1))
-                    .NewReservation(any(Reservation.class)); //andExpect(content().string(containsString("conteudo")))
+                    .createReservation(any(ReservationDTO.class)); //andExpect(content().string(containsString("conteudo")))
         }
 
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_DataNula() throws Exception {
-            ReservationRequest reservationRequest = ReservationHelper.gerarReservationRequest();
-            when(ReservationService.NewReservation(any(Reservation.class)))
+            ReservationDTO reservationDTO = ReservationHelper.gerarReservationRequest();
+            when(ReservationService.createReservation(any(ReservationDTO.class)))
                     .thenAnswer(i -> i.getArgument(0));
-            reservationRequest.setReservationDate(null);
+            reservationDTO.setReservationDate(null);
             mockMvc.perform(post("/reservation")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(reservationRequest)))
+                            .content(asJsonString(reservationDTO)))
                     .andExpect(status().isBadRequest())
                     .andExpect(result -> {
                         String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
@@ -97,18 +97,18 @@ class ReservationControllerTest {
                         assertThat(json).contains("A data não pode ser nula");
                     });
             verify(ReservationService, never())
-                    .NewReservation(any(Reservation.class));
+                    .createReservation(any(ReservationDTO.class));
         }
 
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_QuantidadeNula() throws Exception {
-            ReservationRequest reservationRequest = ReservationHelper.gerarReservationRequest();
-            when(ReservationService.NewReservation(any(Reservation.class)))
+            ReservationDTO reservationDTO = ReservationHelper.gerarReservationRequest();
+            when(ReservationService.createReservation(any(ReservationDTO.class)))
                     .thenAnswer(i -> i.getArgument(0));
-            reservationRequest.setQuantity(null);
+            //reservationDTO.setQuantity(null);
             mockMvc.perform(post("/reservation")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(reservationRequest)))
+                            .content(asJsonString(reservationDTO)))
                     .andExpect(status().isBadRequest())
                     .andExpect(result -> {
                         String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
@@ -116,7 +116,7 @@ class ReservationControllerTest {
                         assertThat(json).contains("A quantidade de lugares não pode ser nula");
                     });
             verify(ReservationService, never())
-                    .NewReservation(any(Reservation.class));
+                    .createReservation(any(ReservationDTO.class));
         }
 
     }

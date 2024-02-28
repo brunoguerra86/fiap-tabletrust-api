@@ -1,16 +1,16 @@
 package com.postech.tabletrust.service;
-import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.dto.ReservationDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ReservationService {
-    Reservation NewReservation(Reservation reservation);
+    ReservationDTO createReservation(ReservationDTO reservation);
 
-    Reservation FindReservation(UUID id);
-    List<Reservation> FindCustomerReservation(UUID customerId);
-    List<Reservation> FindRestaurantReservation(UUID restaurantId);
-    Reservation UpdateReservation(UUID id, Reservation newReservation);
-    void DeleteReservation(UUID id);
-    List<Reservation> ListReservations();
+    ReservationDTO findReservation(UUID reservationUUID);
+    List<ReservationDTO> findCustomerReservation(UUID customerId); //todo customer e restaurant?
+    List<ReservationDTO> findRestaurantReservation(UUID restaurantId);
+    ReservationDTO updateReservation(UUID id, ReservationDTO newReservation);
+    void deleteReservation(UUID id);
+    List<ReservationDTO> listAllReservations(); //todo ser a mesma acao q usa o id de restaurant
 }

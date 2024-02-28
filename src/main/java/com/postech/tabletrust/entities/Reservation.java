@@ -1,6 +1,7 @@
 package com.postech.tabletrust.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.postech.tabletrust.dto.ReservationDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,4 +29,12 @@ public class Reservation {
     private LocalDateTime reservationDate;
     @NotNull(message = "A quantidade de lugares não pode ser nula.")
     private Integer quantity;
+
+    public static Reservation getInstance(ReservationDTO reservationDTO) {
+      return new Reservation(UUID.randomUUID(),
+              UUID.fromString(reservationDTO.getRestaurantId()),
+              UUID.fromString(reservationDTO.getCustomerId()),
+              reservationDTO.getReservationDate(),
+              reservationDTO.getQuantity());
+    }
 }

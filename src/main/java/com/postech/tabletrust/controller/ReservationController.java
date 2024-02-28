@@ -1,12 +1,11 @@
 package com.postech.tabletrust.controller;
 
-import jakarta.validation.Valid;
-import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.service.ReservationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("/reservations")
 @RequiredArgsConstructor
 public class ReservationController {
 
@@ -25,26 +24,26 @@ public class ReservationController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> NewReservation(@Valid @RequestBody Reservation reservation) {
-        //log.info("PostMapping - createReservation");
+    public ResponseEntity<?> NewReservation(@Valid @RequestBody ReservationDTO reservation) {
+        log.info("create reservation for customer [{}]", reservation.getCustomerId());
         try {
-            Reservation reservationCreated = reservationService.NewReservation(reservation);
+            ReservationDTO reservationCreated = reservationService.createReservation(reservation);
             return new ResponseEntity<>(reservationCreated, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("ID inválido");
+            return ResponseEntity.badRequest().body("ID inválido"); //feedback c mensagem especifica para erro generico
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // ?
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> UpdateReservation(
             @PathVariable String id,
-            @RequestBody @Valid Reservation reservation) {
+            @RequestBody @Valid ReservationDTO reservation) {
         log.info("PutMapping - updateReservation");
         try {
             UUID uuid = UUID.fromString(id);
-            Reservation newReservation = reservationService.UpdateReservation(uuid, reservation);
+            ReservationDTO newReservation = reservationService.updateReservation(uuid, reservation);
             return new ResponseEntity<>(newReservation, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("ID inválido");
@@ -58,7 +57,7 @@ public class ReservationController {
         log.info("DeleteMapping - deleteReservation");
         try {
             var uuid = UUID.fromString(id);
-            reservationService.DeleteReservation(uuid);
+            reservationService.deleteReservation(uuid);
             return new ResponseEntity<>("reserva removida", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("ID inválido");
@@ -69,9 +68,9 @@ public class ReservationController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<?> ListReservations() {
+    public ResponseEntity<List<ReservationDTO>> ListReservations() {
         log.info("GetMapping - listReservations");
-        List<Reservation> reservations = reservationService.ListReservations();
+        List<ReservationDTO> reservations = reservationService.listAllReservations();
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
@@ -80,7 +79,7 @@ public class ReservationController {
         log.info("GetMapping - FindReservation ");
         try {
             UUID uuid = UUID.fromString(id);
-            Reservation reservation = reservationService.FindReservation(uuid);
+            ReservationDTO reservation = reservationService.findReservation(uuid);
             return new ResponseEntity<>(reservation, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("ID inválido");
@@ -94,7 +93,7 @@ public class ReservationController {
         log.info("GetMapping - FindRestaurantReservation");
         try {
             UUID uuid = UUID.fromString(restaurantId);
-            List<Reservation> reservations = reservationService.FindRestaurantReservation(uuid);
+            List<ReservationDTO> reservations = reservationService.findRestaurantReservation(uuid);
             return new ResponseEntity<>(reservations, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("ID inválido");
@@ -105,10 +104,10 @@ public class ReservationController {
 
     @GetMapping("/customerId={customerId}")
     public ResponseEntity<?> FindCustomerReservation(@PathVariable String customerId) {
-        log.info("GetMapping - FindCustomerReservation");
+        log.info("GetMapping - findCustomerReservation");
         try {
             UUID uuid = UUID.fromString(customerId);
-            List<Reservation> reservations = reservationService.FindCustomerReservation(uuid);
+            List<ReservationDTO> reservations = reservationService.findCustomerReservation(uuid);
             return new ResponseEntity<>(reservations, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("ID inválido");
