@@ -73,7 +73,7 @@ class ReservationControllerTest {
             when(ReservationService.createReservation(any(ReservationDTO.class)))
                     .thenAnswer(i -> i.getArgument(0));
 
-            mockMvc.perform(post("/reservation")
+            mockMvc.perform(post("/reservations")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(reservationDTO)))
                     .andExpect(status().isCreated());
@@ -87,7 +87,7 @@ class ReservationControllerTest {
             when(ReservationService.createReservation(any(ReservationDTO.class)))
                     .thenAnswer(i -> i.getArgument(0));
             reservationDTO.setReservationDate(null);
-            mockMvc.perform(post("/reservation")
+            mockMvc.perform(post("/reservations")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(reservationDTO)))
                     .andExpect(status().isBadRequest())
@@ -106,7 +106,7 @@ class ReservationControllerTest {
             when(ReservationService.createReservation(any(ReservationDTO.class)))
                     .thenAnswer(i -> i.getArgument(0));
             //reservationDTO.setQuantity(null);
-            mockMvc.perform(post("/reservation")
+            mockMvc.perform(post("/reservations")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(reservationDTO)))
                     .andExpect(status().isBadRequest())

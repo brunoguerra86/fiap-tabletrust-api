@@ -24,7 +24,7 @@ public class ReservationController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> NewReservation(@Valid @RequestBody ReservationDTO reservation) {
+    public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDTO reservation) {
         log.info("create reservation for customer [{}]", reservation.getCustomerId());
         try {
             ReservationDTO reservationCreated = reservationService.createReservation(reservation);

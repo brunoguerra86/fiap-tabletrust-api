@@ -15,7 +15,7 @@ public class ReservationDTO {
     private String restaurantId;
     private String customerId;
     private String tableId;
-    private LocalDateTime reservationDate;
+    private String reservationDate;
     private Integer quantity;
 
     public ReservationDTO(Reservation reservation) {
@@ -23,7 +23,7 @@ public class ReservationDTO {
         this.restaurantId = reservation.getRestaurantId().toString();
         this.customerId = reservation.getCustomerId().toString();
         this.tableId = null; //todo settar corretamente
-        this.reservationDate = reservation.getReservationDate();
+        this.reservationDate = reservation.getReservationDate().toString();
         this.quantity = reservation.getQuantity();
 
     }

@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 @Data
 @Builder(toBuilder = true)
@@ -31,10 +32,12 @@ public class Reservation {
     private Integer quantity;
 
     public static Reservation getInstance(ReservationDTO reservationDTO) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(reservationDTO.getReservationDate(), formatter);
       return new Reservation(UUID.randomUUID(),
               UUID.fromString(reservationDTO.getRestaurantId()),
               UUID.fromString(reservationDTO.getCustomerId()),
-              reservationDTO.getReservationDate(),
+              dateTime,
               reservationDTO.getQuantity());
     }
 }

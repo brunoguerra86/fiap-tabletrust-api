@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class CreateReservationUseCase {
-    private ReservationRepository reservationRepository;
 
     public ReservationDTO execute(ReservationDTO reservationDTO, ReservationRepository reservationRepository){
         try {
