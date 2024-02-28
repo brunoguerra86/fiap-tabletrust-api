@@ -6,11 +6,10 @@ import static org.mockito.ArgumentMatchers.any;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.utils.ReservationHelper;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -69,7 +68,7 @@ class ReservationControllerTest {
     class NewReservation {
         @Test
         void devePermitirRegistrarReservation() throws Exception {
-            ReservationRequest reservationRequest = ReservationHelper.gerarReservationRequest();
+            ReservationRequest reservationRequest = NewEntititesHelper.gerarReservationRequest();
             when(ReservationService.NewReservation(any(Reservation.class)))
                     .thenAnswer(i -> i.getArgument(0));
 
@@ -83,7 +82,7 @@ class ReservationControllerTest {
 
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_DataNula() throws Exception {
-            ReservationRequest reservationRequest = ReservationHelper.gerarReservationRequest();
+            ReservationRequest reservationRequest = NewEntititesHelper.gerarReservationRequest();
             when(ReservationService.NewReservation(any(Reservation.class)))
                     .thenAnswer(i -> i.getArgument(0));
             reservationRequest.setReservationDate(null);
@@ -102,7 +101,7 @@ class ReservationControllerTest {
 
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_QuantidadeNula() throws Exception {
-            ReservationRequest reservationRequest = ReservationHelper.gerarReservationRequest();
+            ReservationRequest reservationRequest = NewEntititesHelper.gerarReservationRequest();
             when(ReservationService.NewReservation(any(Reservation.class)))
                     .thenAnswer(i -> i.getArgument(0));
             reservationRequest.setQuantity(null);
