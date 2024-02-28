@@ -9,7 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.gateways.ReservationGateway;
+import com.postech.tabletrust.service.CustomerService;
 import com.postech.tabletrust.utils.ReservationHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,21 +36,22 @@ class ReservationControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private ReservationService ReservationService;
-
+    private ReservationGateway reservationGateway;
+    @Mock
+    private ReservationService reservationService;
+    @Mock
+    private CustomerService customerService;
     AutoCloseable openMocks;
 
     @BeforeEach
     void setUp() {
+
         openMocks = MockitoAnnotations.openMocks(this);
-        ReservationController ReservationController = new ReservationController(ReservationService);
-        mockMvc = MockMvcBuilders.standaloneSetup(ReservationController)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .addFilter((request, response, chain) -> {
-                    response.setCharacterEncoding("UTF-8");
-                    chain.doFilter(request, response);
-                }, "/*")
-                .build();
+        ReservationController ReservationController = new ReservationController(reservationService, customerService);
+        mockMvc = MockMvcBuilders.standaloneSetup(ReservationController).setControllerAdvice(new GlobalExceptionHandler()).addFilter((request, response, chain) -> {
+            response.setCharacterEncoding("UTF-8");
+            chain.doFilter(request, response);
+        }, "/*").build();
     }
 
     @AfterEach
@@ -69,54 +71,32 @@ class ReservationControllerTest {
     class NewReservation {
         @Test
         void devePermitirRegistrarReservation() throws Exception {
-            ReservationDTO reservationDTO = ReservationHelper.gerarReservationRequest();
-            when(ReservationService.createReservation(any(ReservationDTO.class)))
-                    .thenAnswer(i -> i.getArgument(0));
-
-            mockMvc.perform(post("/reservation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(reservationDTO)))
+            ReservationDTO reservationDTO = ReservationHelper.gerarReservationInsertRequest();
+            mockMvc.perform(post("/reservations")
+                    .contentType(MediaType.APPLICATION_JSON).content(asJsonString(reservationDTO)))
                     .andExpect(status().isCreated());
-            verify(ReservationService, times(1))
-                    .createReservation(any(ReservationDTO.class)); //andExpect(content().string(containsString("conteudo")))
         }
 
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_DataNula() throws Exception {
-            ReservationDTO reservationDTO = ReservationHelper.gerarReservationRequest();
-            when(ReservationService.createReservation(any(ReservationDTO.class)))
-                    .thenAnswer(i -> i.getArgument(0));
+            ReservationDTO reservationDTO = ReservationHelper.gerarReservationInsertRequest();
             reservationDTO.setReservationDate(null);
-            mockMvc.perform(post("/reservation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(reservationDTO)))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(result -> {
-                        String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-                        assertThat(json).contains("Validation error");
-                        assertThat(json).contains("A data não pode ser nula");
-                    });
-            verify(ReservationService, never())
-                    .createReservation(any(ReservationDTO.class));
+            mockMvc.perform(post("/reservations").contentType(MediaType.APPLICATION_JSON).content(asJsonString(reservationDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
+                String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+                assertThat(json).contains("Validation error");
+                assertThat(json).contains("A data não pode ser nula");
+            });
         }
 
         @Test
         void deveGerarExcecao_QuandoRegistrarReservation_QuantidadeNula() throws Exception {
-            ReservationDTO reservationDTO = ReservationHelper.gerarReservationRequest();
-            when(ReservationService.createReservation(any(ReservationDTO.class)))
-                    .thenAnswer(i -> i.getArgument(0));
-            //reservationDTO.setQuantity(null);
-            mockMvc.perform(post("/reservation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(reservationDTO)))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(result -> {
-                        String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-                        assertThat(json).contains("Validation error");
-                        assertThat(json).contains("A quantidade de lugares não pode ser nula");
-                    });
-            verify(ReservationService, never())
-                    .createReservation(any(ReservationDTO.class));
+            ReservationDTO reservationDTO = ReservationHelper.gerarReservationInsertRequest();
+            reservationDTO.setQuantity(null);
+            mockMvc.perform(post("/reservations").contentType(MediaType.APPLICATION_JSON).content(asJsonString(reservationDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
+                String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+                assertThat(json).contains("Validation error");
+                assertThat(json).contains("A quantidade de lugares não pode ser nula");
+            });
         }
 
     }
