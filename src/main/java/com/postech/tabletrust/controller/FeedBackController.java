@@ -25,10 +25,10 @@ public class FeedBackController {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<FeedBack>> listFeedback(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size, UUID restaurantId) {
         Pageable pageable = PageRequest.of(page, size);
         log.info("Requisição para listar comentários foi efetuada: Página={}, Tamanho={}", page, size);
-        Page<FeedBack> FeedBack = feedBackService.listFeedback(pageable);
+        Page<FeedBack> FeedBack = feedBackService.listFeedbackByRestaurant(pageable, restaurantId);
         return new ResponseEntity<>(FeedBack, HttpStatus.OK);
     }
 
