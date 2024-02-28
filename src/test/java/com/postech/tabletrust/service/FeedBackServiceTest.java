@@ -7,6 +7,7 @@ import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.repository.RestaurantRepository;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.AfterEach;
@@ -52,8 +53,8 @@ public class FeedBackServiceTest {
 
     @Test
     void shouldListAllFeedBacksByARestaurant(){
-        Restaurant resto = createARestaurant();
-        FeedBack fb = createAFeedBack();
+        Restaurant resto = NewEntititesHelper.createARestaurant();
+        FeedBack fb = NewEntititesHelper.createAFeedBack();
         List<FeedBack> fbList = List.of(fb);
 
         when(restaurantRepository.save(resto)).thenReturn(resto);
@@ -67,8 +68,8 @@ public class FeedBackServiceTest {
 
     @Test
     void shouldCreateANewFeedBack() throws Exception {
-        Reservation reservation = createAReservation();
-        FeedBackCreateDTO feedBackDTO = createAFeedBack().convertToDTO();
+        Reservation reservation = NewEntititesHelper.createAReservation();
+        FeedBackCreateDTO feedBackDTO = NewEntititesHelper.createAFeedBack().convertToDTO();
 
         when(reservationRepository.findById(any(UUID.class))).thenReturn(Optional.of(reservation)); //Mock le findById
         when(feedBackRepository.save(any(FeedBack.class))).thenAnswer( i -> i.getArgument(0)); // Mock o save
@@ -82,9 +83,9 @@ public class FeedBackServiceTest {
 
     @Test
     void shouldReturnAnExceptionNotFoundReservation() throws Exception {
-        Reservation reservation = createAReservation();
+        Reservation reservation = NewEntititesHelper.createAReservation();
         reservation.setId(UUID.randomUUID()); //change id
-        FeedBackCreateDTO feedBackDTO = createAFeedBack().convertToDTO();
+        FeedBackCreateDTO feedBackDTO = NewEntititesHelper.createAFeedBack().convertToDTO();
 
         when(reservationRepository.findById(any(UUID.class))).thenReturn(Optional.empty()); //Not found
 
@@ -95,9 +96,9 @@ public class FeedBackServiceTest {
 
     @Test
     void shouldReturnAnExceptionForReservationNotApprouved() throws Exception {
-        Reservation reservation = createAReservation();
+        Reservation reservation = NewEntititesHelper.createAReservation();
         reservation.setApproved(false); // Change 'approved'
-        FeedBackCreateDTO feedBackDTO = createAFeedBack().convertToDTO();
+        FeedBackCreateDTO feedBackDTO = NewEntititesHelper.createAFeedBack().convertToDTO();
 
         when(reservationRepository.findById(any(UUID.class))).thenReturn(Optional.of(reservation)); //OK
 
@@ -108,12 +109,12 @@ public class FeedBackServiceTest {
 
     @Test
     void shouldReturnAnExceptionForReservationInThreeHours() throws Exception {
-        Reservation reservation = createAReservation();
+        Reservation reservation = NewEntititesHelper.createAReservation();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime less1Hour = LocalDateTime.now().minusHours(1);
         reservation.setReservationDate(less1Hour); // Change hour by reservation - invalid
-        FeedBackCreateDTO feedBackDTO = createAFeedBack().convertToDTO();
+        FeedBackCreateDTO feedBackDTO = NewEntititesHelper.createAFeedBack().convertToDTO();
 
         when(reservationRepository.findById(any(UUID.class))).thenReturn(Optional.of(reservation)); //OK
 
@@ -125,7 +126,7 @@ public class FeedBackServiceTest {
     @Test
     void shouldFindByID(){
         //Assert
-        var fb = createAFeedBack();
+        var fb = NewEntititesHelper.createAFeedBack();
         UUID id = fb.getId();
 
         when(feedBackRepository.findById(id)).thenReturn(Optional.of(fb));
@@ -142,7 +143,7 @@ public class FeedBackServiceTest {
     @Test
     void shouldDeleteByID(){
         //Assert
-        var fb = createAFeedBack();
+        var fb = NewEntititesHelper.createAFeedBack();
         UUID id = fb.getId();
 
         when(feedBackRepository.findById(id)).thenReturn(Optional.of(fb));
@@ -152,58 +153,5 @@ public class FeedBackServiceTest {
         assertThat(removed).isTrue();
 
         verify(feedBackRepository, times(1)).deleteById(any(UUID.class));
-    }
-
-    private Reservation createAReservation(){
-        UUID customerID = UUID.fromString("b732236c-3c25-4290-bfe2-93ec920bcfa9");
-        UUID restaurantID = UUID.fromString("c68b4872-6073-4dff-8199-a24c74d4c763");
-        UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime now = LocalDateTime.now().minusHours(3);
-        String formattedDate = now.format(formatter);
-
-        return Reservation.builder()
-                .id(reservationID)
-                .reservationDate(now)
-                .restaurantId(restaurantID)
-                .customerId(customerID)
-                .quantity(4)
-                .approved(true)
-                .build();
-    }
-
-    //La meme reservation id
-    private FeedBack createAFeedBack(){
-        UUID customerID = UUID.fromString("b732236c-3c25-4290-bfe2-93ec920bcfa9");
-        UUID restaurantID = UUID.fromString("c68b4872-6073-4dff-8199-a24c74d4c763");
-        UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
-        UUID feedbackID = UUID.fromString("7cad184d-6b00-4e20-bdeb-d4e224cf3bbd");
-
-        return FeedBack.builder()
-                .id(feedbackID)
-                .comment("OTIMO")
-                .restaurantId(restaurantID)
-                .customerId(customerID)
-                .reservationId(reservationID)
-                .stars(5)
-                .build();
-    }
-
-    private Restaurant createARestaurant(){
-        LocalTime open = new LocalTimeJavaType().fromString("19:00:00");
-        LocalTime close = new LocalTimeJavaType().fromString("23:30:00");
-
-        UUID restaurantID = UUID.fromString("c68b4872-6073-4dff-8199-a24c74d4c763");
-
-        return Restaurant.builder()
-                .id(restaurantID)
-                .address("Fragonard")
-                .kitchenType("Sopa")
-                .name("Restaurante-teste")
-                .openingTime(open)
-                .closingTime(close)
-                .availableCapacity(100)
-                .build();
     }
 }

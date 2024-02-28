@@ -1,7 +1,7 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entities.Restaurant;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ public class RestaurantRepositoryTest {
     @Test
     void shouldAllowToCreateARestaurant(){
         //Arrange
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         when(restaurantRepository.save(any(Restaurant.class))).thenReturn(restaurant);  //Deixa um pouco mais genérico
 
         // Act
@@ -54,7 +54,7 @@ public class RestaurantRepositoryTest {
     @Test
     void shouldAllowSearchARestaurant(){
         //Arrange
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         UUID id = restaurant.getId();
 
         when(restaurantRepository.findById(id))
@@ -71,7 +71,7 @@ public class RestaurantRepositoryTest {
     @Test
     void shouldAllowSearchARestaurantByNameAddressAndKitchen() {
         //Arrange
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         UUID id = restaurant.getId();
         List<Restaurant> restaurants = List.of(restaurant);
 
@@ -96,7 +96,7 @@ public class RestaurantRepositoryTest {
     @Test
     void shouldAllowUpdateRestaurant(){
         //Arrange
-        Restaurant restaurant = createARestaurant();
+        Restaurant restaurant = NewEntititesHelper.createARestaurant();
         when(restaurantRepository.save(any(Restaurant.class))).then(returnsFirstArg());  //Deixa um pouco mais genérico
 
         // Act
@@ -114,7 +114,7 @@ public class RestaurantRepositoryTest {
     @Test
     void shouldAllowDeleteRestaurant(){
         //Arrange
-        Restaurant restaurant = createARestaurant();
+        Restaurant restaurant = NewEntititesHelper.createARestaurant();
         UUID id = restaurant.getId();
 
         doNothing().when(restaurantRepository).deleteById(any(UUID.class));
@@ -123,20 +123,5 @@ public class RestaurantRepositoryTest {
 
         //Assert
         verify(restaurantRepository, times(1)).deleteById(any(UUID.class));
-    }
-
-    private Restaurant createARestaurant(){
-        LocalTime open = new LocalTimeJavaType().fromString("19:00:00");
-        LocalTime close = new LocalTimeJavaType().fromString("23:30:00");
-
-        return Restaurant.builder()
-                .id(UUID.randomUUID())
-                .address("Fragonard")
-                .kitchenType("Tapioca")
-                .name("Restaurante-teste")
-                .openingTime(open)
-                .closingTime(close)
-                .availableCapacity(100)
-                .build();
     }
 }

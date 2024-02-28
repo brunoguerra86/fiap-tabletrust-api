@@ -2,6 +2,7 @@ package com.postech.tabletrust.service;
 
 import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.repository.RestaurantRepository;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.AfterEach;
@@ -44,7 +45,7 @@ public class RestaurantServiceTest {
     @Test
     void shouldAllowToCreateARestaurant(){
         //Arrange
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         when(restaurantRepository.save(any(Restaurant.class))).thenAnswer( i -> i.getArgument(0)); //Quando ele recebe um restaurante deve responder com um parametro que é o restaurante salvo
 
         // Act
@@ -62,7 +63,7 @@ public class RestaurantServiceTest {
     void shouldBeFindARestaurantById(){ //Diagrama de fluxo - o id é valido ? case Sim e case Non
         //Arrange
         UUID id = UUID.fromString("da965093-b853-498b-bfe5-b1298630a7c4");
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         restaurant.setId(id);
 
         when(restaurantRepository.findById(any(UUID.class))).thenReturn(Optional.of(restaurant)); // Assegure que o findById está mockado corretamente
@@ -96,7 +97,7 @@ public class RestaurantServiceTest {
     void shouldFindARestaurantByNameAddressKitchenType(){
         //Arrange
         UUID id = UUID.randomUUID(); //TODO https://www.uuidgenerator.net/version4
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         restaurant.setId(id);
         when(restaurantRepository.findById(id)).thenReturn(Optional.of(restaurant)); // Assegure que o findById está mockado corretamente
 
@@ -112,7 +113,7 @@ public class RestaurantServiceTest {
     void souldAllowUpdateRestaurant(){
         //Arrange
         UUID id = UUID.randomUUID();
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         restaurant.setId(id);
 
         var restaurantUp = restaurant.clone(); // Senao ele pega a referencia para o mesmo objeto e os dois 'restaurant' serao setName
@@ -136,7 +137,7 @@ public class RestaurantServiceTest {
     void shouldGenerateAExceptionWhenWrongIdAndRestaurantNotUpdated(){
         //Arrange
         UUID id = UUID.randomUUID();
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         restaurant.setId(id);
         //Act
         when(restaurantRepository.findById(id)).thenReturn(Optional.empty());
@@ -154,7 +155,7 @@ public class RestaurantServiceTest {
     void shouldAllowDeleteRestaurant(){
         //Assert
         UUID id = UUID.fromString("57ac89e1-ead8-46bb-afef-5c01c0941e17");
-        var restaurant = createARestaurant();
+        var restaurant = NewEntititesHelper.createARestaurant();
         restaurant.setId(id);
 
         when(restaurantRepository.findById(id)).thenReturn(Optional.of(restaurant));
@@ -164,20 +165,5 @@ public class RestaurantServiceTest {
         assertThat(removed).isTrue();
 
         verify(restaurantRepository, times(1)).deleteById(any(UUID.class));
-    }
-
-    private Restaurant createARestaurant(){
-        LocalTime open = new LocalTimeJavaType().fromString("19:00:00");
-        LocalTime close = new LocalTimeJavaType().fromString("23:30:00");
-
-        return Restaurant.builder()
-                .id(UUID.randomUUID())
-                .address("Fragonard")
-                .kitchenType("Tapioca")
-                .name("Restaurante-teste")
-                .openingTime(open)
-                .closingTime(close)
-                .availableCapacity(100)
-                .build();
     }
 }
