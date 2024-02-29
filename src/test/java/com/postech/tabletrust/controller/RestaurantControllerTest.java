@@ -64,6 +64,7 @@ public class RestaurantControllerTest {
         void deveGerarExcecao_QuandoIncluirRestaurante_Invalido(){
 
         }
+
     }
 
     @Nested
@@ -319,5 +320,4 @@ public class RestaurantControllerTest {
             verify(restaurantService, times(1)).deleteRestaurant(notFoundUuid);
         }
     }
-
 }
