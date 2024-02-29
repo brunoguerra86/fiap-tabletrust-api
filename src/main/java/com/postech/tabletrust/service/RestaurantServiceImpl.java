@@ -34,10 +34,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Restaurant updateRestaurant(UUID id, Restaurant newRestaurant) { //TODO refacto avec DTO pour validation
-        Restaurant restaurant = findRestaurant(id);
-        if (newRestaurant.getId() != null && !restaurant.getId().equals(newRestaurant.getId())) {
-            throw new EntityNotFoundException("Os Ids nao correspondem e o restaurante nao foi atualizado");
-        }
         newRestaurant.setId(id);
         return restaurantRepository.save(newRestaurant);
     }
