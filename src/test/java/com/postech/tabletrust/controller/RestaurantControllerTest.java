@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -97,22 +99,62 @@ public class RestaurantControllerTest {
 
         @Test
         void deveConsultarRestauranteSemFiltro(){
+            // Arrange
+            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
+            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, null, null)).thenReturn(mockRestaurants);
 
+            // Act
+            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, null, null);
+
+            // Assertions
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(mockRestaurants, response.getBody());
+            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, null, null);
         }
 
         @Test
         void deveConsultarRestaurantePorNome(){
+            // Arrange
+            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
+            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null)).thenReturn(mockRestaurants);
 
+            // Act
+            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null);
+
+            // Assertions
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(mockRestaurants, response.getBody());
+            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null);
         }
 
         @Test
         void deveConsultarRestaurantePorEndereco(){
+            // Arrange
+            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
+            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null)).thenReturn(mockRestaurants);
 
+            // Act
+            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null);
+
+            // Assertions
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(mockRestaurants, response.getBody());
+            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null);
         }
 
         @Test
         void deveConsultarRestaurantePorTipoCozinha(){
+            // Arrange
+            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
+            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha")).thenReturn(mockRestaurants);
 
+            // Act
+            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha");
+
+            // Assertions
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(mockRestaurants, response.getBody());
+            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha");
         }
 
         @Test
