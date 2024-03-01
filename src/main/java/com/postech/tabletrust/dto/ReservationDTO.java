@@ -1,11 +1,15 @@
 package com.postech.tabletrust.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.postech.tabletrust.entities.Reservation;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Data
@@ -14,17 +18,32 @@ public class ReservationDTO {
     private String id;
     private String restaurantId;
     private String customerId;
-    private String tableId;
+    @NotNull(message = "A data não pode ser nula.")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private String reservationDate;
+    @NotNull(message = "A quantidade de lugares não pode ser nula.")
     private Integer quantity;
+    @Builder.Default
+    private Boolean approved = false;
 
+    public ReservationDTO() {
+    }
     public ReservationDTO(Reservation reservation) {
-        this.id = reservation.getId().toString();
-        this.restaurantId = reservation.getRestaurantId().toString();
-        this.customerId = reservation.getCustomerId().toString();
-        this.tableId = null; //todo settar corretamente
-        this.reservationDate = reservation.getReservationDate().toString();
-        this.quantity = reservation.getQuantity();
+        if (reservation != null) {
+            this.id = reservation.getId().toString();
+            this.restaurantId = reservation.getRestaurantId().toString();
+            this.customerId = reservation.getCustomerId().toString();
+            this.reservationDate = reservation.getReservationDate().toString();
+            this.quantity = reservation.getQuantity();
+            this.approved = reservation.getApproved();
+        }
+    }
 
+    public List<ReservationDTO> toList(List<Reservation> reservationList) {
+        List<ReservationDTO> reservationDTOList = new ArrayList<>();
+        for (Reservation reservation : reservationList) {
+            reservationDTOList.add(new ReservationDTO(reservation));
+        }
+        return reservationDTOList;
     }
 }
