@@ -1,6 +1,5 @@
 package com.postech.tabletrust.usecases;
 
-import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CreateReservationUseCase {
 
-    public ReservationDTO execute(ReservationDTO reservationDTO, ReservationRepository reservationRepository){
+    public Reservation execute(Reservation reservation, ReservationRepository reservationRepository){
         try {
-            Reservation newReservation = Reservation.getInstance(reservationDTO);
 
             //TODO
         /*Restaurant restaurant = findRestaurant(reservation.getRestaurantId());
@@ -24,13 +22,12 @@ public class CreateReservationUseCase {
             throw new IllegalArgumentException("reserva não apresenta o ID do Cliente correto");
         }
          */
-            newReservation = reservationRepository.save(newReservation);
-            reservationDTO = new ReservationDTO(newReservation);
+            reservation = reservationRepository.save(reservation);
 
         } catch (Exception e) {
-            log.error("error creating a reservation to customer [{}], restaurant [{}]", reservationDTO.getCustomerId(), reservationDTO.getRestaurantId());
+            log.error("error creating a reservation to customer [{}], restaurant [{}]", reservation.getCustomerId(), reservation.getRestaurantId());
         }
-        return reservationDTO;
+        return reservation;
     }
 
 }

@@ -7,6 +7,7 @@ import com.postech.tabletrust.interfaces.IReservationGateway;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ReservationGateway implements IReservationGateway {
     private final ReservationService reservationService;
@@ -62,6 +63,10 @@ public class ReservationGateway implements IReservationGateway {
     @Override
     public List<ReservationDTO> listAllReservations() {
         List<Reservation> reservationEntityList = reservationService.listAllReservations();
-        return new ReservationDTO().toList(reservationEntityList);
+
+        return reservationEntityList
+                .stream()
+                .map(ReservationDTO::new)
+                .collect(Collectors.toList());
     }
 }

@@ -2,6 +2,7 @@ package com.postech.tabletrust.service;
 
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.usecases.CreateReservationUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
+    private final CreateReservationUseCase createReservationUseCase;
 
     @Override
     public Reservation createReservation(Reservation reservation) {
-        return reservationRepository.save(reservation);
+        return createReservationUseCase.execute(reservation, reservationRepository);
     }
 
     @Override
