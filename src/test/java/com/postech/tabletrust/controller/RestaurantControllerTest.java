@@ -56,13 +56,48 @@ public class RestaurantControllerTest {
     @Nested
     class CreateRestaurant{
         @Test
-        void deveIncluirRestauranteValido(){
+        void testNewRestaurant_ValidInput_ReturnsCreatedResponse(){
+            // Arrange
+            Restaurant restaurant = new Restaurant();
+            when(restaurantService.newRestaurant(restaurant)).thenReturn(restaurant);
 
+            // Act
+            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
+
+            // Assert
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+            assertEquals(restaurant, response.getBody());
+            verify(restaurantService, times(1)).newRestaurant(restaurant);
         }
 
         @Test
-        void deveGerarExcecao_QuandoIncluirRestaurante_Invalido(){
+        void testNewRestaurant_InvalidInput_ReturnsBadRequestResponse() {
+            // Arrange
+            Restaurant restaurant = new Restaurant();
+            when(restaurantService.newRestaurant(restaurant)).thenThrow(new IllegalArgumentException("ID inválido"));
 
+            // Act
+            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
+
+            // Assert
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals("ID inválido", response.getBody());
+            verify(restaurantService, times(1)).newRestaurant(restaurant);
+        }
+
+        @Test
+        void testNewRestaurant_RuntimeException_ReturnsNotFoundResponse() {
+            // Arrange
+            Restaurant restaurant = new Restaurant();
+            when(restaurantService.newRestaurant(restaurant)).thenThrow(new RuntimeException("Erro interno"));
+
+            // Act
+            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
+
+            // Assert
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            assertEquals("Erro interno", response.getBody());
+            verify(restaurantService, times(1)).newRestaurant(restaurant);
         }
 
     }
