@@ -1,6 +1,6 @@
 package com.postech.tabletrust.repository;
 
-import com.postech.tabletrust.entities.FeedBack;
+import com.postech.tabletrust.entity.FeedBack;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

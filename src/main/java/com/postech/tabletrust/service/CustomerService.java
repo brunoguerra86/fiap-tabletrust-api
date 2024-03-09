@@ -1,5 +1,5 @@
 package com.postech.tabletrust.service;
-import com.postech.tabletrust.entities.Customer;
+import com.postech.tabletrust.entity.Customer;
 
 import java.util.List;
 import java.util.UUID;

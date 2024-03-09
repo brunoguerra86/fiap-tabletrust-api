@@ -1,6 +1,6 @@
 package com.postech.tabletrust.controller;
 
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.service.RestaurantService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;

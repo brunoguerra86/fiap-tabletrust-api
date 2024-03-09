@@ -1,7 +1,7 @@
 package com.postech.tabletrust.gateways;
 
 import com.postech.tabletrust.dto.CustomerDTO;
-import com.postech.tabletrust.entities.Customer;
+import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.service.CustomerService;
 import com.postech.tabletrust.interfaces.ICustomerGateway;
 

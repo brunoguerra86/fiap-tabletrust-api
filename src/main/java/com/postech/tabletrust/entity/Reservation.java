@@ -1,4 +1,4 @@
-package com.postech.tabletrust.entities;
+package com.postech.tabletrust.entity;
 
 import com.postech.tabletrust.dto.ReservationDTO;
 import jakarta.persistence.*;

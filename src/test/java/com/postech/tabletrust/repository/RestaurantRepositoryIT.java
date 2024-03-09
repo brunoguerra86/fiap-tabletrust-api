@@ -1,6 +1,6 @@
 package com.postech.tabletrust.repository;
 
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Restaurant;
 import jakarta.transaction.Transactional;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.Test;

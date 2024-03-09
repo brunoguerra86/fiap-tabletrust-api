@@ -1,7 +1,7 @@
 package com.postech.tabletrust.service;
 
 import com.postech.tabletrust.repository.CustomerRepository;
-import com.postech.tabletrust.entities.Customer;
+import com.postech.tabletrust.entity.Customer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

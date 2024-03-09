@@ -1,6 +1,6 @@
 package com.postech.tabletrust.repository;
 
-import com.postech.tabletrust.entities.FeedBack;
+import com.postech.tabletrust.entity.FeedBack;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
