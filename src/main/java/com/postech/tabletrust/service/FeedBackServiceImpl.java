@@ -1,9 +1,9 @@
 package com.postech.tabletrust.service;
 
 import com.postech.tabletrust.dto.FeedBackCreateDTO;
-import com.postech.tabletrust.entities.FeedBack;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.FeedBack;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.repository.RestaurantRepository;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

@@ -1,17 +1,15 @@
 package com.postech.tabletrust.service;
 
 import com.postech.tabletrust.dto.FeedBackCreateDTO;
-import com.postech.tabletrust.entities.FeedBack;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.FeedBack;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.repository.RestaurantRepository;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -23,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;

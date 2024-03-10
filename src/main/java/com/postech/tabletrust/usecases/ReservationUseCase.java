@@ -2,16 +2,9 @@ package com.postech.tabletrust.usecases;
 
 import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.ReservationDTO;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.entities.Restaurant;
-import com.postech.tabletrust.gateways.ReservationGateway;
-import com.postech.tabletrust.service.ReservationService;
-import com.postech.tabletrust.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Slf4j
 @Component

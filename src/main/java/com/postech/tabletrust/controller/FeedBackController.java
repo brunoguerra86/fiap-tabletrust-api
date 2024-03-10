@@ -1,12 +1,11 @@
 package com.postech.tabletrust.controller;
 
+import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.dto.FeedBackCreateDTO;
-import com.postech.tabletrust.entities.FeedBack;
 import com.postech.tabletrust.service.FeedBackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;

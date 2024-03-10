@@ -1,7 +1,7 @@
 package com.postech.tabletrust.service;
 
 import com.postech.tabletrust.dto.FeedBackCreateDTO;
-import com.postech.tabletrust.entities.FeedBack;
+import com.postech.tabletrust.entity.FeedBack;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

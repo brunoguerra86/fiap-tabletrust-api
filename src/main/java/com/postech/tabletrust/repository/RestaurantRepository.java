@@ -1,6 +1,6 @@
 package com.postech.tabletrust.repository;
 
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

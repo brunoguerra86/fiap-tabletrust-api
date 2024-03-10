@@ -1,6 +1,6 @@
 package com.postech.tabletrust.service;
 
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Restaurant;
 
 import java.util.List;
 import java.util.UUID;

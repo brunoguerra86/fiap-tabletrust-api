@@ -2,9 +2,9 @@ package com.postech.tabletrust.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.dto.ReservationDTO;
-import com.postech.tabletrust.entities.FeedBack;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.FeedBack;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 
 import java.time.LocalDateTime;
