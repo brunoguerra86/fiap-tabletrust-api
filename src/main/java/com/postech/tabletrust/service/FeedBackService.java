@@ -11,10 +11,9 @@ import java.util.UUID;
 
 public interface FeedBackService {
 
-    public Page<FeedBack> listFeedbackByRestaurant(Pageable pageable, UUID restaurantId);
-    public FeedBack create(FeedBackCreateDTO feedBackCreateDTO) throws Exception;
-    public FeedBack findById(UUID id);
-    public Boolean deleteById(UUID id);
-    public List<FeedBack> getFeedBackByRestaurantId(UUID id);
+    Page<FeedBack> listFeedBackByRestaurantId(Pageable pageable, UUID restaurantId);
+    FeedBack create(FeedBackCreateDTO feedBackCreateDTO) throws Exception;
+    FeedBack findById(UUID id);
+    Boolean deleteById(UUID id);
     //Nao pode update um feedback
 }
