@@ -1,6 +1,8 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entities.FeedBack;
+import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,20 +42,22 @@ public class FeedBackRepositoryTest {
     }
 
     @Test
-    void shouldListAllFeedbacks(){
+    void shouldListFeedbacksByRestaurantId(){
         //Arrange
         FeedBack feedback = NewEntititesHelper.createAFeedBack();
-        FeedBack feedback2 = NewEntititesHelper.createAFeedBack();
-        feedback2.setId(UUID.randomUUID());
+        Restaurant restaurant = NewEntititesHelper.createARestaurant();
+        Reservation reservation = NewEntititesHelper.createAReservation();
+        feedback.setRestaurantId(restaurant.getId());
+        feedback.setReservationId(reservation.getId());
 
         Pageable pageable = PageRequest.of(0, 10);
-        List<FeedBack> feedBackList = Arrays.asList(feedback, feedback2); // Adicione objetos Feedback reais aqui
+        List<FeedBack> feedBackList = Arrays.asList(feedback, feedback); // Adicione objetos Feedback reais aqui
         Page<FeedBack> feedBackPage = new PageImpl<>(feedBackList, pageable, feedBackList.size());
 
-        when(feedBackRepository.listFeedback(pageable)).thenReturn(feedBackPage);
+        when(feedBackRepository.findByRestaurantId(restaurant.getId(),pageable)).thenReturn(feedBackPage);
 
         //Act
-        Page<FeedBack> result = feedBackRepository.listFeedback(pageable);
+        Page<FeedBack> result = feedBackRepository.findByRestaurantId(restaurant.getId(), pageable);
 
         // Assert
         assertNotNull(result);

@@ -1,5 +1,6 @@
 package com.postech.tabletrust.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entities.FeedBack;
 import com.postech.tabletrust.entities.Reservation;
@@ -66,5 +67,13 @@ public class NewEntititesHelper {
                 .quantity(4)
                 .approved(true)
                 .build();
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

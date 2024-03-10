@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,24 +18,21 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/feedBack")
+@RequestMapping("/feedback")
 @RequiredArgsConstructor
 public class FeedBackController {
 
     private final FeedBackService feedBackService;
 
     @GetMapping(value = "/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<FeedBack>> listFeedbackByRestaurant(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<Page<FeedBack>> listFeedBackByRestaurantId(
+            @PageableDefault(size = 10) Pageable pageable,
             @PathVariable UUID restaurantId) {
-        Pageable pageable = PageRequest.of(page, size);
-        log.info("Requisição para listar comentários foi efetuada: Página={}, Tamanho={}", page, size);
-        Page<FeedBack> FeedBack = feedBackService.listFeedbackByRestaurant(pageable, restaurantId);
-        return new ResponseEntity<>(FeedBack, HttpStatus.OK);
+        Page<FeedBack> feedBackPage = feedBackService.listFeedBackByRestaurantId(pageable, restaurantId);
+        return new ResponseEntity<>(feedBackPage, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity create(@RequestBody FeedBackCreateDTO feedBackCreateDTO) throws Exception {
         FeedBack feedBackCreated = this.feedBackService.create(feedBackCreateDTO);
         return ResponseEntity.ok(feedBackCreated);

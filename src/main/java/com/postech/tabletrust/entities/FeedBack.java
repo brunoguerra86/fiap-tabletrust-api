@@ -51,15 +51,15 @@ public class FeedBack {
     public FeedBack(FeedBackCreateDTO feedBackCreateDTO) {
                 this.restaurantId = feedBackCreateDTO.restaurantId();
                 this.customerId = feedBackCreateDTO.customerId();
-                this.reservationId = feedBackCreateDTO.restaurantId();
+                this.reservationId = feedBackCreateDTO.reservationId();
                 this.comment = feedBackCreateDTO.comment();
                 this.stars = feedBackCreateDTO.stars();
     }
 
     public FeedBackCreateDTO convertToDTO() {
         return new FeedBackCreateDTO(
-                this.customerId,
                 this.restaurantId,
+                this.customerId,
                 this.reservationId,
                 this.getComment(),
                 this.getStars()
