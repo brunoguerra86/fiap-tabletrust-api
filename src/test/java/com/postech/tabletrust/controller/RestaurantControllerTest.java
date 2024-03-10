@@ -99,14 +99,13 @@ public class RestaurantControllerTest {
             assertEquals("Erro interno", response.getBody());
             verify(restaurantService, times(1)).newRestaurant(restaurant);
         }
-
     }
 
     @Nested
     class ReadRestaurant {
 
         @Test
-        void deveConsultarRestaurantePorId(){
+        void testFindRestaurant_ValidInputId_ReturnRestaurant(){
             // Arrange
             UUID validUuid = UUID.randomUUID();
             Restaurant mockRestaurant = new Restaurant();
@@ -122,7 +121,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoConsultarRestaurante_IdNaoEncontrado() {
+        void testFindRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
             when(restaurantService.findRestaurant(notFoundUuid)).thenThrow(EntityNotFoundException.class);
@@ -136,7 +135,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoConsultarRestaurante_IdInvalido() {
+        void testFindRestaurant_InvalidInputId_ReturnBadRequest() {
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurant("invalid-uuid");
 
@@ -147,7 +146,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestauranteSemFiltro(){
+        void testFindRestaurant_NoFilterInput_ReturnRestaurant() {
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, null, null)).thenReturn(mockRestaurants);
@@ -162,7 +161,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorNome(){
+        void testFindRestaurant_ValidInputName_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null)).thenReturn(mockRestaurants);
@@ -177,7 +176,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorEndereco(){
+        void testFindRestaurant_ValidInputAddress_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null)).thenReturn(mockRestaurants);
@@ -192,7 +191,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorTipoCozinha(){
+        void testFindRestaurant_ValidInputKitchenType_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha")).thenReturn(mockRestaurants);
@@ -207,7 +206,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorNomeEEnderecoETipoCozinha(){
+        void testFindRestaurant_ValidInputNameAddresKitchenType_ReturnRestaurant() {
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
@@ -222,7 +221,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorNomeEEndereco(){
+        void testFindRestaurant_ValidInputNameAddres_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null)).thenReturn(mockRestaurants);
@@ -238,7 +237,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorNomeETipoCozinha(){
+        void testFindRestaurant_ValidInputNameKitchenType_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha")).thenReturn(mockRestaurants);
@@ -254,7 +253,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorEnderecoETipoCozinha(){
+        void testFindRestaurant_ValidInputAddresKitchenType_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
