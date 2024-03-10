@@ -272,7 +272,7 @@ public class RestaurantControllerTest {
     @Nested
     class UpdateRestaurant{
         @Test
-        void deveAtualizarRestauranteComIdValidoERestauranteValido() {
+        void testUpdateRestaurant_ValidInputIdAndRestaurant_ReturnOk() {
             // Arrange
             UUID validUuid = UUID.randomUUID();
             Restaurant updatedRestaurant = new Restaurant();
@@ -288,7 +288,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoAtualizarRestaurante_IdInvalido() {
+        void testUpdateRestaurant_InvalidInputIdAndRestaurant_ReturnBadRequest() {
             // Act
             ResponseEntity<?> response = restaurantController.updateRestaurant("invalid-uuid", new Restaurant());
 
@@ -299,7 +299,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoAtualizarRestaurante_IdNaoEncontrado() {
+        void testUpdateRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
             when(restaurantService.updateRestaurant(notFoundUuid, new Restaurant())).thenThrow(RuntimeException.class);
@@ -316,7 +316,7 @@ public class RestaurantControllerTest {
     @Nested
     class DeleteRestaurant{
         @Test
-        void deveExcluirRestauranteComIdValido() {
+        void testDeleteRestaurant_ValidInputId_ReturnOk() {
             // Arrange
             UUID validUuid = UUID.randomUUID();
 
@@ -330,7 +330,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoExcluirRestaurante_IdInvalido() {
+        void testDeleteRestaurant_InvalidInputId_ReturnBadRequest() {
             // Act
             ResponseEntity<?> response = restaurantController.deleteRestaurant("invalid-uuid");
 
@@ -341,7 +341,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoExcluirRestaurante_IdNaoEncontrado() {
+        void testDeleteRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
             doThrow(RuntimeException.class).when(restaurantService).deleteRestaurant(notFoundUuid);
