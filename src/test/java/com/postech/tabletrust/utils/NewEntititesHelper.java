@@ -1,5 +1,6 @@
 package com.postech.tabletrust.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Reservation;
@@ -55,7 +56,6 @@ public class NewEntititesHelper {
                 .build();
     }
 
-
     public static Reservation createAReservation() {
         LocalDateTime in3HoursAgo = LocalDateTime.now().minusHours(3);
 
@@ -67,5 +67,13 @@ public class NewEntititesHelper {
                 .quantity(4)
                 .approved(true)
                 .build();
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
