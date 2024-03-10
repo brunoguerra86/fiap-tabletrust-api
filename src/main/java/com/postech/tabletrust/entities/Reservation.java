@@ -22,7 +22,9 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private UUID restaurantId;
+    @OneToOne
+    @JoinColumn (name = "restaurant_id")
+    private Restaurant restaurant;
     private UUID customerId;
     private LocalDateTime reservationDate;
     private Integer quantity;
@@ -32,7 +34,7 @@ public class Reservation {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(reservationDTO.getReservationDate(), formatter);
         this.id = reservationDTO.getId() == null ? this.id : UUID.fromString(reservationDTO.getId());
-        this.restaurantId = UUID.fromString(reservationDTO.getRestaurantId());
+        this.restaurant = new Restaurant(UUID.fromString(reservationDTO.getRestaurantId()));
         this.customerId = UUID.fromString(reservationDTO.getCustomerId());
         this.reservationDate = dateTime;
         this.quantity = reservationDTO.getQuantity();

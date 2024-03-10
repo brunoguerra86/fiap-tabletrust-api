@@ -1,33 +1,47 @@
 package com.postech.tabletrust.usecases;
 
+import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.exception.ReservationNotAvailable;
 import com.postech.tabletrust.repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
 @Component
 public class CreateReservationUseCase {
 
-    public Reservation execute(Reservation reservation, ReservationRepository reservationRepository){
+    public Reservation validateInsertReservation(Reservation reservation, List<Reservation> reservationList, CustomerDTO customerDTO, ReservationRepository reservationRepository){
         try {
+            Restaurant restaurant = reservationList.stream().findFirst().get().getRestaurant();
+            if (restaurant.getAvailableCapacity() > reservationList.size()){
+                validarReserva(reservation, customerDTO);
 
-            //TODO
-        /*Restaurant restaurant = findRestaurant(reservation.getRestaurantId());
-        if (restaurant == null) {
-            throw new IllegalArgumentException("reserva não apresenta o ID do Restaurante correto");
-        }
-        Customer customer = findCustomer(reservation.getCustomerId());
-        if (customer == null) {
-            throw new IllegalArgumentException("reserva não apresenta o ID do Cliente correto");
-        }
-         */
-            reservation = reservationRepository.save(reservation);
+            } else {
+                throw new ReservationNotAvailable("O restaurante não tem mesas disponíveis");
+            }
 
         } catch (Exception e) {
-            log.error("error creating a reservation to customer [{}], restaurant [{}]", reservation.getCustomerId(), reservation.getRestaurantId());
+            log.error("error creating a reservation to customer [{}], restaurant [{}]", reservation.getCustomerId(), reservation.getRestaurant().getId());
         }
         return reservation;
+    }
+
+    private static void validarReserva(Reservation reservation, CustomerDTO customerDTO) {
+
+        if (customerDTO == null) {
+            throw new IllegalArgumentException("Cliente não encontrado");
+        }
+        /* TODO
+        if (restaurantDTO == null) {
+            throw new IllegalArgumentException("Restaurante não encontrado");
+        } */
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reserva não pode ser nula");
+        }
     }
 
 }

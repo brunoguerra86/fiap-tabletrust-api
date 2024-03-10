@@ -1,8 +1,10 @@
 package com.postech.tabletrust.service;
 
+import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.usecases.CreateReservationUseCase;
+import com.postech.tabletrust.usecases.FindReservationUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,11 @@ import java.util.UUID;
 public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final CreateReservationUseCase createReservationUseCase;
+    private final FindReservationUseCase findReservationUseCase;
 
     @Override
-    public Reservation createReservation(Reservation reservation) {
-        return createReservationUseCase.execute(reservation, reservationRepository);
+    public Reservation createReservation(Reservation reservation, List<Reservation> reservationList, CustomerDTO customerDTO) {
+        return createReservationUseCase.validateInsertReservation(reservation, reservationList, customerDTO, reservationRepository);
     }
 
     @Override

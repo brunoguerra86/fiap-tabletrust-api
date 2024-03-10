@@ -1,34 +1,29 @@
 package com.postech.tabletrust.controller;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.postech.tabletrust.dto.ReservationDTO;
+import com.postech.tabletrust.exception.GlobalExceptionHandler;
 import com.postech.tabletrust.gateways.ReservationGateway;
+import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.service.CustomerService;
+import com.postech.tabletrust.service.ReservationService;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.postech.tabletrust.service.ReservationService;
-import com.postech.tabletrust.dto.ReservationDTO;
-import com.postech.tabletrust.exception.GlobalExceptionHandler;
-
 import java.nio.charset.StandardCharsets;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ReservationControllerTest {
 
@@ -40,13 +35,15 @@ class ReservationControllerTest {
     private ReservationService reservationService;
     @Mock
     private CustomerService customerService;
+    @Mock
+    private ReservationRepository reservationRepository;
     AutoCloseable openMocks;
 
     @BeforeEach
     void setUp() {
 
         openMocks = MockitoAnnotations.openMocks(this);
-        ReservationController ReservationController = new ReservationController(reservationService, customerService);
+        ReservationController ReservationController = new ReservationController(reservationService, customerService, reservationRepository);
         mockMvc = MockMvcBuilders.standaloneSetup(ReservationController).setControllerAdvice(new GlobalExceptionHandler()).addFilter((request, response, chain) -> {
             response.setCharacterEncoding("UTF-8");
             chain.doFilter(request, response);

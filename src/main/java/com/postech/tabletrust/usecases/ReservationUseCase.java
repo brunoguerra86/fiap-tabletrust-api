@@ -4,14 +4,12 @@ import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.entities.Restaurant;
-import com.postech.tabletrust.gateways.ReservationGateway;
-import com.postech.tabletrust.service.ReservationService;
-import com.postech.tabletrust.service.RestaurantService;
+import com.postech.tabletrust.exception.ReservationNotAvailable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -33,12 +31,15 @@ public class ReservationUseCase {
         }
     }
 
-    public static void validarInsertReserva(ReservationDTO reservationDTO, ReservationDTO reservationNew, CustomerDTO customerDTO) {
+    public static void validateInsertReservation(ReservationDTO reservationDTO, List<Reservation> reservationList, CustomerDTO customerDTO) {
+        Restaurant restaurant = reservationList.stream().findFirst().get().getRestaurant();
+        if (restaurant.getAvailableCapacity() > reservationList.size()){
+            validarReserva(reservationDTO, customerDTO);
 
-        validarReserva(reservationDTO, customerDTO);
-        if (reservationNew.getId() != null) {
-            throw new IllegalArgumentException("Reserva já existe");
+        } else {
+            throw new ReservationNotAvailable("O restaurante não tem mesas disponíveis");
         }
+
     }
 
     public static void validarUpdateReserva(String strId, ReservationDTO reservationDTOOld, ReservationDTO reservationDTONew, CustomerDTO customerDTO) {
