@@ -1,5 +1,6 @@
 package com.postech.tabletrust.controller;
 
+import com.postech.tabletrust.dto.FeedBackCreateDTO;
 import com.postech.tabletrust.entities.FeedBack;
 import com.postech.tabletrust.service.FeedBackService;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,11 @@ public class FeedBackController {
 
     private final FeedBackService feedBackService;
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<FeedBack>> listFeedback(
+    @GetMapping(value = "/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<FeedBack>> listFeedbackByRestaurant(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size, UUID restaurantId) {
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable UUID restaurantId) {
         Pageable pageable = PageRequest.of(page, size);
         log.info("Requisição para listar comentários foi efetuada: Página={}, Tamanho={}", page, size);
         Page<FeedBack> FeedBack = feedBackService.listFeedbackByRestaurant(pageable, restaurantId);
@@ -33,14 +35,15 @@ public class FeedBackController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public FeedBack create(@RequestBody FeedBack FeedBack){
-        //return this.feedBackService.create(FeedBack);
-        return null;
+    public ResponseEntity create(@RequestBody FeedBackCreateDTO feedBackCreateDTO) throws Exception {
+        FeedBack feedBackCreated = this.feedBackService.create(feedBackCreateDTO);
+        return ResponseEntity.ok(feedBackCreated);
     }
 
     @GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public FeedBack findById(@PathVariable UUID id){
-        return this.feedBackService.findById(id);
+    public ResponseEntity findById(@PathVariable UUID id){
+        FeedBack feedBackFound = this.feedBackService.findById(id);
+        return ResponseEntity.ok(feedBackFound);
     }
 
     @DeleteMapping(value="/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,6 +51,4 @@ public class FeedBackController {
         this.feedBackService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-
 }

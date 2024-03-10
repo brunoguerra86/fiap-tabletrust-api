@@ -1,6 +1,7 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entities.FeedBack;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,8 +42,8 @@ public class FeedBackRepositoryTest {
     @Test
     void shouldListAllFeedbacks(){
         //Arrange
-        FeedBack feedback = createAFeedBack();
-        FeedBack feedback2 = createAFeedBack();
+        FeedBack feedback = NewEntititesHelper.createAFeedBack();
+        FeedBack feedback2 = NewEntititesHelper.createAFeedBack();
         feedback2.setId(UUID.randomUUID());
 
         Pageable pageable = PageRequest.of(0, 10);
@@ -62,8 +63,7 @@ public class FeedBackRepositoryTest {
 
     @Test
     void shouldCreateAFeedBack(){
-        var feedback = createAFeedBack();
-        UUID id = feedback.getId();
+        var feedback = NewEntititesHelper.createAFeedBack();
 
         when(feedBackRepository.save(feedback)).thenReturn(feedback);
 
@@ -75,7 +75,7 @@ public class FeedBackRepositoryTest {
 
     @Test
     void shouldFindById(){
-        var feedback = createAFeedBack();
+        var feedback = NewEntititesHelper.createAFeedBack();
         UUID id = feedback.getId();
 
         when(feedBackRepository.findById(id)).thenReturn(Optional.of(feedback));
@@ -87,7 +87,7 @@ public class FeedBackRepositoryTest {
 
     @Test
     void shouldDeleteById(){
-        var feedback = createAFeedBack();
+        var feedback = NewEntititesHelper.createAFeedBack();
         UUID id = feedback.getId();
 
         doNothing().when(feedBackRepository).deleteById(any(UUID.class));
@@ -95,21 +95,5 @@ public class FeedBackRepositoryTest {
         feedBackRepository.deleteById(id);
 
         verify(feedBackRepository, times(1)).deleteById(any(UUID.class));
-    }
-
-    private FeedBack createAFeedBack(){
-        UUID customerID = UUID.fromString("b732236c-3c25-4290-bfe2-93ec920bcfa9");
-        UUID restaurantID = UUID.fromString("c68b4872-6073-4dff-8199-a24c74d4c763");
-        UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
-        UUID feedbackID = UUID.fromString("7cad184d-6b00-4e20-bdeb-d4e224cf3bbd");
-
-        return FeedBack.builder()
-                .id(feedbackID)
-                .comment("OTIMO")
-                .restaurantId(restaurantID)
-                .customerId(customerID)
-                .reservationId(reservationID)
-                .stars(5)
-                .build();
     }
 }
