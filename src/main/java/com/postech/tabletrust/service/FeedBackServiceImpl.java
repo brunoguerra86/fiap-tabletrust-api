@@ -4,6 +4,7 @@ import com.postech.tabletrust.dto.FeedBackCreateDTO;
 import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.exception.InvalidReservationException;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.repository.RestaurantRepository;
@@ -41,13 +42,13 @@ public class FeedBackServiceImpl implements FeedBackService{
 
         Optional<Reservation> reservation = this.reservationRepository.findById(feedBackCreateDTO.reservationId());
         if (! reservation.isPresent()) {
-            throw new EntityNotFoundException("A reserva informada nao foi encontrada");
+            throw new InvalidReservationException("A reserva informada nao foi encontrada");
         }
 
         Reservation resa = reservation.get();
 
         if ( !resa.getApproved() || !resa.getReservationDate().isBefore(threeHoursAgo)){
-            throw new IllegalArgumentException("A reserva informada foi anulada ou ainda nao terminou");
+            throw new InvalidReservationException("A reserva informada foi anulada ou ainda nao terminou");
         }
 
         FeedBack newFeedback = new FeedBack(feedBackCreateDTO);
