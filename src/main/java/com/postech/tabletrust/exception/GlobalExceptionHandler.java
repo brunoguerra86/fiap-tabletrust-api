@@ -32,4 +32,9 @@ public class GlobalExceptionHandler {
         .contentType(MediaType.APPLICATION_JSON)
         .body(errorResponse);
   }
+
+  @ExceptionHandler(InvalidReservationException.class)
+  public ResponseEntity<Object> handleInvalidReservationException(InvalidReservationException ex) {
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+  }
 }

@@ -2,10 +2,13 @@ package com.postech.tabletrust.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.dto.FeedBackCreateDTO;
-import com.postech.tabletrust.entities.FeedBack;
+import com.postech.tabletrust.entity.FeedBack;
+import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
+import com.postech.tabletrust.exception.InvalidReservationException;
 import com.postech.tabletrust.service.FeedBackService;
 import com.postech.tabletrust.utils.NewEntititesHelper;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -15,6 +18,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
@@ -67,12 +72,46 @@ public class FeedBackControllerTest {
             verify(feedBackService, times(1)).create(feedBackCreateDTO);
         }
 
-        void shouldReturnExceptionIfReservationNotFound(){
-            fail("shouldReturnExceptionIfReservationNotFound nao implementado");
+        @Test
+        void shouldReturnExceptionIfReservationNotFound() throws Exception {
+            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
+            feedBack.setReservationId(UUID.randomUUID());
+
+            FeedBackCreateDTO feedBackCreateDTO = feedBack.convertToDTO();
+
+            when(feedBackService.create(feedBackCreateDTO)).thenThrow(InvalidReservationException.class);
+
+            // Convertendo FeedBackCreateDTO para JSON
+            String feedBackCreateDTOJson = new ObjectMapper().writeValueAsString(feedBackCreateDTO);
+
+            mockMvc.perform(
+                            post("/feedback")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(feedBackCreateDTOJson))
+                    .andExpect(status().isConflict());
+            verify(feedBackService, times(1)).create(feedBackCreateDTO);
         }
 
-        void shouldReturnExceptionIfReservationNotValid(){
-            fail("shouldThrowExceptionIfReservationNotValid nao implementado");
+        @Test
+        void shouldReturnExceptionIfReservationNotValid() throws Exception {
+            //Assert
+            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
+            Reservation reservation = NewEntititesHelper.createAReservation();
+            reservation.setApproved(false);
+            feedBack.setReservationId(reservation.getId());
+
+            FeedBackCreateDTO feedBackCreateDTO = feedBack.convertToDTO();
+
+            when(feedBackService.create(feedBackCreateDTO)).thenThrow(InvalidReservationException.class);
+
+            String feedBackCreateDTOJson = new ObjectMapper().writeValueAsString(feedBackCreateDTO);
+
+            mockMvc.perform(
+                            post("/feedback")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(feedBackCreateDTOJson))
+                    .andExpect(status().isConflict());
+            verify(feedBackService, times(1)).create(feedBackCreateDTO);
         }
     }
 
@@ -87,14 +126,14 @@ public class FeedBackControllerTest {
             fail("shouldThrowExceptionIfRestaurantIdNotFound nao implementado");
         }
 
-        void souldFoundFeedBackById() {
+        void shouldFoundFeedBackById() {
             fail("souldFoundFeedBackById nao implementado");
         }
     }
 
     @Nested
     class deleteAFeedBack {
-        void souldDeleteAFeedback() {
+        void shouldDeleteAFeedback() {
             fail("deleteAFeedBack nao implementado"); // Somente o customer pode excluir seu comentario
         }
     }
