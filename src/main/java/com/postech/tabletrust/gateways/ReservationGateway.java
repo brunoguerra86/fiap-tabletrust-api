@@ -20,20 +20,18 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class ReservationGateway implements IReservationGateway {
-    private final ReservationService reservationService;
     private final ReservationRepository reservationRepository;
 
-    public ReservationGateway(ReservationService reservationService, ReservationRepository reservationRepository) {
-        this.reservationService = reservationService;
+    public ReservationGateway( ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
     @Override
-    public ReservationDTO createReservation(ReservationDTO reservationDTO, List<Reservation> reservationList, CustomerDTO customerDTO) {
+    public Reservation createReservation(Reservation reservation) {
 
-        Reservation reservationEntity = new Reservation(reservationDTO);
-        reservationEntity = reservationService.createReservation(reservationEntity, reservationList, customerDTO);
-        return new ReservationDTO(reservationEntity);
+        // reservationEntity = new Reservation(reservation);
+        reservation = reservationRepository.save(reservation);
+        return reservation;
     }
 
     @Override

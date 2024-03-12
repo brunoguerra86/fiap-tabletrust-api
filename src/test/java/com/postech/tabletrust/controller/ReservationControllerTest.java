@@ -4,9 +4,9 @@ package com.postech.tabletrust.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
+import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.gateways.ReservationGateway;
 import com.postech.tabletrust.repository.ReservationRepository;
-import com.postech.tabletrust.service.CustomerService;
 import com.postech.tabletrust.service.ReservationService;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
@@ -32,6 +32,8 @@ class ReservationControllerTest {
     @Mock
     private ReservationGateway reservationGateway;
     @Mock
+    private CustomerGateway customerGateway;
+    @Mock
     private ReservationService reservationService;
     @Mock
     private CustomerService customerService;
@@ -43,7 +45,7 @@ class ReservationControllerTest {
     void setUp() {
 
         openMocks = MockitoAnnotations.openMocks(this);
-        ReservationController ReservationController = new ReservationController(reservationService, customerService, reservationRepository);
+        ReservationController ReservationController = new ReservationController(reservationGateway, customerGateway);
         mockMvc = MockMvcBuilders.standaloneSetup(ReservationController).setControllerAdvice(new GlobalExceptionHandler()).addFilter((request, response, chain) -> {
             response.setCharacterEncoding("UTF-8");
             chain.doFilter(request, response);
