@@ -5,7 +5,6 @@ import com.postech.tabletrust.entities.Customer;
 import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.interfaces.ICustomerGateway;
 import com.postech.tabletrust.repository.CustomerRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -42,9 +41,6 @@ public class CustomerGateway implements ICustomerGateway {
 
     @Override
     public Customer findCustomer(String strId) {
-        if (strId == null) {
-            return new CustomerDTO();
-        }
         UUID uuid = UUID.fromString(strId);
         return customerRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
     }

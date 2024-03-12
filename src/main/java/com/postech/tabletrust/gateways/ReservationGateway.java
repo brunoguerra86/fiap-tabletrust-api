@@ -1,10 +1,8 @@
 package com.postech.tabletrust.gateways;
 
-import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.repository.ReservationRepository;
-import com.postech.tabletrust.service.ReservationService;
 import com.postech.tabletrust.interfaces.IReservationGateway;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -37,42 +35,39 @@ public class ReservationGateway implements IReservationGateway {
     @Override
     public ReservationDTO updateReservation(ReservationDTO reservationDTO) {
         Reservation reservationEntity = new Reservation(reservationDTO);
-        reservationEntity = reservationService.updateReservation(reservationEntity);
+        reservationEntity = reservationRepository.save(reservationEntity);
         return new ReservationDTO(reservationEntity);
     }
 
     @Override
     public void deleteReservation(String strId) {
         UUID uuid = UUID.fromString(strId);
-        reservationService.deleteReservation(uuid);
+        reservationRepository.deleteById(uuid);
     }
 
     @Override
     public List<ReservationDTO> findRestaurantReservation(String restaurantId) {
         UUID uuid = UUID.fromString(restaurantId);
-        List<Reservation> reservationEntityList = reservationService.findRestaurantReservation(uuid);
+        List<Reservation> reservationEntityList = reservationRepository.findAllByRestaurantId(uuid);
         return new ReservationDTO().toList(reservationEntityList);
     }
 
     @Override
     public List<ReservationDTO> findCustomerReservation(String customerId) {
         UUID uuid = UUID.fromString(customerId);
-        List<Reservation> reservationEntityList = reservationService.findCustomerReservation(uuid);
+        List<Reservation> reservationEntityList = reservationRepository.findAllByCustomerId(uuid);
         return new ReservationDTO().toList(reservationEntityList);
     }
 
     @Override
-    public ReservationDTO findReservation(String strId) {
-        if (strId == null) {
-            return new ReservationDTO();
-        }
+    public Reservation findReservation(String strId) {
         UUID uuid = UUID.fromString(strId);
-        return new ReservationDTO(reservationService.findReservation(uuid));
+        return reservationRepository.findById(uuid).orElseThrow();
     }
 
     @Override
     public List<ReservationDTO> listAllReservations() {
-        List<Reservation> reservationEntityList = reservationService.listAllReservations();
+        List<Reservation> reservationEntityList = reservationRepository.findAll();
 
         return reservationEntityList
                 .stream()

@@ -7,7 +7,6 @@ import com.postech.tabletrust.exception.GlobalExceptionHandler;
 import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.gateways.ReservationGateway;
 import com.postech.tabletrust.repository.ReservationRepository;
-import com.postech.tabletrust.service.ReservationService;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +32,6 @@ class ReservationControllerTest {
     private ReservationGateway reservationGateway;
     @Mock
     private CustomerGateway customerGateway;
-    @Mock
-    private ReservationService reservationService;
-    @Mock
-    private CustomerService customerService;
     @Mock
     private ReservationRepository reservationRepository;
     AutoCloseable openMocks;

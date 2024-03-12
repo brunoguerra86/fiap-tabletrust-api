@@ -62,7 +62,7 @@ public class NewEntititesHelper {
         return Reservation.builder()
                 .id(reservationID)
                 .reservationDate(in3HoursAgo)
-                .restaurantId(restaurantID)
+                .restaurant(new Restaurant(restaurantID))
                 .customerId(customerID)
                 .quantity(4)
                 .approved(true)

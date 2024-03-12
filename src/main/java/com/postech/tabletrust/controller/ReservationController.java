@@ -35,12 +35,13 @@ public class ReservationController {
 
         try {
             List<Reservation> reservationList = reservationGateway.findRestaurantReservationByDate(reservationDTO.getRestaurantId(), reservationDTO.getReservationDate());
-            Customer customer = customerGateway.findCustomer(reservationDTO.getCustomerId() );
+            Customer customer = customerGateway.findCustomer(reservationDTO.getCustomerId());
             //TODO sobre o uso de use case:
             // - deveria ser um por regra? (acho q apenas os maiores)
             // - acho estranho os metodos estaticos, na aula sao assim tbm
 
-            Reservation reservation = ReservationUseCase.validateInsertReservation( reservationList, customer);
+            Reservation reservation = ReservationUseCase.validateInsertReservation(reservationList, customer,
+                    reservationDTO.getQuantity(), reservationDTO.getReservationDate());
 
             Reservation reservationCreated = reservationGateway.createReservation(reservation);
 
@@ -56,9 +57,9 @@ public class ReservationController {
     public ResponseEntity<?> updateReservation(@PathVariable String id, @RequestBody @Valid ReservationDTO reservationNew) {
         log.info("PutMapping - updateReservation");
         try {
-            ReservationDTO reservationOld = reservationGateway.findReservation(id);
-            CustomerDTO customerDTO = customerGateway.findCustomer(reservationNew.getCustomerId() );
-            ReservationUseCase.validarUpdateReserva(id, reservationOld, reservationNew, customerDTO);
+            Reservation reservationOld = reservationGateway.findReservation(id);
+            Customer customer = customerGateway.findCustomer(reservationNew.getCustomerId());
+            ReservationUseCase.validarUpdateReserva(id, reservationOld, reservationNew, customer);
             ReservationDTO newReservation = reservationGateway.updateReservation(reservationNew);
             return new ResponseEntity<>(newReservation, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
@@ -93,7 +94,7 @@ public class ReservationController {
     public ResponseEntity<?> findReservation(@PathVariable String id) {
         log.info("GetMapping - FindReservation ");
         try {
-            ReservationDTO reservation = reservationGateway.findReservation(id);
+            Reservation reservation = reservationGateway.findReservation(id);
             return new ResponseEntity<>(reservation, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

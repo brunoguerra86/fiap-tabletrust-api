@@ -1,6 +1,7 @@
 package com.postech.tabletrust.controller;
 
 import com.postech.tabletrust.dto.CustomerDTO;
+import com.postech.tabletrust.entities.Customer;
 import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.usecases.CustomerUseCase;
 import jakarta.validation.Valid;
@@ -21,12 +22,12 @@ public class CustomerController {
     private final CustomerGateway customerGateway;
 
     @PostMapping("")
-    public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO Customer) {
-        log.info("create Customer for customer [{}]", Customer.getNome());
+    public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
+        log.info("create Customer for customer [{}]", customerDTO.getNome());
         try {
-            CustomerDTO CustomerNew = customerGateway.findCustomer(Customer.getId());
-            CustomerUseCase.validarInsertCustomer(Customer, CustomerNew);
-            CustomerDTO CustomerCreated = customerGateway.createCustomer(Customer);
+            Customer customerOld = customerGateway.findCustomer(customerDTO.getId());
+            CustomerUseCase.validarInsertCustomer(customerDTO, customerOld);
+            CustomerDTO CustomerCreated = customerGateway.createCustomer(customerDTO);
             return new ResponseEntity<>(CustomerCreated, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -36,12 +37,12 @@ public class CustomerController {
     }
 
     @PutMapping("/id={id}")
-    public ResponseEntity<?> updateCustomer(@PathVariable String id, @RequestBody @Valid CustomerDTO CustomerNew) {
+    public ResponseEntity<?> updateCustomer(@PathVariable String id, @RequestBody @Valid CustomerDTO customerNew) {
         log.info("PutMapping - updateCustomer");
         try {
-            CustomerDTO CustomerOld = customerGateway.findCustomer(id);
-            CustomerUseCase.validarUpdateCliente(id, CustomerOld, CustomerNew);
-            CustomerDTO newCustomer = customerGateway.updateCustomer(CustomerNew);
+            Customer customerOld = customerGateway.findCustomer(id);
+            CustomerUseCase.validarUpdateCliente(id, customerOld, customerNew);
+            CustomerDTO newCustomer = customerGateway.updateCustomer(customerNew);
             return new ResponseEntity<>(newCustomer, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -75,7 +76,7 @@ public class CustomerController {
     public ResponseEntity<?> findCustomer(@PathVariable String id) {
         log.info("GetMapping - FindCustomer  ");
         try {
-            CustomerDTO Customer = customerGateway.findCustomer(id);
+            Customer Customer = customerGateway.findCustomer(id);
             return new ResponseEntity<>(Customer, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

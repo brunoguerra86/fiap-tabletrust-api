@@ -7,7 +7,8 @@ import com.postech.tabletrust.entities.Reservation;
 import java.util.List;
 
 public interface IReservationGateway {
-    public ReservationDTO createReservation(ReservationDTO reservationDTO, List<Reservation> reservationList, CustomerDTO customerDTO);
+
+    Reservation createReservation(Reservation reservation);
 
     public ReservationDTO updateReservation(ReservationDTO reservation);
 
@@ -17,7 +18,7 @@ public interface IReservationGateway {
 
     public List<ReservationDTO> findCustomerReservation(String customerId);
 
-    public ReservationDTO findReservation(String strId);
+    public Reservation findReservation(String strId);
 
     public List<ReservationDTO> listAllReservations();
 
