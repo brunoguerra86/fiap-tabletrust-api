@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Data
@@ -21,18 +22,32 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private UUID restaurantId;
+    @OneToOne
+    @JoinColumn (name = "restaurant_id")
+    private Restaurant restaurant;
     private UUID customerId;
     private LocalDateTime reservationDate;
     private Integer quantity;
     private Boolean approved;
 
     public Reservation(ReservationDTO reservationDTO) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(reservationDTO.getReservationDate(), formatter);
         this.id = reservationDTO.getId() == null ? this.id : UUID.fromString(reservationDTO.getId());
-        this.restaurantId = UUID.fromString(reservationDTO.getRestaurantId());
+        this.restaurant = new Restaurant(UUID.fromString(reservationDTO.getRestaurantId()));
         this.customerId = UUID.fromString(reservationDTO.getCustomerId());
-        this.reservationDate = LocalDateTime.parse(reservationDTO.getReservationDate());
+        this.reservationDate = dateTime;
         this.quantity = reservationDTO.getQuantity();
         this.approved = reservationDTO.getApproved();
+    }
+
+    public Reservation(Restaurant restaurant, Customer customer, Integer quantity, String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        this.restaurant = restaurant;
+        this.customerId = customer.getId();
+        this.reservationDate = dateTime;
+        this.quantity = quantity;
+        this.approved = true;
     }
 }

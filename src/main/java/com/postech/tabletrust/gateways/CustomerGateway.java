@@ -2,52 +2,52 @@ package com.postech.tabletrust.gateways;
 
 import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.entity.Customer;
-import com.postech.tabletrust.service.CustomerService;
+import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.interfaces.ICustomerGateway;
+import com.postech.tabletrust.repository.CustomerRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
+@Component
 public class CustomerGateway implements ICustomerGateway {
-    private final CustomerService CustomerService;
+    private final CustomerRepository customerRepository;
 
-    public CustomerGateway(CustomerService CustomerService) {
-        this.CustomerService = CustomerService;
+    public CustomerGateway(CustomerRepository CustomerRepository) {
+        this.customerRepository = CustomerRepository;
     }
 
     @Override
     public CustomerDTO createCustomer(CustomerDTO CustomerDTO) {
 
         Customer CustomerEntity = new Customer(CustomerDTO);
-        CustomerEntity = CustomerService.createCustomer(CustomerEntity);
+        CustomerEntity = customerRepository.save(CustomerEntity);
         return new CustomerDTO(CustomerEntity);
     }
 
     @Override
     public CustomerDTO updateCustomer(CustomerDTO CustomerDTO) {
         Customer CustomerEntity = new Customer(CustomerDTO);
-        CustomerEntity = CustomerService.updateCustomer(CustomerEntity);
+        CustomerEntity = customerRepository.save(CustomerEntity);
         return new CustomerDTO(CustomerEntity);
     }
 
     @Override
     public void deleteCustomer(String strId) {
         UUID uuid = UUID.fromString(strId);
-        CustomerService.deleteCustomer(uuid);
+        customerRepository.deleteById(uuid);
     }
 
     @Override
-    public CustomerDTO findCustomer(String strId) {
-        if (strId == null) {
-            return new CustomerDTO();
-        }
+    public Customer findCustomer(String strId) {
         UUID uuid = UUID.fromString(strId);
-        return new CustomerDTO(CustomerService.findCustomer(uuid));
+        return customerRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
     }
 
     @Override
     public List<CustomerDTO> listAllCustomers() {
-        List<Customer> CustomerEntityList = CustomerService.listAllCustomers();
+        List<Customer> CustomerEntityList = customerRepository.findAll();
         return new CustomerDTO().toList(CustomerEntityList);
     }
 }

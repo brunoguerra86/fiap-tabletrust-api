@@ -1,10 +1,16 @@
 package com.postech.tabletrust.usecases;
 
-import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.ReservationDTO;
+import com.postech.tabletrust.entity.Customer;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.exception.ReservationNotAvailable;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -12,31 +18,19 @@ import org.springframework.stereotype.Component;
 public class ReservationUseCase {
 
 
-    private static void validarReserva(ReservationDTO reservationDTO, CustomerDTO customerDTO) {
 
-        if (customerDTO == null) {
-            throw new IllegalArgumentException("Cliente não encontrado");
+    public static Reservation validateInsertReservation(List<Reservation> reservationList, Restaurant restaurant, Customer customer, Integer quantity, String date) {
+        if (!(restaurant.getAvailableCapacity() > reservationList.size())){
+            throw new ReservationNotAvailable("O restaurante não tem mesas disponíveis");
         }
-        /* TODO
-        if (restaurantDTO == null) {
-            throw new IllegalArgumentException("Restaurante não encontrado");
-        } */
-        if (reservationDTO == null) {
-            throw new IllegalArgumentException("Reserva não pode ser nula");
-        }
+        //TODO validar quantidade de pessoas multiplos de 4
+        // return new Reservation (quant, customer, date, restaurant);
+
+        return new Reservation(restaurant, customer, quantity, date);
     }
 
-    public static void validarInsertReserva(ReservationDTO reservationDTO, ReservationDTO reservationNew, CustomerDTO customerDTO) {
+    public static void validarUpdateReserva(String strId, Reservation reservationDTOOld, @Valid ReservationDTO reservationDTONew, Customer customerDTO) {
 
-        validarReserva(reservationDTO, customerDTO);
-        if (reservationNew.getId() != null) {
-            throw new IllegalArgumentException("Reserva já existe");
-        }
-    }
-
-    public static void validarUpdateReserva(String strId, ReservationDTO reservationDTOOld, ReservationDTO reservationDTONew, CustomerDTO customerDTO) {
-
-        validarReserva(reservationDTONew, customerDTO);
         if (!reservationDTONew.getId().equals(strId)) {
             throw new IllegalArgumentException("ID da reserva incorreto");
         }

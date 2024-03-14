@@ -1,6 +1,7 @@
 package com.postech.tabletrust.usecases;
 
 import com.postech.tabletrust.dto.CustomerDTO;
+import com.postech.tabletrust.entity.Customer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public class CustomerUseCase {
         }
     }
 
-    public static void validarInsertCustomer(CustomerDTO CustomerDTO, CustomerDTO CustomerNew) {
+    public static void validarInsertCustomer(CustomerDTO CustomerDTO, Customer CustomerNew) {
 
         validarCustomer(CustomerDTO);
         if (CustomerNew.getId() != null) {
@@ -26,7 +27,7 @@ public class CustomerUseCase {
         }
     }
 
-    public static void validarUpdateCliente(String strId, CustomerDTO CustomerDTOOld, CustomerDTO CustomerDTONew) {
+    public static void validarUpdateCliente(String strId, Customer CustomerDTOOld, CustomerDTO CustomerDTONew) {
 
         validarCustomer(CustomerDTONew);
         if (!CustomerDTONew.getId().equals(strId)) {

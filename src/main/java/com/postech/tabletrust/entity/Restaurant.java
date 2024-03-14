@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-//@Table(name = "tb_restaurant")
+@Table(name = "tb_restaurant")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,6 +46,10 @@ public class Restaurant implements Cloneable{
 
     @NotNull(message = "[availableCapacity] não pode ser nula")
     private Integer availableCapacity;
+
+    public Restaurant(UUID uuid) {
+        this.id = uuid;
+    }
 
     @Override
     public Restaurant clone() {

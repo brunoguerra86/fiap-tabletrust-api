@@ -1,8 +1,8 @@
 package com.postech.tabletrust.controller;
 
 import com.postech.tabletrust.dto.CustomerDTO;
+import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.gateways.CustomerGateway;
-import com.postech.tabletrust.service.CustomerService;
 import com.postech.tabletrust.usecases.CustomerUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,16 +19,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerController {
 
-    private final CustomerService CustomerService;
+    private final CustomerGateway customerGateway;
 
     @PostMapping("")
-    public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO Customer) {
-        log.info("create Customer for customer [{}]", Customer.getNome());
-        CustomerGateway CustomerGateway = new CustomerGateway(CustomerService);
+    public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
+        log.info("create Customer for customer [{}]", customerDTO.getNome());
         try {
-            CustomerDTO CustomerNew = CustomerGateway.findCustomer(Customer.getId());
-            CustomerUseCase.validarInsertCustomer(Customer, CustomerNew);
-            CustomerDTO CustomerCreated = CustomerGateway.createCustomer(Customer);
+            Customer customerOld = customerGateway.findCustomer(customerDTO.getId());
+            CustomerUseCase.validarInsertCustomer(customerDTO, customerOld);
+            CustomerDTO CustomerCreated = customerGateway.createCustomer(customerDTO);
             return new ResponseEntity<>(CustomerCreated, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -38,13 +37,12 @@ public class CustomerController {
     }
 
     @PutMapping("/id={id}")
-    public ResponseEntity<?> updateCustomer(@PathVariable String id, @RequestBody @Valid CustomerDTO CustomerNew) {
+    public ResponseEntity<?> updateCustomer(@PathVariable String id, @RequestBody @Valid CustomerDTO customerNew) {
         log.info("PutMapping - updateCustomer");
-        CustomerGateway CustomerGateway = new CustomerGateway(CustomerService);
         try {
-            CustomerDTO CustomerOld = CustomerGateway.findCustomer(id);
-            CustomerUseCase.validarUpdateCliente(id, CustomerOld, CustomerNew);
-            CustomerDTO newCustomer = CustomerGateway.updateCustomer(CustomerNew);
+            Customer customerOld = customerGateway.findCustomer(id);
+            CustomerUseCase.validarUpdateCliente(id, customerOld, customerNew);
+            CustomerDTO newCustomer = customerGateway.updateCustomer(customerNew);
             return new ResponseEntity<>(newCustomer, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -56,9 +54,8 @@ public class CustomerController {
     @DeleteMapping("/id={id}")
     public ResponseEntity<?> deleteCustomer(@PathVariable String id) {
         log.info("DeleteMapping - deleteCustomer");
-        CustomerGateway CustomerGateway = new CustomerGateway(CustomerService);
         try {
-            CustomerGateway.deleteCustomer(id);
+            customerGateway.deleteCustomer(id);
             return new ResponseEntity<>("cliente removido", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -71,17 +68,15 @@ public class CustomerController {
     @GetMapping("/all")
     public ResponseEntity<List<CustomerDTO>> listAllCustomers() {
         log.info("GetMapping - listCustomers");
-        CustomerGateway CustomerGateway = new CustomerGateway(CustomerService);
-        List<CustomerDTO> Customers = CustomerGateway.listAllCustomers();
+        List<CustomerDTO> Customers = customerGateway.listAllCustomers();
         return new ResponseEntity<>(Customers, HttpStatus.OK);
     }
 
     @GetMapping("/id={id}")
     public ResponseEntity<?> findCustomer(@PathVariable String id) {
-        log.info("GetMapping - FindCustomer ");
-        CustomerGateway CustomerGateway = new CustomerGateway(CustomerService);
+        log.info("GetMapping - FindCustomer  ");
         try {
-            CustomerDTO Customer = CustomerGateway.findCustomer(id);
+            Customer Customer = customerGateway.findCustomer(id);
             return new ResponseEntity<>(Customer, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

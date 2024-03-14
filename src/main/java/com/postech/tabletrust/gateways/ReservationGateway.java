@@ -2,66 +2,95 @@ package com.postech.tabletrust.gateways;
 
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entity.Reservation;
-import com.postech.tabletrust.service.ReservationService;
+import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.interfaces.IReservationGateway;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
+@Component
+@Slf4j
 public class ReservationGateway implements IReservationGateway {
-    private final ReservationService reservationService;
+    private final ReservationRepository reservationRepository;
 
-    public ReservationGateway(ReservationService reservationService) {
-        this.reservationService = reservationService;
+    public ReservationGateway( ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
-    public ReservationDTO createReservation(ReservationDTO reservationDTO) {
+    public Reservation createReservation(Reservation reservation) {
 
-        Reservation reservationEntity = new Reservation(reservationDTO);
-        reservationEntity = reservationService.createReservation(reservationEntity);
-        return new ReservationDTO(reservationEntity);
+        // reservationEntity = new Reservation(reservation);
+        reservation = reservationRepository.save(reservation);
+        return reservation;
     }
 
     @Override
     public ReservationDTO updateReservation(ReservationDTO reservationDTO) {
         Reservation reservationEntity = new Reservation(reservationDTO);
-        reservationEntity = reservationService.updateReservation(reservationEntity);
+        reservationEntity = reservationRepository.save(reservationEntity);
         return new ReservationDTO(reservationEntity);
     }
 
     @Override
     public void deleteReservation(String strId) {
         UUID uuid = UUID.fromString(strId);
-        reservationService.deleteReservation(uuid);
+        reservationRepository.deleteById(uuid);
     }
 
     @Override
     public List<ReservationDTO> findRestaurantReservation(String restaurantId) {
         UUID uuid = UUID.fromString(restaurantId);
-        List<Reservation> reservationEntityList = reservationService.findRestaurantReservation(uuid);
+        List<Reservation> reservationEntityList = reservationRepository.findAllByRestaurantId(uuid);
         return new ReservationDTO().toList(reservationEntityList);
     }
 
     @Override
     public List<ReservationDTO> findCustomerReservation(String customerId) {
         UUID uuid = UUID.fromString(customerId);
-        List<Reservation> reservationEntityList = reservationService.findCustomerReservation(uuid);
+        List<Reservation> reservationEntityList = reservationRepository.findAllByCustomerId(uuid);
         return new ReservationDTO().toList(reservationEntityList);
     }
 
     @Override
-    public ReservationDTO findReservation(String strId) {
-        if (strId == null) {
-            return new ReservationDTO();
-        }
+    public Reservation findReservation(String strId) {
         UUID uuid = UUID.fromString(strId);
-        return new ReservationDTO(reservationService.findReservation(uuid));
+        return reservationRepository.findById(uuid).orElseThrow();
     }
 
     @Override
     public List<ReservationDTO> listAllReservations() {
-        List<Reservation> reservationEntityList = reservationService.listAllReservations();
-        return new ReservationDTO().toList(reservationEntityList);
+        List<Reservation> reservationEntityList = reservationRepository.findAll();
+
+        return reservationEntityList
+                .stream()
+                .map(ReservationDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Reservation> findRestaurantReservationByDate(String restaurantId, String date) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+            LocalDateTime start = dateTime.toLocalDate().atTime(LocalTime.MIN);
+            LocalDateTime end = dateTime.toLocalDate().atTime(LocalTime.MAX);
+
+            Optional<List<Reservation>> reservationList = reservationRepository.findAllByReservationDateBetween(start, end);
+            //return reservationList.map(list -> list.stream().map(ReservationDTO::new).collect(Collectors.toList()))
+            return reservationList
+                    .orElse(Collections.emptyList());
+        } catch (Exception e){
+            log.error("Error processing reservation search by restaurant {} and date {}", restaurantId, date);
+            throw e;
+        }
+
     }
 }
