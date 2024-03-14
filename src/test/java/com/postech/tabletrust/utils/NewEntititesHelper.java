@@ -1,6 +1,7 @@
 package com.postech.tabletrust.utils;
 
 import com.postech.tabletrust.dto.ReservationDTO;
+import com.postech.tabletrust.entities.Customer;
 import com.postech.tabletrust.entities.FeedBack;
 import com.postech.tabletrust.entities.Reservation;
 import com.postech.tabletrust.entities.Restaurant;
@@ -8,6 +9,8 @@ import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class NewEntititesHelper {
@@ -16,16 +19,6 @@ public class NewEntititesHelper {
     private static UUID restaurantID = UUID.fromString("c68b4872-6073-4dff-8199-a24c74d4c763");
     private static UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
     private static UUID feedbackID = UUID.fromString("7cad184d-6b00-4e20-bdeb-d4e224cf3bbd");
-
-    public static ReservationDTO gerarReservationInsertRequest() {
-        return ReservationDTO.builder()
-                .id(UUID.randomUUID().toString())
-                .restaurantId("2b9c1a1e-c257-4bc6-8efe-c1db33d4c52c")
-                .customerId("cecad256-a3c3-4c09-833c-36586cd00f45")
-                .reservationDate("2024-02-20T20:30")
-                .quantity(4)
-                .build();
-    }
 
     //La meme reservation id
     public static FeedBack createAFeedBack(){
@@ -55,6 +48,21 @@ public class NewEntititesHelper {
                 .build();
     }
 
+    public static Customer createACustomer(){
+        Customer customer = new Customer(customerID, "joe");
+        return customer;
+    }
+
+ /* ----------------------------- Reservation ---------------------------- */
+     public static ReservationDTO gerarReservationInsertRequest() {
+         return ReservationDTO.builder()
+                 .id(UUID.randomUUID().toString())
+                 .restaurantId("2b9c1a1e-c257-4bc6-8efe-c1db33d4c52c")
+                 .customerId("cecad256-a3c3-4c09-833c-36586cd00f45")
+                 .reservationDate("2024-02-20 20:30:00")
+                 .quantity(4)
+                 .build();
+     }
 
     public static Reservation createAReservation() {
         LocalDateTime in3HoursAgo = LocalDateTime.now().minusHours(3);
@@ -67,5 +75,10 @@ public class NewEntititesHelper {
                 .quantity(4)
                 .approved(true)
                 .build();
+    }
+
+    public static List<Reservation> createAEmptyReservationList() {
+         List<Reservation> reservationList = new ArrayList<>();
+         return reservationList;
     }
 }

@@ -19,15 +19,14 @@ public class ReservationUseCase {
 
 
 
-    public static Reservation validateInsertReservation(List<Reservation> reservationList, Customer customer, Integer quantity, String date) {
-        Restaurant restaurant = reservationList.stream().findFirst().get().getRestaurant();
+    public static Reservation validateInsertReservation(List<Reservation> reservationList, Restaurant restaurant, Customer customer, Integer quantity, String date) {
         if (!(restaurant.getAvailableCapacity() > reservationList.size())){
             throw new ReservationNotAvailable("O restaurante não tem mesas disponíveis");
         }
         //TODO validar quantidade de pessoas multiplos de 4
         // return new Reservation (quant, customer, date, restaurant);
 
-        return null;
+        return new Reservation(restaurant, customer, quantity, date);
     }
 
     public static void validarUpdateReserva(String strId, Reservation reservationDTOOld, @Valid ReservationDTO reservationDTONew, Customer customerDTO) {

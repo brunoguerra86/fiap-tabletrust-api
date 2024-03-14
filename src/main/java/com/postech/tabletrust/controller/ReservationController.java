@@ -1,11 +1,12 @@
 package com.postech.tabletrust.controller;
 
-import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entities.Customer;
 import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.entities.Restaurant;
 import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.gateways.ReservationGateway;
+import com.postech.tabletrust.gateways.RestaurantGateway;
 import com.postech.tabletrust.usecases.ReservationUseCase;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,12 @@ public class ReservationController {
 
     private final ReservationGateway reservationGateway;
     private final CustomerGateway customerGateway;
+    private final RestaurantGateway restaurantGateway;
 
-    public ReservationController(ReservationGateway reservationGateway, CustomerGateway customerGateway) {
+    public ReservationController(ReservationGateway reservationGateway, CustomerGateway customerGateway, RestaurantGateway restaurantGateway) {
         this.reservationGateway = reservationGateway;
         this.customerGateway = customerGateway;
+        this.restaurantGateway = restaurantGateway;
     }
 
     @PostMapping("")
@@ -36,11 +39,8 @@ public class ReservationController {
         try {
             List<Reservation> reservationList = reservationGateway.findRestaurantReservationByDate(reservationDTO.getRestaurantId(), reservationDTO.getReservationDate());
             Customer customer = customerGateway.findCustomer(reservationDTO.getCustomerId());
-            //TODO sobre o uso de use case:
-            // - deveria ser um por regra? (acho q apenas os maiores)
-            // - acho estranho os metodos estaticos, na aula sao assim tbm
-
-            Reservation reservation = ReservationUseCase.validateInsertReservation(reservationList, customer,
+            Restaurant restaurant = restaurantGateway.findRestaurantById(reservationDTO.getRestaurantId());
+            Reservation reservation = ReservationUseCase.validateInsertReservation(reservationList, restaurant, customer,
                     reservationDTO.getQuantity(), reservationDTO.getReservationDate());
 
             Reservation reservationCreated = reservationGateway.createReservation(reservation);
