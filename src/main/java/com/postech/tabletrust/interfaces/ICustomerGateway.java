@@ -12,7 +12,7 @@ public interface ICustomerGateway {
 
     public void deleteCustomer(String strId);
 
-    public CustomerDTO findCustomer(String strId);
+    public Customer findCustomer(String strId);
 
     public List<CustomerDTO> listAllCustomers();
 }

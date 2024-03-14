@@ -40,4 +40,14 @@ public class Reservation {
         this.quantity = reservationDTO.getQuantity();
         this.approved = reservationDTO.getApproved();
     }
+
+    public Reservation(Restaurant restaurant, Customer customer, Integer quantity, String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        this.restaurant = restaurant;
+        this.customerId = customer.getId();
+        this.reservationDate = dateTime;
+        this.quantity = quantity;
+        this.approved = true;
+    }
 }

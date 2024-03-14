@@ -31,7 +31,7 @@ public class ReservationDTO {
     public ReservationDTO(Reservation reservation) {
         if (reservation != null) {
             this.id = reservation.getId().toString();
-            this.restaurantId = reservation.getRestaurantId().toString();
+            this.restaurantId = reservation.getRestaurant().getId().toString();
             this.customerId = reservation.getCustomerId().toString();
             this.reservationDate = reservation.getReservationDate().toString();
             this.quantity = reservation.getQuantity();

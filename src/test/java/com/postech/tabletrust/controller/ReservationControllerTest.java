@@ -4,10 +4,10 @@ package com.postech.tabletrust.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
+import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.gateways.ReservationGateway;
+import com.postech.tabletrust.gateways.RestaurantGateway;
 import com.postech.tabletrust.repository.ReservationRepository;
-import com.postech.tabletrust.service.CustomerService;
-import com.postech.tabletrust.service.ReservationService;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,9 +34,9 @@ class ReservationControllerTest {
     @Mock
     private ReservationGateway reservationGateway;
     @Mock
-    private ReservationService reservationService;
+    private CustomerGateway customerGateway;
     @Mock
-    private CustomerService customerService;
+    private RestaurantGateway restaurantGateway;
     @Mock
     private ReservationRepository reservationRepository;
     AutoCloseable openMocks;
@@ -43,7 +45,7 @@ class ReservationControllerTest {
     void setUp() {
 
         openMocks = MockitoAnnotations.openMocks(this);
-        ReservationController ReservationController = new ReservationController(reservationService, customerService, reservationRepository);
+        ReservationController ReservationController = new ReservationController(reservationGateway, customerGateway, restaurantGateway);
         mockMvc = MockMvcBuilders.standaloneSetup(ReservationController).setControllerAdvice(new GlobalExceptionHandler()).addFilter((request, response, chain) -> {
             response.setCharacterEncoding("UTF-8");
             chain.doFilter(request, response);
@@ -67,6 +69,12 @@ class ReservationControllerTest {
     class NewReservation {
         @Test
         void devePermitirRegistrarReservation() throws Exception {
+            doReturn(NewEntititesHelper.createAEmptyReservationList())
+                    .when(reservationGateway).findRestaurantReservationByDate(anyString(), anyString());
+            doReturn(NewEntititesHelper.createACustomer())
+                    .when(customerGateway).findCustomer(anyString());
+            doReturn(NewEntititesHelper.createARestaurant())
+                    .when(restaurantGateway).findRestaurantById(anyString());
             ReservationDTO reservationDTO = NewEntititesHelper.gerarReservationInsertRequest();
             mockMvc.perform(post("/reservations")
                     .contentType(MediaType.APPLICATION_JSON).content(asJsonString(reservationDTO)))
