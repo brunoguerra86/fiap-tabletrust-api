@@ -1,12 +1,13 @@
 package com.postech.tabletrust.controller;
 
-import com.postech.tabletrust.entities.FeedBack;
+import com.postech.tabletrust.entity.FeedBack;
+import com.postech.tabletrust.dto.FeedBackCreateDTO;
 import com.postech.tabletrust.service.FeedBackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,31 +17,30 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/feedBack")
+@RequestMapping("/feedback")
 @RequiredArgsConstructor
 public class FeedBackController {
 
     private final FeedBackService feedBackService;
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<FeedBack>> listFeedback(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size, UUID restaurantId) {
-        Pageable pageable = PageRequest.of(page, size);
-        log.info("Requisição para listar comentários foi efetuada: Página={}, Tamanho={}", page, size);
-        Page<FeedBack> FeedBack = feedBackService.listFeedbackByRestaurant(pageable, restaurantId);
-        return new ResponseEntity<>(FeedBack, HttpStatus.OK);
+    @GetMapping(value = "/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<FeedBack>> listFeedBackByRestaurantId(
+            @PageableDefault(size = 10) Pageable pageable,
+            @PathVariable UUID restaurantId) {
+        Page<FeedBack> feedBackPage = feedBackService.listFeedBackByRestaurantId(pageable, restaurantId);
+        return new ResponseEntity<>(feedBackPage, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public FeedBack create(@RequestBody FeedBack FeedBack){
-        //return this.feedBackService.create(FeedBack);
-        return null;
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity create(@RequestBody FeedBackCreateDTO feedBackCreateDTO) throws Exception {
+        FeedBack feedBackCreated = this.feedBackService.create(feedBackCreateDTO);
+        return ResponseEntity.ok(feedBackCreated);
     }
 
     @GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public FeedBack findById(@PathVariable UUID id){
-        return this.feedBackService.findById(id);
+    public ResponseEntity findById(@PathVariable UUID id){
+        FeedBack feedBackFound = this.feedBackService.findById(id);
+        return ResponseEntity.ok(feedBackFound);
     }
 
     @DeleteMapping(value="/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,6 +48,4 @@ public class FeedBackController {
         this.feedBackService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-
 }

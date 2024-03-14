@@ -1,25 +1,28 @@
 package com.postech.tabletrust.service;
 
 import com.postech.tabletrust.dto.FeedBackCreateDTO;
-import com.postech.tabletrust.entities.FeedBack;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.FeedBack;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.repository.RestaurantRepository;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,7 +37,6 @@ public class FeedBackServiceTest {
     private FeedBackRepository feedBackRepository;
     @Mock
     private ReservationRepository reservationRepository;
-
     @Mock
     private RestaurantRepository restaurantRepository;
     private FeedBackService feedBackService;
@@ -43,7 +45,7 @@ public class FeedBackServiceTest {
     @BeforeEach
     void setup(){
         openMocks = MockitoAnnotations.openMocks(this);
-        feedBackService = new FeedBackServiceImpl(feedBackRepository, reservationRepository); // Tem que fazer o mock do feedbackRepository
+        feedBackService = new FeedBackServiceImpl(feedBackRepository, reservationRepository, restaurantRepository); // Tem que fazer o mock do feedbackRepository
     }
 
     @AfterEach
@@ -53,15 +55,18 @@ public class FeedBackServiceTest {
 
     @Test
     void shouldListAllFeedBacksByARestaurant(){
-        Restaurant resto = NewEntititesHelper.createARestaurant();
+        Restaurant restaurant = NewEntititesHelper.createARestaurant();
         FeedBack fb = NewEntititesHelper.createAFeedBack();
-        List<FeedBack> fbList = List.of(fb);
+        Pageable pageable = PageRequest.of(0,10);
+        List<FeedBack> fbList = Arrays.asList(fb);
 
-        when(restaurantRepository.save(resto)).thenReturn(resto);
-        when(feedBackRepository.save(fb)).thenReturn(fb);
-        when(feedBackRepository.getFeedBackByRestaurantId(fb.getRestaurantId())).thenReturn(fbList);
+        Page<FeedBack> fbPage = new PageImpl<>(fbList,pageable,fbList.size());
 
-        var listOfFB = feedBackService.getFeedBackByRestaurantId(resto.getId());
+        // Configuração dos mocks para o repositório
+        when(restaurantRepository.findById(restaurant.getId())).thenReturn(Optional.of(restaurant));
+        when(feedBackRepository.findByRestaurantId(restaurant.getId(), pageable)).thenReturn(fbPage);
+
+        var listOfFB = feedBackService.listFeedBackByRestaurantId(pageable, restaurant.getId());
 
         assertThat(listOfFB).contains(fb);
     }

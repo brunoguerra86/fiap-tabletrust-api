@@ -1,10 +1,11 @@
 package com.postech.tabletrust.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.dto.ReservationDTO;
-import com.postech.tabletrust.entities.Customer;
-import com.postech.tabletrust.entities.FeedBack;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Customer;
+import com.postech.tabletrust.entity.FeedBack;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 
 import java.time.LocalDateTime;
@@ -80,5 +81,13 @@ public class NewEntititesHelper {
     public static List<Reservation> createAEmptyReservationList() {
          List<Reservation> reservationList = new ArrayList<>();
          return reservationList;
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

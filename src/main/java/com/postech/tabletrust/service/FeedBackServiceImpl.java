@@ -1,10 +1,13 @@
 package com.postech.tabletrust.service;
 
 import com.postech.tabletrust.dto.FeedBackCreateDTO;
-import com.postech.tabletrust.entities.FeedBack;
-import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.entity.FeedBack;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.exception.InvalidReservationException;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.ReservationRepository;
+import com.postech.tabletrust.repository.RestaurantRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,10 +25,13 @@ public class FeedBackServiceImpl implements FeedBackService{
 
     private final FeedBackRepository feedBackRepository;
     private final ReservationRepository reservationRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
-    public Page<FeedBack> listFeedbackByRestaurant(Pageable pageable, UUID restaurantId) {
-        return null;
+    public Page<FeedBack> listFeedBackByRestaurantId(Pageable pageable, UUID restaurantId) {
+        Restaurant restaurant = this.restaurantRepository.findById(restaurantId)
+                .orElseThrow(()-> new IllegalArgumentException("Restaurant not found for ID " + restaurantId));
+        return this.feedBackRepository.findByRestaurantId(restaurantId, pageable);
     }
 
     @Override
@@ -37,13 +42,13 @@ public class FeedBackServiceImpl implements FeedBackService{
 
         Optional<Reservation> reservation = this.reservationRepository.findById(feedBackCreateDTO.reservationId());
         if (! reservation.isPresent()) {
-            throw new EntityNotFoundException("A reserva informada nao foi encontrada");
+            throw new InvalidReservationException("A reserva informada nao foi encontrada");
         }
 
         Reservation resa = reservation.get();
 
         if ( !resa.getApproved() || !resa.getReservationDate().isBefore(threeHoursAgo)){
-            throw new IllegalArgumentException("A reserva informada foi anulada ou ainda nao terminou");
+            throw new InvalidReservationException("A reserva informada foi anulada ou ainda nao terminou");
         }
 
         FeedBack newFeedback = new FeedBack(feedBackCreateDTO);
@@ -60,10 +65,4 @@ public class FeedBackServiceImpl implements FeedBackService{
         this.feedBackRepository.deleteById(id);
         return true;
     }
-
-    @Override
-    public List<FeedBack> getFeedBackByRestaurantId(UUID id) {
-        return this.feedBackRepository.getFeedBackByRestaurantId(id);
-    }
-
 }

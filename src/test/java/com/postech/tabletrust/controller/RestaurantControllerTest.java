@@ -1,7 +1,7 @@
 package com.postech.tabletrust.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.service.RestaurantService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
@@ -56,22 +56,56 @@ public class RestaurantControllerTest {
     @Nested
     class CreateRestaurant{
         @Test
-        void deveIncluirRestauranteValido(){
+        void testNewRestaurant_ValidInput_ReturnsCreatedResponse(){
+            // Arrange
+            Restaurant restaurant = new Restaurant();
+            when(restaurantService.newRestaurant(restaurant)).thenReturn(restaurant);
 
+            // Act
+            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
+
+            // Assert
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+            assertEquals(restaurant, response.getBody());
+            verify(restaurantService, times(1)).newRestaurant(restaurant);
         }
 
         @Test
-        void deveGerarExcecao_QuandoIncluirRestaurante_Invalido(){
+        void testNewRestaurant_InvalidInput_ReturnsBadRequestResponse() {
+            // Arrange
+            Restaurant restaurant = new Restaurant();
+            when(restaurantService.newRestaurant(restaurant)).thenThrow(new IllegalArgumentException("ID inválido"));
 
+            // Act
+            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
+
+            // Assert
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals("ID inválido", response.getBody());
+            verify(restaurantService, times(1)).newRestaurant(restaurant);
         }
 
+        @Test
+        void testNewRestaurant_RuntimeException_ReturnsNotFoundResponse() {
+            // Arrange
+            Restaurant restaurant = new Restaurant();
+            when(restaurantService.newRestaurant(restaurant)).thenThrow(new RuntimeException("Erro interno"));
+
+            // Act
+            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
+
+            // Assert
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            assertEquals("Erro interno", response.getBody());
+            verify(restaurantService, times(1)).newRestaurant(restaurant);
+        }
     }
 
     @Nested
     class ReadRestaurant {
 
         @Test
-        void deveConsultarRestaurantePorId(){
+        void testFindRestaurant_ValidInputId_ReturnRestaurant(){
             // Arrange
             UUID validUuid = UUID.randomUUID();
             Restaurant mockRestaurant = new Restaurant();
@@ -87,7 +121,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoConsultarRestaurante_IdNaoEncontrado() {
+        void testFindRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
             when(restaurantService.findRestaurant(notFoundUuid)).thenThrow(EntityNotFoundException.class);
@@ -101,7 +135,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoConsultarRestaurante_IdInvalido() {
+        void testFindRestaurant_InvalidInputId_ReturnBadRequest() {
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurant("invalid-uuid");
 
@@ -112,7 +146,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestauranteSemFiltro(){
+        void testFindRestaurant_NoFilterInput_ReturnRestaurant() {
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, null, null)).thenReturn(mockRestaurants);
@@ -127,7 +161,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorNome(){
+        void testFindRestaurant_ValidInputName_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null)).thenReturn(mockRestaurants);
@@ -142,7 +176,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorEndereco(){
+        void testFindRestaurant_ValidInputAddress_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null)).thenReturn(mockRestaurants);
@@ -157,7 +191,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorTipoCozinha(){
+        void testFindRestaurant_ValidInputKitchenType_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha")).thenReturn(mockRestaurants);
@@ -172,7 +206,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorNomeEEnderecoETipoCozinha(){
+        void testFindRestaurant_ValidInputNameAddresKitchenType_ReturnRestaurant() {
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
@@ -187,9 +221,9 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorNomeEEndereco(){
+        void testFindRestaurant_ValidInputNameAddres_ReturnRestaurant(){
             // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
+            List<Restaurant> mockRestaurants = new ArrayList<>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null)).thenReturn(mockRestaurants);
 
             // Act
@@ -203,9 +237,9 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorNomeETipoCozinha(){
+        void testFindRestaurant_ValidInputNameKitchenType_ReturnRestaurant(){
             // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
+            List<Restaurant> mockRestaurants = new ArrayList<>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha")).thenReturn(mockRestaurants);
 
             // Act
@@ -219,9 +253,9 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveConsultarRestaurantePorEnderecoETipoCozinha(){
+        void testFindRestaurant_ValidInputAddresKitchenType_ReturnRestaurant(){
             // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
+            List<Restaurant> mockRestaurants = new ArrayList<>();
             when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
 
             // Act
@@ -231,13 +265,14 @@ public class RestaurantControllerTest {
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
             verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha");
+
         }
     }
 
     @Nested
     class UpdateRestaurant{
         @Test
-        void deveAtualizarRestauranteComIdValidoERestauranteValido() {
+        void testUpdateRestaurant_ValidInputIdAndRestaurant_ReturnOk() {
             // Arrange
             UUID validUuid = UUID.randomUUID();
             Restaurant updatedRestaurant = new Restaurant();
@@ -253,7 +288,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoAtualizarRestaurante_IdInvalido() {
+        void testUpdateRestaurant_InvalidInputIdAndRestaurant_ReturnBadRequest() {
             // Act
             ResponseEntity<?> response = restaurantController.updateRestaurant("invalid-uuid", new Restaurant());
 
@@ -264,7 +299,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoAtualizarRestaurante_IdNaoEncontrado() {
+        void testUpdateRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
             when(restaurantService.updateRestaurant(notFoundUuid, new Restaurant())).thenThrow(RuntimeException.class);
@@ -281,7 +316,7 @@ public class RestaurantControllerTest {
     @Nested
     class DeleteRestaurant{
         @Test
-        void deveExcluirRestauranteComIdValido() {
+        void testDeleteRestaurant_ValidInputId_ReturnOk() {
             // Arrange
             UUID validUuid = UUID.randomUUID();
 
@@ -295,7 +330,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoExcluirRestaurante_IdInvalido() {
+        void testDeleteRestaurant_InvalidInputId_ReturnBadRequest() {
             // Act
             ResponseEntity<?> response = restaurantController.deleteRestaurant("invalid-uuid");
 
@@ -306,7 +341,7 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoExcluirRestaurante_IdNaoEncontrado() {
+        void testDeleteRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
             doThrow(RuntimeException.class).when(restaurantService).deleteRestaurant(notFoundUuid);

@@ -1,9 +1,9 @@
 package com.postech.tabletrust.usecases;
 
 import com.postech.tabletrust.dto.ReservationDTO;
-import com.postech.tabletrust.entities.Customer;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Customer;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.ReservationNotAvailable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

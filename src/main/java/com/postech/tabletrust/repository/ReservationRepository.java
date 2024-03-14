@@ -1,6 +1,6 @@
 package com.postech.tabletrust.repository;
 
-import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.entity.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

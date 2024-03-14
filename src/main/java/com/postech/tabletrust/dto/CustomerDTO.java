@@ -1,7 +1,6 @@
 package com.postech.tabletrust.dto;
 
-import com.postech.tabletrust.entities.Customer;
-import com.postech.tabletrust.entities.Customer;
+import com.postech.tabletrust.entity.Customer;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

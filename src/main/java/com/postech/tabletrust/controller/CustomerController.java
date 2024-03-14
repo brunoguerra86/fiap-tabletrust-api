@@ -1,7 +1,7 @@
 package com.postech.tabletrust.controller;
 
 import com.postech.tabletrust.dto.CustomerDTO;
-import com.postech.tabletrust.entities.Customer;
+import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.usecases.CustomerUseCase;
 import jakarta.validation.Valid;

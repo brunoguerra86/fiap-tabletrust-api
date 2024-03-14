@@ -1,6 +1,6 @@
 package com.postech.tabletrust.service;
 
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.repository.RestaurantRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
@@ -109,7 +109,7 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    void souldAllowUpdateRestaurant(){
+    void shouldAllowUpdateRestaurant(){
         //Arrange
         UUID id = UUID.randomUUID();
         var restaurant = createARestaurant();
@@ -138,6 +138,7 @@ public class RestaurantServiceTest {
         UUID id = UUID.randomUUID();
         var restaurant = createARestaurant();
         restaurant.setId(id);
+
         //Act
         when(restaurantRepository.findById(id)).thenReturn(Optional.empty());
 

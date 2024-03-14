@@ -1,7 +1,7 @@
 package com.postech.tabletrust.gateways;
 
 import com.postech.tabletrust.dto.ReservationDTO;
-import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.interfaces.IReservationGateway;
 import lombok.extern.slf4j.Slf4j;

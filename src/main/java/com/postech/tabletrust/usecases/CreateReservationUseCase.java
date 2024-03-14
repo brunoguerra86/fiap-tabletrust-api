@@ -1,8 +1,8 @@
 package com.postech.tabletrust.usecases;
 
 import com.postech.tabletrust.dto.CustomerDTO;
-import com.postech.tabletrust.entities.Reservation;
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Reservation;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.ReservationNotAvailable;
 import com.postech.tabletrust.repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;

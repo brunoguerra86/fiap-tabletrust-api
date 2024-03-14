@@ -1,6 +1,6 @@
 package com.postech.tabletrust.gateways;
 
-import com.postech.tabletrust.entities.Restaurant;
+import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
 import com.postech.tabletrust.repository.RestaurantRepository;

@@ -1,7 +1,7 @@
 package com.postech.tabletrust.interfaces;
 
 import com.postech.tabletrust.dto.CustomerDTO;
-import com.postech.tabletrust.entities.Customer;
+import com.postech.tabletrust.entity.Customer;
 
 import java.util.List;
 

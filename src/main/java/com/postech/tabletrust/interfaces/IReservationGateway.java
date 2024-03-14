@@ -2,7 +2,7 @@ package com.postech.tabletrust.interfaces;
 
 import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.ReservationDTO;
-import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.entity.Reservation;
 
 import java.util.List;
 

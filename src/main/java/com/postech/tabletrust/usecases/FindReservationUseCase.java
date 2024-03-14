@@ -1,6 +1,6 @@
 package com.postech.tabletrust.usecases;
 
-import com.postech.tabletrust.entities.Reservation;
+import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

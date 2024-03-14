@@ -1,7 +1,7 @@
 package com.postech.tabletrust.usecases;
 
 import com.postech.tabletrust.dto.CustomerDTO;
-import com.postech.tabletrust.entities.Customer;
+import com.postech.tabletrust.entity.Customer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
