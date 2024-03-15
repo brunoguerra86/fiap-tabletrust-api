@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class RestaurantGateway implements IRestaurantGateway {
+public class RestaurantGateway implements
+        IRestaurantGateway {
     private final RestaurantRepository restaurantRepository;
 
     public RestaurantGateway(RestaurantRepository restaurantRepository) {
@@ -23,6 +24,10 @@ public class RestaurantGateway implements IRestaurantGateway {
         Restaurant restaurant = new Restaurant(restaurantDTO);
         restaurant.setId(UUID.randomUUID());
         return this.restaurantRepository.save(restaurant);
+//    public Restaurant newRestaurant(Restaurant restaurant) {
+//        restaurant.setId(UUID.randomUUID());
+//        return restaurantRepository.save(restaurant);
+
     }
 
     @Override
