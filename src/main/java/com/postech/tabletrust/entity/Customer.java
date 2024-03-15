@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @Builder(toBuilder = true)
@@ -25,5 +27,11 @@ public class Customer {
     public Customer(CustomerDTO CustomerDTO) {
         this.id = CustomerDTO.getId() == null ? this.id : UUID.fromString(CustomerDTO.getId());
         this.nome = CustomerDTO.getNome();
+    }
+    public List<Customer> toList(List<CustomerDTO> customerList) {
+        return customerList
+                .stream()
+                .map(Customer::new)
+                .collect(Collectors.toList());
     }
 }

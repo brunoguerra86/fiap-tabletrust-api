@@ -1,6 +1,7 @@
 package com.postech.tabletrust.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.entity.FeedBack;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 public class NewEntititesHelper {
 
-    private static UUID customerID = UUID.fromString("b732236c-3c25-4290-bfe2-93ec920bcfa9");
+    private static UUID customerID = UUID.fromString("7247101a-9bab-414a-83e5-a61b07e2146a");
     private static UUID restaurantID = UUID.fromString("c68b4872-6073-4dff-8199-a24c74d4c763");
     private static UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
     private static UUID feedbackID = UUID.fromString("7cad184d-6b00-4e20-bdeb-d4e224cf3bbd");
@@ -53,7 +54,26 @@ public class NewEntititesHelper {
         Customer customer = new Customer(customerID, "joe");
         return customer;
     }
+    public static CustomerDTO gerarCustomerInsertRequest() {
+        return CustomerDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .nome("John")
+                .build();
+    }
+    public static List<CustomerDTO> gerarCustomerListRequest() {
+        List<CustomerDTO>  customerDTOList = new ArrayList<>();
+        customerDTOList.add( CustomerDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .nome("John")
+                .build());
 
+        customerDTOList.add( CustomerDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .nome("Ana")
+                .build());
+
+        return customerDTOList;
+    }
  /* ----------------------------- Reservation ---------------------------- */
      public static ReservationDTO gerarReservationInsertRequest() {
          return ReservationDTO.builder()

@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.List;
 
 @Builder
@@ -25,11 +25,10 @@ public class CustomerDTO {
             this.nome = Customer.getNome();
         }
     }
-    public List<CustomerDTO> toList(List<Customer> CustomerList) {
-        List<CustomerDTO> CustomerDTOList = new ArrayList<>();
-        for (Customer Customer : CustomerList) {
-            CustomerDTOList.add(new CustomerDTO(Customer));
-        }
-        return CustomerDTOList;
+    public List<CustomerDTO> toList(List<Customer> customerList) {
+        return customerList
+                .stream()
+                .map(CustomerDTO::new)
+                .collect(Collectors.toList());
     }
 }
