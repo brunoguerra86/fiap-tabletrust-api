@@ -18,14 +18,31 @@ public class RestaurantGateway implements IRestaurantGateway {
     }
 
     @Override
+    public Restaurant newRestaurant(Restaurant restaurant) {
+        restaurant.setId(UUID.randomUUID());
+        return restaurantRepository.save(restaurant);
+    }
+
+    @Override
     public Restaurant findRestaurantById(String strId) {
         UUID uuid = UUID.fromString(strId);
         return restaurantRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Restaurante não encontrado"));
     }
 
     @Override
-    public List<Restaurant> listAllRestaurants() {
-        List<Restaurant> restaurantList = restaurantRepository.findAll();
-        return restaurantList;
+    public List<Restaurant> findRestaurantsByNameAndAddressAndKitchenType(String name, String address, String kitchenType) {
+        return restaurantRepository.findRestaurantsByNameAndAddressAndKitchenType(name, address, kitchenType);
+    }
+
+    @Override
+    public Restaurant updateRestaurant(UUID id, Restaurant newRestaurant) { //TODO refacto avec DTO pour validation
+        newRestaurant.setId(id);
+        return restaurantRepository.save(newRestaurant);
+    }
+
+    @Override
+    public boolean deleteRestaurant(UUID id) {
+        restaurantRepository.deleteById(id);
+        return true;
     }
 }
