@@ -29,7 +29,11 @@ public class RestaurantController {
     public ResponseEntity newRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) {
         log.info("PostMapping - createRestaurant");
         try {
+<<<<<<< HEAD
             Restaurant restaurantCreated = this.restaurantGateway.newRestaurant(restaurantDTO);
+=======
+            Restaurant restaurantCreated = restaurantGateway.newRestaurant(restaurant);
+>>>>>>> 3850715 (refact: RestaurantService -> RestaurantGateway (parcial))
             return new ResponseEntity<>(restaurantCreated, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("ID inválido");
@@ -54,6 +58,7 @@ public class RestaurantController {
         log.info("GetMapping - findRestaurant ");
         try {
             UUID.fromString(id);
+            //UUID uuid = UUID.fromString(id);
             Restaurant restaurant = restaurantGateway.findRestaurantById(id);
             return new ResponseEntity<>(restaurant, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
