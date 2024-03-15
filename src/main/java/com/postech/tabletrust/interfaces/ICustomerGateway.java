@@ -6,13 +6,13 @@ import com.postech.tabletrust.entity.Customer;
 import java.util.List;
 
 public interface ICustomerGateway {
-    public CustomerDTO createCustomer(CustomerDTO Customer);
+    public Customer createCustomer(Customer customer);
 
-    public CustomerDTO updateCustomer(CustomerDTO Customer);
+    public Customer updateCustomer(Customer customer);
 
     public void deleteCustomer(String strId);
 
     public Customer findCustomer(String strId);
 
-    public List<CustomerDTO> listAllCustomers();
+    public List<Customer> listAllCustomers();
 }

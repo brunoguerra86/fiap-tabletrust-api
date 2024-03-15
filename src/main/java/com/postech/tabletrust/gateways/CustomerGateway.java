@@ -8,6 +8,7 @@ import com.postech.tabletrust.repository.CustomerRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Component
@@ -19,18 +20,13 @@ public class CustomerGateway implements ICustomerGateway {
     }
 
     @Override
-    public CustomerDTO createCustomer(CustomerDTO CustomerDTO) {
-
-        Customer CustomerEntity = new Customer(CustomerDTO);
-        CustomerEntity = customerRepository.save(CustomerEntity);
-        return new CustomerDTO(CustomerEntity);
+    public Customer createCustomer(Customer customer) {
+        return customerRepository.save(customer);
     }
 
     @Override
-    public CustomerDTO updateCustomer(CustomerDTO CustomerDTO) {
-        Customer CustomerEntity = new Customer(CustomerDTO);
-        CustomerEntity = customerRepository.save(CustomerEntity);
-        return new CustomerDTO(CustomerEntity);
+    public Customer updateCustomer(Customer customer) {
+        return customerRepository.save(customer);
     }
 
     @Override
@@ -42,12 +38,15 @@ public class CustomerGateway implements ICustomerGateway {
     @Override
     public Customer findCustomer(String strId) {
         UUID uuid = UUID.fromString(strId);
-        return customerRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
+        try {
+            return customerRepository.findById(uuid).orElseThrow();
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     @Override
-    public List<CustomerDTO> listAllCustomers() {
-        List<Customer> CustomerEntityList = customerRepository.findAll();
-        return new CustomerDTO().toList(CustomerEntityList);
+    public List<Customer> listAllCustomers() {
+        return customerRepository.findAll();
     }
 }

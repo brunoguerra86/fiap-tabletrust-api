@@ -1,6 +1,5 @@
 package com.postech.tabletrust.usecases;
 
-import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.entity.Customer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,32 +10,33 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomerUseCase {
 
-
-    private static void validarCustomer(CustomerDTO CustomerDTO) {
-
-        if (CustomerDTO == null) {
+    private static void validarCustomer(Customer customer) {
+        if (customer == null) {
             throw new IllegalArgumentException("Cliente não pode ser nulo");
         }
     }
 
-    public static void validarInsertCustomer(CustomerDTO CustomerDTO, Customer CustomerNew) {
-
-        validarCustomer(CustomerDTO);
-        if (CustomerNew.getId() != null) {
+    public static void validarInsertCustomer(Customer customerNew, Customer customerOld) {
+        validarCustomer(customerNew);
+        if (customerOld!= null) {
             throw new IllegalArgumentException("Cliente já existe");
         }
     }
 
-    public static void validarUpdateCliente(String strId, Customer CustomerDTOOld, CustomerDTO CustomerDTONew) {
+    public static void validarUpdateCliente(String strId, Customer customerToUpdate, Customer customerNew) {
 
-        validarCustomer(CustomerDTONew);
-        if (!CustomerDTONew.getId().equals(strId)) {
+        validarCustomer(customerNew);
+        if (!customerNew.getId().toString().equals(strId)) {
             throw new IllegalArgumentException("ID do Cliente incorreto");
         }
-        if (CustomerDTOOld == null) {
+        if (customerToUpdate == null) {
             throw new IllegalArgumentException("Cliente não encontrado");
         }
-
     }
+    public static void validarDeleteCliente(Customer customer) {
 
+        if (customer == null) {
+            throw new IllegalArgumentException("Cliente não encontrado");
+        }
+    }
 }
