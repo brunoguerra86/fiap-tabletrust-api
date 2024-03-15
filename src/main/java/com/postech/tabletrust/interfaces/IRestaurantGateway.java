@@ -8,9 +8,7 @@ import java.util.UUID;
 
 public interface IRestaurantGateway {
 
-
     Restaurant newRestaurant(RestaurantDTO restaurantDTO);
-//    Restaurant newRestaurant(Restaurant restaurant);
 
     Restaurant findRestaurantById(String id);
 

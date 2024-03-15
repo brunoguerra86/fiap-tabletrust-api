@@ -24,10 +24,6 @@ public class RestaurantGateway implements
         Restaurant restaurant = new Restaurant(restaurantDTO);
         restaurant.setId(UUID.randomUUID());
         return this.restaurantRepository.save(restaurant);
-//    public Restaurant newRestaurant(Restaurant restaurant) {
-//        restaurant.setId(UUID.randomUUID());
-//        return restaurantRepository.save(restaurant);
-
     }
 
     @Override
