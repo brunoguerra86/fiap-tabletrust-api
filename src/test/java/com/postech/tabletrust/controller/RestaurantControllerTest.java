@@ -2,7 +2,7 @@ package com.postech.tabletrust.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.entity.Restaurant;
-import com.postech.tabletrust.service.RestaurantService;
+import com.postech.tabletrust.interfaces.IRestaurantGateway;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ public class RestaurantControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private RestaurantService restaurantService;
+    private IRestaurantGateway restaurantGateway;
 
     @InjectMocks
     private RestaurantController restaurantController;
@@ -59,7 +59,7 @@ public class RestaurantControllerTest {
         void testNewRestaurant_ValidInput_ReturnsCreatedResponse(){
             // Arrange
             Restaurant restaurant = new Restaurant();
-            when(restaurantService.newRestaurant(restaurant)).thenReturn(restaurant);
+            when(restaurantGateway.newRestaurant(restaurant)).thenReturn(restaurant);
 
             // Act
             ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
@@ -67,14 +67,14 @@ public class RestaurantControllerTest {
             // Assert
             assertEquals(HttpStatus.CREATED, response.getStatusCode());
             assertEquals(restaurant, response.getBody());
-            verify(restaurantService, times(1)).newRestaurant(restaurant);
+            verify(restaurantGateway, times(1)).newRestaurant(restaurant);
         }
 
         @Test
         void testNewRestaurant_InvalidInput_ReturnsBadRequestResponse() {
             // Arrange
             Restaurant restaurant = new Restaurant();
-            when(restaurantService.newRestaurant(restaurant)).thenThrow(new IllegalArgumentException("ID inválido"));
+            when(restaurantGateway.newRestaurant(restaurant)).thenThrow(new IllegalArgumentException("ID inválido"));
 
             // Act
             ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
@@ -82,14 +82,14 @@ public class RestaurantControllerTest {
             // Assert
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertEquals("ID inválido", response.getBody());
-            verify(restaurantService, times(1)).newRestaurant(restaurant);
+            verify(restaurantGateway, times(1)).newRestaurant(restaurant);
         }
 
         @Test
         void testNewRestaurant_RuntimeException_ReturnsNotFoundResponse() {
             // Arrange
             Restaurant restaurant = new Restaurant();
-            when(restaurantService.newRestaurant(restaurant)).thenThrow(new RuntimeException("Erro interno"));
+            when(restaurantGateway.newRestaurant(restaurant)).thenThrow(new RuntimeException("Erro interno"));
 
             // Act
             ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
@@ -97,7 +97,7 @@ public class RestaurantControllerTest {
             // Assert
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
             assertEquals("Erro interno", response.getBody());
-            verify(restaurantService, times(1)).newRestaurant(restaurant);
+            verify(restaurantGateway, times(1)).newRestaurant(restaurant);
         }
     }
 
@@ -109,7 +109,7 @@ public class RestaurantControllerTest {
             // Arrange
             UUID validUuid = UUID.randomUUID();
             Restaurant mockRestaurant = new Restaurant();
-            when(restaurantService.findRestaurant(validUuid)).thenReturn(mockRestaurant);
+            when(restaurantGateway.findRestaurantById(validUuid.toString())).thenReturn(mockRestaurant);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurant(validUuid.toString());
@@ -117,21 +117,21 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurant, response.getBody());
-            verify(restaurantService, times(1)).findRestaurant(validUuid);
+            verify(restaurantGateway, times(1)).findRestaurantById(validUuid.toString());
         }
 
         @Test
         void testFindRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
-            when(restaurantService.findRestaurant(notFoundUuid)).thenThrow(EntityNotFoundException.class);
+            when(restaurantGateway.findRestaurantById(notFoundUuid.toString())).thenThrow(EntityNotFoundException.class);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurant(notFoundUuid.toString());
 
             // Assertions
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-            verify(restaurantService, times(1)).findRestaurant(notFoundUuid);
+            verify(restaurantGateway, times(1)).findRestaurantById(notFoundUuid.toString());
         }
 
         @Test
@@ -142,14 +142,14 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertEquals("ID inválido", response.getBody());
-            verify(restaurantService, never()).findRestaurant(any());
+            verify(restaurantGateway, never()).findRestaurantById(any());
         }
 
         @Test
         void testFindRestaurant_NoFilterInput_ReturnRestaurant() {
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, null, null)).thenReturn(mockRestaurants);
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(null, null, null)).thenReturn(mockRestaurants);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, null, null);
@@ -157,14 +157,14 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, null, null);
+            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, null, null);
         }
 
         @Test
         void testFindRestaurant_ValidInputName_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null)).thenReturn(mockRestaurants);
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null)).thenReturn(mockRestaurants);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null);
@@ -172,14 +172,14 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null);
+            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null);
         }
 
         @Test
         void testFindRestaurant_ValidInputAddress_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null)).thenReturn(mockRestaurants);
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null)).thenReturn(mockRestaurants);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null);
@@ -187,14 +187,14 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null);
+            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null);
         }
 
         @Test
         void testFindRestaurant_ValidInputKitchenType_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha")).thenReturn(mockRestaurants);
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha")).thenReturn(mockRestaurants);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha");
@@ -202,14 +202,14 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha");
+            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha");
         }
 
         @Test
         void testFindRestaurant_ValidInputNameAddresKitchenType_ReturnRestaurant() {
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha");
@@ -217,14 +217,14 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha");
+            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha");
         }
 
         @Test
         void testFindRestaurant_ValidInputNameAddres_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<>();
-            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null)).thenReturn(mockRestaurants);
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null)).thenReturn(mockRestaurants);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null);
@@ -232,7 +232,7 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null);
+            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null);
 
         }
 
@@ -240,7 +240,7 @@ public class RestaurantControllerTest {
         void testFindRestaurant_ValidInputNameKitchenType_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<>();
-            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha")).thenReturn(mockRestaurants);
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha")).thenReturn(mockRestaurants);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha");
@@ -248,7 +248,7 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha");
+            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha");
 
         }
 
@@ -256,7 +256,7 @@ public class RestaurantControllerTest {
         void testFindRestaurant_ValidInputAddresKitchenType_ReturnRestaurant(){
             // Arrange
             List<Restaurant> mockRestaurants = new ArrayList<>();
-            when(restaurantService.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha");
@@ -264,7 +264,7 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantService, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha");
+            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha");
 
         }
     }
@@ -276,7 +276,7 @@ public class RestaurantControllerTest {
             // Arrange
             UUID validUuid = UUID.randomUUID();
             Restaurant updatedRestaurant = new Restaurant();
-            when(restaurantService.updateRestaurant(validUuid, updatedRestaurant)).thenReturn(updatedRestaurant);
+            when(restaurantGateway.updateRestaurant(validUuid, updatedRestaurant)).thenReturn(updatedRestaurant);
 
             // Act
             ResponseEntity<?> response = restaurantController.updateRestaurant(validUuid.toString(), updatedRestaurant);
@@ -284,7 +284,7 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(updatedRestaurant, response.getBody());
-            verify(restaurantService, times(1)).updateRestaurant(validUuid, updatedRestaurant);
+            verify(restaurantGateway, times(1)).updateRestaurant(validUuid, updatedRestaurant);
         }
 
         @Test
@@ -295,21 +295,21 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertEquals("ID inválido", response.getBody());
-            verify(restaurantService, never()).updateRestaurant(any(), any());
+            verify(restaurantGateway, never()).updateRestaurant(any(), any());
         }
 
         @Test
         void testUpdateRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
-            when(restaurantService.updateRestaurant(notFoundUuid, new Restaurant())).thenThrow(RuntimeException.class);
+            when(restaurantGateway.updateRestaurant(notFoundUuid, new Restaurant())).thenThrow(RuntimeException.class);
 
             // Act
             ResponseEntity<?> response = restaurantController.updateRestaurant(notFoundUuid.toString(), new Restaurant());
 
             // Assertions
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-            verify(restaurantService, times(1)).updateRestaurant(notFoundUuid, new Restaurant());
+            verify(restaurantGateway, times(1)).updateRestaurant(notFoundUuid, new Restaurant());
         }
     }
 
@@ -326,7 +326,7 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals("Restaurante removido", response.getBody());
-            verify(restaurantService, times(1)).deleteRestaurant(validUuid);
+            verify(restaurantGateway, times(1)).deleteRestaurant(validUuid);
         }
 
         @Test
@@ -337,21 +337,21 @@ public class RestaurantControllerTest {
             // Assertions
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertEquals("ID inválido", response.getBody());
-            verify(restaurantService, never()).deleteRestaurant(any());
+            verify(restaurantGateway, never()).deleteRestaurant(any());
         }
 
         @Test
         void testDeleteRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
-            doThrow(RuntimeException.class).when(restaurantService).deleteRestaurant(notFoundUuid);
+            doThrow(RuntimeException.class).when(restaurantGateway).deleteRestaurant(notFoundUuid);
 
             // Act
             ResponseEntity<?> response = restaurantController.deleteRestaurant(notFoundUuid.toString());
 
             // Assertions
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-            verify(restaurantService, times(1)).deleteRestaurant(notFoundUuid);
+            verify(restaurantGateway, times(1)).deleteRestaurant(notFoundUuid);
         }
     }
 }
