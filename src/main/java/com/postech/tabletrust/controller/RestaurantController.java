@@ -52,7 +52,7 @@ public class RestaurantController {
     public ResponseEntity<?> findRestaurant(@PathVariable String id) {
         log.info("GetMapping - findRestaurant ");
         try {
-            //UUID uuid = UUID.fromString(id);
+            UUID.fromString(id);
             Restaurant restaurant = restaurantGateway.findRestaurantById(id);
             return new ResponseEntity<>(restaurant, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
