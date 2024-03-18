@@ -6,9 +6,10 @@ import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
 import com.postech.tabletrust.exception.InvalidReservationException;
-import com.postech.tabletrust.service.FeedBackService;
+import com.postech.tabletrust.gateways.FeedBackGateway;
+import com.postech.tabletrust.gateways.ReservationGateway;
+import com.postech.tabletrust.usecases.FeedBackUseCase;
 import com.postech.tabletrust.utils.NewEntititesHelper;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -31,14 +32,19 @@ public class FeedBackControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private FeedBackService feedBackService;
+    private FeedBackGateway feedBackGateway;
 
+    @Mock
+    private ReservationGateway reservationGateway;
+
+    @Mock
+    private FeedBackUseCase feedBackUseCase;
     AutoCloseable mock;
 
     @BeforeEach
     void setup() {
         mock = MockitoAnnotations.openMocks(this);
-        FeedBackController feedBackController = new FeedBackController(feedBackService);
+        FeedBackController feedBackController = new FeedBackController(reservationGateway, feedBackGateway, feedBackUseCase);
         mockMvc = MockMvcBuilders.standaloneSetup(feedBackController)
                 .setControllerAdvice(new GlobalExceptionHandler()).addFilter((request, response, chain) -> {
                     response.setCharacterEncoding("UTF-8");
@@ -58,7 +64,7 @@ public class FeedBackControllerTest {
         void shouldCreateAFeedBack() throws Exception {
             FeedBack feedBack = NewEntititesHelper.createAFeedBack();
             FeedBackCreateDTO feedBackCreateDTO = feedBack.convertToDTO();
-            when(feedBackService.create(feedBackCreateDTO)).thenReturn(feedBack);
+            when(feedBackUseCase.registerFeedBack(feedBackCreateDTO, reservationGateway)).thenReturn(feedBack);
 
             // Convertendo FeedBackCreateDTO para JSON
             String feedBackCreateDTOJson = new ObjectMapper().writeValueAsString(feedBackCreateDTO);
@@ -69,7 +75,7 @@ public class FeedBackControllerTest {
                             .content(feedBackCreateDTOJson))
                             .andExpect(status().isOk());
 
-            verify(feedBackService, times(1)).create(feedBackCreateDTO);
+            verify(feedBackUseCase, times(1)).registerFeedBack(feedBackCreateDTO, reservationGateway);
         }
 
         @Test
@@ -79,7 +85,7 @@ public class FeedBackControllerTest {
 
             FeedBackCreateDTO feedBackCreateDTO = feedBack.convertToDTO();
 
-            when(feedBackService.create(feedBackCreateDTO)).thenThrow(InvalidReservationException.class);
+            when(feedBackUseCase.registerFeedBack(feedBackCreateDTO, reservationGateway)).thenThrow(InvalidReservationException.class);
 
             // Convertendo FeedBackCreateDTO para JSON
             String feedBackCreateDTOJson = new ObjectMapper().writeValueAsString(feedBackCreateDTO);
@@ -89,7 +95,7 @@ public class FeedBackControllerTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(feedBackCreateDTOJson))
                     .andExpect(status().isConflict());
-            verify(feedBackService, times(1)).create(feedBackCreateDTO);
+            verify(feedBackUseCase, times(1)).registerFeedBack(feedBackCreateDTO, reservationGateway);
         }
 
         @Test
@@ -102,7 +108,7 @@ public class FeedBackControllerTest {
 
             FeedBackCreateDTO feedBackCreateDTO = feedBack.convertToDTO();
 
-            when(feedBackService.create(feedBackCreateDTO)).thenThrow(InvalidReservationException.class);
+            when(feedBackUseCase.registerFeedBack(feedBackCreateDTO, reservationGateway)).thenThrow(InvalidReservationException.class);
 
             String feedBackCreateDTOJson = new ObjectMapper().writeValueAsString(feedBackCreateDTO);
 
@@ -111,7 +117,7 @@ public class FeedBackControllerTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(feedBackCreateDTOJson))
                     .andExpect(status().isConflict());
-            verify(feedBackService, times(1)).create(feedBackCreateDTO);
+            verify(feedBackUseCase, times(1)).registerFeedBack(feedBackCreateDTO, reservationGateway);
         }
     }
 

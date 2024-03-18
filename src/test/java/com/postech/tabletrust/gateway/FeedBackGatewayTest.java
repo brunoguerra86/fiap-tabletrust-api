@@ -1,10 +1,10 @@
-package com.postech.tabletrust.service;
+package com.postech.tabletrust.gateway;
 
-import com.postech.tabletrust.dto.FeedBackCreateDTO;
 import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.InvalidReservationException;
+import com.postech.tabletrust.gateways.FeedBackGateway;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.ReservationRepository;
 import com.postech.tabletrust.repository.RestaurantRepository;
@@ -32,20 +32,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class FeedBackServiceTest {
+public class FeedBackGatewayTest {
     @Mock
     private FeedBackRepository feedBackRepository;
     @Mock
     private ReservationRepository reservationRepository;
     @Mock
     private RestaurantRepository restaurantRepository;
-    private FeedBackService feedBackService;
+
+    private FeedBackGateway feedBackGateway;
     AutoCloseable openMocks;
 
     @BeforeEach
     void setup(){
         openMocks = MockitoAnnotations.openMocks(this);
-        feedBackService = new FeedBackServiceImpl(feedBackRepository, reservationRepository, restaurantRepository); // Tem que fazer o mock do feedbackRepository
     }
 
     @AfterEach
@@ -68,7 +68,7 @@ public class FeedBackServiceTest {
             when(restaurantRepository.findById(restaurant.getId())).thenReturn(Optional.of(restaurant));
             when(feedBackRepository.findByRestaurantId(restaurant.getId(), pageable)).thenReturn(fbPage);
 
-            var listOfFB = feedBackService.listFeedBackByRestaurantId(pageable, restaurant.getId());
+            var listOfFB = feedBackGateway.listFeedBackByRestaurantId(restaurant.getId());
 
             assertThat(listOfFB).contains(fb);
         }
@@ -82,7 +82,7 @@ public class FeedBackServiceTest {
             when(feedBackRepository.findById(id)).thenReturn(Optional.of(fb));
 
             // Act
-            FeedBack fbFound = feedBackService.findById(id);
+            FeedBack fbFound = feedBackGateway.findById(id);
 
             //Assert
             assertThat(fbFound).isNotNull().isInstanceOf(FeedBack.class);
@@ -91,19 +91,18 @@ public class FeedBackServiceTest {
         }
     }
 
-
     @Nested
     class CreateFeedbacks{
         @Test
         void shouldCreateANewFeedBack() throws Exception {
             Reservation reservation = NewEntititesHelper.createAReservation();
-            FeedBackCreateDTO feedBackDTO = NewEntititesHelper.createAFeedBack().convertToDTO();
+            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
 
             when(reservationRepository.findById(any(UUID.class))).thenReturn(Optional.of(reservation)); //Mock le findById
             when(feedBackRepository.save(any(FeedBack.class))).thenAnswer( i -> i.getArgument(0)); // Mock o save
 
             //Act
-            var feedback = feedBackService.create(feedBackDTO);
+            var feedback = feedBackGateway.createFeedback(feedBack);
 
             //Assert
             assertThat(feedback).isNotNull().isInstanceOf(FeedBack.class);
@@ -113,11 +112,11 @@ public class FeedBackServiceTest {
         void shouldReturnAnExceptionNotFoundReservation() throws Exception {
             Reservation reservation = NewEntititesHelper.createAReservation();
             reservation.setId(UUID.randomUUID()); //change id
-            FeedBackCreateDTO feedBackDTO = NewEntititesHelper.createAFeedBack().convertToDTO();
+            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
 
             when(reservationRepository.findById(any(UUID.class))).thenReturn(Optional.empty()); //Not found
 
-            assertThatThrownBy(() -> feedBackService.create(feedBackDTO))
+            assertThatThrownBy(() -> feedBackGateway.createFeedback(feedBack))
                     .isInstanceOf(InvalidReservationException.class)
                     .hasMessage("A reserva informada nao foi encontrada");
         }
@@ -126,11 +125,11 @@ public class FeedBackServiceTest {
         void shouldReturnAnExceptionForReservationNotApprouved() throws Exception {
             Reservation reservation = NewEntititesHelper.createAReservation();
             reservation.setApproved(false); // Change 'approved'
-            FeedBackCreateDTO feedBackDTO = NewEntititesHelper.createAFeedBack().convertToDTO();
+            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
 
             when(reservationRepository.findById(any(UUID.class))).thenReturn(Optional.of(reservation)); //OK
 
-            assertThatThrownBy(() -> feedBackService.create(feedBackDTO))
+            assertThatThrownBy(() -> feedBackGateway.createFeedback(feedBack))
                     .isInstanceOf(InvalidReservationException.class)
                     .hasMessage("A reserva informada foi anulada ou ainda nao terminou");
         }
@@ -142,11 +141,11 @@ public class FeedBackServiceTest {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime less1Hour = LocalDateTime.now().minusHours(1);
             reservation.setReservationDate(less1Hour); // Change hour by reservation - invalid
-            FeedBackCreateDTO feedBackDTO = NewEntititesHelper.createAFeedBack().convertToDTO();
+            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
 
             when(reservationRepository.findById(any(UUID.class))).thenReturn(Optional.of(reservation)); //OK
 
-            assertThatThrownBy(() -> feedBackService.create(feedBackDTO))
+            assertThatThrownBy(() -> feedBackGateway.createFeedback(feedBack))
                     .isInstanceOf(InvalidReservationException.class)
                     .hasMessage("A reserva informada foi anulada ou ainda nao terminou");
         }
@@ -163,7 +162,7 @@ public class FeedBackServiceTest {
             when(feedBackRepository.findById(id)).thenReturn(Optional.of(fb));
             doNothing().when(feedBackRepository).deleteById(id);
 
-            var removed = feedBackService.deleteById(id);
+            var removed = feedBackGateway.deleteById(id);
             assertThat(removed).isTrue();
 
             verify(feedBackRepository, times(1)).deleteById(any(UUID.class));
