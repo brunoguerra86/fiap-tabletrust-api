@@ -65,6 +65,10 @@ public class ReservationGateway implements IReservationGateway {
         return reservationRepository.findById(uuid).orElseThrow();
     }
 
+    public Optional<Reservation> findReservationBYUUID(UUID id) {
+        return reservationRepository.findById(id);
+    }
+
     @Override
     public List<ReservationDTO> listAllReservations() {
         List<Reservation> reservationEntityList = reservationRepository.findAll();

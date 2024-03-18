@@ -2,6 +2,8 @@ package com.postech.tabletrust.entity;
 
 import com.postech.tabletrust.dto.FeedBackCreateDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,7 +44,8 @@ public class FeedBack {
 
     private String comment;
 
-    @NotEmpty(message = "[stars] não pode estar vazio")
+    @Min(value = 0, message = "A nota deve ser no mínimo 0")
+    @Max(value = 5, message = "A nota deve ser no máximo 5")
     private int stars;
 
     @CreationTimestamp
