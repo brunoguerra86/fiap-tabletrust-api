@@ -1,6 +1,8 @@
-package com.postech.tabletrust.service;
+package com.postech.tabletrust.gateway;
 
 import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.gateways.RestaurantGateway;
+import com.postech.tabletrust.interfaces.IRestaurantGateway;
 import com.postech.tabletrust.repository.RestaurantRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
@@ -20,20 +22,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class RestaurantServiceTest {
+public class RestaurantGatewayTest {
 
     @Mock
     private RestaurantRepository restaurantRepository;
 
     //@InjectMocks
-    private RestaurantService restaurantService; // Aqui é onde você coloca @InjectMocks
+    private IRestaurantGateway restaurantGateway; // Aqui é onde você coloca @InjectMocks
 
     AutoCloseable openMocks;
 
     @BeforeEach
     void setup(){
         openMocks = MockitoAnnotations.openMocks(this);
-        restaurantService = new RestaurantServiceImpl(restaurantRepository);
+        restaurantGateway = new RestaurantGateway(restaurantRepository);
     }
 
     @AfterEach
@@ -48,14 +50,14 @@ public class RestaurantServiceTest {
         when(restaurantRepository.save(any(Restaurant.class))).thenAnswer( i -> i.getArgument(0)); //Quando ele recebe um restaurante deve responder com um parametro que é o restaurante salvo
 
         // Act
-        var restaurantSave = restaurantService.newRestaurant(restaurant);
+        var restaurantSave = restaurantGateway.newRestaurant(restaurant);
 
         // Assert
         assertThat(restaurantSave)
                 .isInstanceOf(Restaurant.class)
                 .isNotNull();
         assertThat(restaurantSave.getId()).isNotNull();
-        //verify(restaurantService, times(1)).newRestaurant(any(Restaurant.class));
+        //verify(restaurantGateway, times(1)).newRestaurant(any(Restaurant.class));
     }
 
     @Test
@@ -68,7 +70,7 @@ public class RestaurantServiceTest {
         when(restaurantRepository.findById(any(UUID.class))).thenReturn(Optional.of(restaurant)); // Assegure que o findById está mockado corretamente
 
         // Act
-        Restaurant restaurantFound = restaurantService.findRestaurant(id);
+        Restaurant restaurantFound = restaurantGateway.findRestaurantById(id.toString());
 
         //Assert
         assertThat(restaurantFound).isNotNull().isInstanceOf(Restaurant.class);
@@ -85,7 +87,7 @@ public class RestaurantServiceTest {
         when(restaurantRepository.findById(id)).thenReturn(Optional.empty()); // Assegure que o findById está mockado corretamente
 
         //Assert
-        assertThatThrownBy(() -> restaurantService.findRestaurant(id))
+        assertThatThrownBy(() -> restaurantGateway.findRestaurantById(id.toString()))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Restaurante não encontrado");
 
@@ -101,7 +103,7 @@ public class RestaurantServiceTest {
         when(restaurantRepository.findById(id)).thenReturn(Optional.of(restaurant)); // Assegure que o findById está mockado corretamente
 
         // Act
-        List restaurantFound = restaurantService.findRestaurantsByNameAndAddressAndKitchenType(restaurant.getName(), restaurant.getAddress(), restaurant.getKitchenType());
+        List restaurantFound = restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(restaurant.getName(), restaurant.getAddress(), restaurant.getKitchenType());
 
         //Assert
         assertThat(restaurantFound).isNotNull().isInstanceOf(List.class);
@@ -123,7 +125,7 @@ public class RestaurantServiceTest {
                 .thenReturn(Optional.of(restaurantUp));
         when(restaurantRepository.save(restaurantUp)).thenAnswer(i -> i.getArgument(0));
 
-        Restaurant restaurantUpdated = restaurantService.updateRestaurant(id, restaurantUp);
+        Restaurant restaurantUpdated = restaurantGateway.updateRestaurant(id, restaurantUp);
 
         //Assert
         assertThat(restaurantUpdated).isNotNull().isInstanceOf(Restaurant.class);
@@ -143,7 +145,7 @@ public class RestaurantServiceTest {
         when(restaurantRepository.findById(id)).thenReturn(Optional.empty());
 
         //Assert
-        assertThatThrownBy(() -> restaurantService.updateRestaurant(id, restaurant))
+        assertThatThrownBy(() -> restaurantGateway.updateRestaurant(id, restaurant))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Restaurante não encontrado");
 
@@ -161,7 +163,7 @@ public class RestaurantServiceTest {
         when(restaurantRepository.findById(id)).thenReturn(Optional.of(restaurant));
         doNothing().when(restaurantRepository).deleteById(id);
 
-        var removed = restaurantService.deleteRestaurant(id);
+        var removed = restaurantGateway.deleteRestaurant(id);
         assertThat(removed).isTrue();
 
         verify(restaurantRepository, times(1)).deleteById(any(UUID.class));

@@ -1,6 +1,7 @@
 package com.postech.tabletrust.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.postech.tabletrust.dto.RestaurantDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -49,6 +50,28 @@ public class Restaurant implements Cloneable{
 
     public Restaurant(UUID uuid) {
         this.id = uuid;
+    }
+
+    public Restaurant(RestaurantDTO restaurantDTO){
+        this.id = restaurantDTO.id();
+        this.name = restaurantDTO.name();
+        this.address = restaurantDTO.address();
+        this.kitchenType = restaurantDTO.kitchenType();
+        this.openingTime = restaurantDTO.openingTime();
+        this.closingTime = restaurantDTO.closingTime();
+        this.availableCapacity = restaurantDTO.availableCapacity();
+    }
+
+    public RestaurantDTO convertToDTO(){
+        return new RestaurantDTO(
+                this.id,
+                this.name,
+                this.address,
+                this.kitchenType,
+                this.openingTime,
+                this.closingTime,
+                this.availableCapacity
+        );
     }
 
     @Override

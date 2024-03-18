@@ -17,8 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationUseCase {
 
-
-
     public static Reservation validateInsertReservation(List<Reservation> reservationList, Restaurant restaurant, Customer customer, Integer quantity, String date) {
         if (!(restaurant.getAvailableCapacity() > reservationList.size())){
             throw new ReservationNotAvailable("O restaurante não tem mesas disponíveis");
