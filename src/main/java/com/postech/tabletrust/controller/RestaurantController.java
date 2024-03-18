@@ -1,5 +1,6 @@
 package com.postech.tabletrust.controller;
 
+import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,10 +26,10 @@ public class RestaurantController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> newRestaurant(@Valid @RequestBody Restaurant restaurant) {
+    public ResponseEntity newRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) {
         log.info("PostMapping - createRestaurant");
         try {
-            Restaurant restaurantCreated = restaurantGateway.newRestaurant(restaurant);
+            Restaurant restaurantCreated = this.restaurantGateway.newRestaurant(restaurantDTO);
             return new ResponseEntity<>(restaurantCreated, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("ID inválido");

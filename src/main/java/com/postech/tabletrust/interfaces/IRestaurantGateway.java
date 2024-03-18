@@ -1,5 +1,6 @@
 package com.postech.tabletrust.interfaces;
 
+import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Restaurant;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.UUID;
 
 public interface IRestaurantGateway {
 
-    Restaurant newRestaurant(Restaurant restaurant);
+    Restaurant newRestaurant(RestaurantDTO restaurantDTO);
 
     Restaurant findRestaurantById(String id);
 

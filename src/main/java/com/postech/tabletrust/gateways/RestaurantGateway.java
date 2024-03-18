@@ -1,5 +1,6 @@
 package com.postech.tabletrust.gateways;
 
+import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
@@ -18,9 +19,10 @@ public class RestaurantGateway implements IRestaurantGateway {
     }
 
     @Override
-    public Restaurant newRestaurant(Restaurant restaurant) {
+    public Restaurant newRestaurant(RestaurantDTO restaurantDTO) {
+        Restaurant restaurant = new Restaurant(restaurantDTO);
         restaurant.setId(UUID.randomUUID());
-        return restaurantRepository.save(restaurant);
+        return this.restaurantRepository.save(restaurant);
     }
 
     @Override
