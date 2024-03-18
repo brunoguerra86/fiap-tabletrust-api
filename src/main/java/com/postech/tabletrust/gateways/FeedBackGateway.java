@@ -2,6 +2,7 @@ package com.postech.tabletrust.gateways;
 
 import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.RestaurantRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class FeedBackGateway {
     }
 
     public FeedBack findById(UUID id) {
-        return this.feedbackRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("ID não encontrado"));
+        return this.feedbackRepository.findById(id).orElseThrow(()-> new NotFoundException("ID não encontrado"));
     }
 
     public Boolean deleteById(UUID id) {
