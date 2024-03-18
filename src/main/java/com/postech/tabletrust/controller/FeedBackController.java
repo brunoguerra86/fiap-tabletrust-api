@@ -27,6 +27,7 @@ public class FeedBackController {
 
     private final ReservationGateway reservationGateway;
     private final FeedBackGateway feedbackGateway;
+    private final FeedBackUseCase feedBackUseCase;
 
     @GetMapping(value = "/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<FeedBack>> listFeedBackByRestaurantId(
@@ -37,14 +38,14 @@ public class FeedBackController {
     }
     @GetMapping(value = "/stars/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity numberOfStarsByRestaurant(@PathVariable UUID restaurantId) {
-        double numberOfStars = FeedBackUseCase.numberOfStarsByRestaurant(restaurantId, feedbackGateway);
+        double numberOfStars = feedBackUseCase.numberOfStarsByRestaurant(restaurantId, feedbackGateway);
         return new ResponseEntity<>(numberOfStars, HttpStatus.OK);
     }
 
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity create(@Valid @RequestBody FeedBackCreateDTO feedBackCreateDTO) throws Exception {
         try {
-            FeedBack newFeedback = FeedBackUseCase.registerFeedBack(feedBackCreateDTO, reservationGateway);
+            FeedBack newFeedback = feedBackUseCase.registerFeedBack(feedBackCreateDTO, reservationGateway);
             feedbackGateway.createFeedback(newFeedback);
             return new ResponseEntity<>(newFeedback, HttpStatus.OK);
         } catch(InvalidReservationException e) {

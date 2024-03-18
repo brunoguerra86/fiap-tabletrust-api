@@ -52,7 +52,7 @@ public class FeedBackUseCase {
         }
     }
 
-    public static double numberOfStarsByRestaurant(UUID restaurantId, FeedBackGateway feedbackGateway) {
+    public double numberOfStarsByRestaurant(UUID restaurantId, FeedBackGateway feedbackGateway) {
         List<FeedBack> listFb = feedbackGateway.listFeedBackByRestaurantId(restaurantId);
 
         OptionalDouble average = listFb.stream()
