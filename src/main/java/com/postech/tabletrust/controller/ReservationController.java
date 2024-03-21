@@ -53,14 +53,17 @@ public class ReservationController {
         }
     }
 
-    @PutMapping("/id={id}")
-    public ResponseEntity<?> updateReservation(@PathVariable String id, @RequestBody @Valid ReservationDTO reservationNew) {
-        log.info("PutMapping - updateReservation");
+    @PatchMapping("/id={id}")
+    public ResponseEntity<?> updateReservation(@PathVariable String id, @RequestBody @Valid ReservationDTO reservationDTO) {
+        log.info("update reservation [{}]", reservationDTO.getId());
         try {
             Reservation reservationOld = reservationGateway.findReservation(id);
-            Customer customer = customerGateway.findCustomer(reservationNew.getCustomerId());
-            ReservationUseCase.validarUpdateReserva(id, reservationOld, reservationNew, customer);
-            ReservationDTO newReservation = reservationGateway.updateReservation(reservationNew);
+            customerGateway.findCustomer(reservationDTO.getCustomerId());
+            List<Reservation> reservationList = reservationGateway.findRestaurantReservationByDate(reservationDTO.getRestaurantId(), reservationDTO.getReservationDate());
+
+            ReservationUseCase.validateUpdateReservation(id, reservationOld, reservationDTO.getReservationDate(),
+                    reservationDTO.getQuantity(), reservationDTO.getApproved(), reservationList);
+            ReservationDTO newReservation = reservationGateway.updateReservation(reservationDTO);
             return new ResponseEntity<>(newReservation, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

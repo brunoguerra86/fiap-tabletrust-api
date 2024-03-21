@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class ReservationGateway implements IReservationGateway {
     private final ReservationRepository reservationRepository;
 
-    public ReservationGateway( ReservationRepository reservationRepository) {
+    public ReservationGateway(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
