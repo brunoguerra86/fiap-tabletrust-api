@@ -3,6 +3,7 @@ package com.postech.tabletrust.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.ReservationDTO;
+import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Reservation;
@@ -22,6 +23,7 @@ public class NewEntititesHelper {
     private static UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
     private static UUID feedbackID = UUID.fromString("7cad184d-6b00-4e20-bdeb-d4e224cf3bbd");
 
+    /* ----------------------------- Feedback ------------------------------- */
     //La meme reservation id
     public static FeedBack createAFeedBack(){
 
@@ -35,9 +37,10 @@ public class NewEntititesHelper {
                 .build();
     }
 
+    /* ----------------------------- Restaurant ----------------------------- */
     public static Restaurant createARestaurant(){
-        LocalTime open = new LocalTimeJavaType().fromString("19:00:00");
-        LocalTime close = new LocalTimeJavaType().fromString("23:30:00");
+        LocalTime open = LocalTime.of(19, 0, 0);
+        LocalTime close = LocalTime.of(23, 30, 0);
 
         return Restaurant.builder()
                 .id(restaurantID)
@@ -50,6 +53,22 @@ public class NewEntititesHelper {
                 .build();
     }
 
+    public static RestaurantDTO gerarRestaurantInsertRequest(){
+        LocalTime open = LocalTime.of(19, 0, 0);
+        LocalTime close = LocalTime.of(23, 30, 0);
+
+        return RestaurantDTO.builder()
+                .id(restaurantID)
+                .address("Fragonard")
+                .kitchenType("Sopa")
+                .name("Restaurante-teste")
+                .openingTime(open)
+                .closingTime(close)
+                .availableCapacity(100)
+                .build();
+    }
+
+    /* ----------------------------- Customer ------------------------------- */
     public static Customer createACustomer(){
         Customer customer = new Customer(customerID, "joe");
         return customer;
