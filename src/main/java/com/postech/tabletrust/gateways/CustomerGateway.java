@@ -15,8 +15,8 @@ import java.util.UUID;
 public class CustomerGateway implements ICustomerGateway {
     private final CustomerRepository customerRepository;
 
-    public CustomerGateway(CustomerRepository CustomerRepository) {
-        this.customerRepository = CustomerRepository;
+    public CustomerGateway(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -30,17 +30,22 @@ public class CustomerGateway implements ICustomerGateway {
     }
 
     @Override
-    public void deleteCustomer(String strId) {
-        UUID uuid = UUID.fromString(strId);
-        customerRepository.deleteById(uuid);
+    public boolean deleteCustomer(String strId) {
+        try {
+            UUID uuid = UUID.fromString(strId);
+            customerRepository.deleteById(uuid);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public Customer findCustomer(String strId) {
-        UUID uuid = UUID.fromString(strId);
         try {
+            UUID uuid = UUID.fromString(strId);
             return customerRepository.findById(uuid).orElseThrow();
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return null;
         }
     }

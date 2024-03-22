@@ -10,7 +10,7 @@ public interface ICustomerGateway {
 
     public Customer updateCustomer(Customer customer);
 
-    public void deleteCustomer(String strId);
+    public boolean deleteCustomer(String strId);
 
     public Customer findCustomer(String strId);
 

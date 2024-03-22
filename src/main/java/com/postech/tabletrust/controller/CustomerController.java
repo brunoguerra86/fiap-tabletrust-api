@@ -25,17 +25,15 @@ public class CustomerController {
 
     @PostMapping("")
     public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
-        log.info("create Customer for customer [{}]", customerDTO.getNome());
+        log.info("PostMapping - createCustomer for customer [{}]", customerDTO.getNome());
         try {
             Customer customerOld = customerGateway.findCustomer(customerDTO.getId());
             Customer customerNew = new Customer(customerDTO);
             CustomerUseCase.validarInsertCustomer(customerNew, customerOld);
             Customer customerCreated = customerGateway.createCustomer(customerNew);
             return new ResponseEntity<>(customerCreated, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -50,8 +48,6 @@ public class CustomerController {
             return new ResponseEntity<>(customerNew, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -62,11 +58,9 @@ public class CustomerController {
             Customer customer = customerGateway.findCustomer(id);
             CustomerUseCase.validarDeleteCliente(customer);
             customerGateway.deleteCustomer(id);
-            return new ResponseEntity<>("Cliente removido", HttpStatus.OK);
+            return new ResponseEntity<>("Cliente removido.", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -79,15 +73,9 @@ public class CustomerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findCustomer(@PathVariable String id) {
-        log.info("GetMapping - FindCustomer  ");
-        try {
-            Customer customer = customerGateway.findCustomer(id);
-            return new ResponseEntity<>((customer != null ? customer : "Cliente não encontrado"), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        log.info("GetMapping - FindCustomer");
+        Customer customer = customerGateway.findCustomer(id);
+        return new ResponseEntity<>((customer != null ? customer : "Cliente não encontrado."), HttpStatus.OK);
     }
 }
 
