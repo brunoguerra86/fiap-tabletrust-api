@@ -1,6 +1,7 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.transaction.Transactional;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class RestaurantRepositoryIT {
     @Test
     void shouldAllowSaveRestaurant() {
         //Arrange
-        Restaurant restaurant = createARestaurant();
+        Restaurant restaurant = NewEntititesHelper.createARestaurant();
 
         //Act
         var restaurantFoud = restaurantRepository.save(restaurant);
@@ -54,14 +55,12 @@ public class RestaurantRepositoryIT {
     @Test
     void shouldFindRestaurantsByNameAndAddressAndKitchenType() {
         // Arrange - cria e persiste um restaurante de teste
-        Restaurant restaurant = new Restaurant();
+        Restaurant restaurant = NewEntititesHelper.createARestaurant();
         restaurant.setName("Test Restaurant");
         restaurant.setAddress("Test Address");
         restaurant.setKitchenType("Test Kitchen");
-        restaurant.setAvailableCapacity(10);
 
-        entityManager.persist(restaurant);
-        entityManager.flush();
+        restaurantRepository.save(restaurant);
 
         // Act - busca restaurantes usando o método do repositório
         List<Restaurant> foundRestaurants = restaurantRepository.findRestaurantsByNameAndAddressAndKitchenType(
@@ -70,20 +69,5 @@ public class RestaurantRepositoryIT {
         // Assert - verifica se o restaurante correto foi encontrado
         assertThat(foundRestaurants).hasSize(1);
         assertThat(foundRestaurants.get(0).getId()).isEqualTo(restaurant.getId());
-    }
-
-    private Restaurant createARestaurant(){
-        LocalTime open = new LocalTimeJavaType().fromString("19:00:00");
-        LocalTime close = new LocalTimeJavaType().fromString("23:30:00");
-
-        return Restaurant.builder()
-                //.id(UUID.randomUUID())
-                .address("Fragonard")
-                .kitchenType("Tapioca")
-                .name("Restaurante-teste")
-                .openingTime(open)
-                .closingTime(close)
-                .availableCapacity(100)
-                .build();
     }
 }
