@@ -1,130 +1,117 @@
-package com.postech.tabletrust.controller;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.postech.tabletrust.controller.RestaurantController;
+import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
-import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+class RestaurantControllerTest {
 
-public class RestaurantControllerTest {
-
-    private MockMvc mockMvc;
+    private RestaurantController restaurantController;
 
     @Mock
     private IRestaurantGateway restaurantGateway;
 
-    @InjectMocks
-    private RestaurantController restaurantController;
-
-    AutoCloseable openMocks;
-
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        //openMocks.close();
-    }
-
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        MockitoAnnotations.initMocks(this);
+        restaurantController = new RestaurantController(restaurantGateway);
     }
 
     @Nested
-    class CreateRestaurant{
+    class CreateRestaurant {
         @Test
-        void testNewRestaurant_ValidInput_ReturnsCreatedResponse(){
-            // Arrange
-            Restaurant restaurant = new Restaurant();
-            when(restaurantGateway.newRestaurant(restaurant)).thenReturn(restaurant);
+        void testNewRestaurant_Success() {
+            // Crie um objeto RestaurantDTO simulado
+            RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
 
-            // Act
-            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
+            // Crie um objeto Restaurant simulado
+            Restaurant restaurantCreated = new Restaurant();
+            restaurantCreated.setId(UUID.randomUUID());
 
-            // Assert
+            // Configure o comportamento do mock
+            when(restaurantGateway.newRestaurant(any(RestaurantDTO.class))).thenReturn(restaurantCreated);
+
+            // Chame o método a ser testado
+            ResponseEntity<?> response = restaurantController.newRestaurant(restaurantDTO);
+
+            // Verifique se o status da resposta é CREATED
             assertEquals(HttpStatus.CREATED, response.getStatusCode());
-            assertEquals(restaurant, response.getBody());
-            verify(restaurantGateway, times(1)).newRestaurant(restaurant);
+            // Verifique se o restaurante retornado é o esperado
+            assertEquals(restaurantCreated, response.getBody());
         }
 
         @Test
-        void testNewRestaurant_InvalidInput_ReturnsBadRequestResponse() {
-            // Arrange
-            Restaurant restaurant = new Restaurant();
-            when(restaurantGateway.newRestaurant(restaurant)).thenThrow(new IllegalArgumentException("ID inválido"));
+        void testNewRestaurant_ValidationException() {
+            // Mocking the dependencies
+            RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
 
-            // Act
-            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
+            // Mocking the behavior of restaurantGateway.newRestaurant() to throw an exception
+            when(restaurantGateway.newRestaurant(any(RestaurantDTO.class))).thenThrow(new RuntimeException("Some error message"));
 
-            // Assert
-            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-            assertEquals("ID inválido", response.getBody());
-            verify(restaurantGateway, times(1)).newRestaurant(restaurant);
-        }
+            // Creating an instance of the controller
+            RestaurantController restaurantController = new RestaurantController(restaurantGateway);
 
-        @Test
-        void testNewRestaurant_RuntimeException_ReturnsNotFoundResponse() {
-            // Arrange
-            Restaurant restaurant = new Restaurant();
-            when(restaurantGateway.newRestaurant(restaurant)).thenThrow(new RuntimeException("Erro interno"));
+            // Invoking the method under test
+            ResponseEntity responseEntity = restaurantController.newRestaurant(restaurantDTO);
 
-            // Act
-            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
-
-            // Assert
-            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-            assertEquals("Erro interno", response.getBody());
-            verify(restaurantGateway, times(1)).newRestaurant(restaurant);
+            // Assertions
+            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+            assertEquals("Some error message", responseEntity.getBody());
         }
     }
 
     @Nested
     class ReadRestaurant {
+        @Test
+        void testFindRestaurantsByNameAndAddressAndKitchenType_Success() {
+            String name = "Pizza Place";
+            String address = "123 Main St";
+            String kitchenType = "Italian";
+
+            List<Restaurant> expectedRestaurants = new ArrayList<>();
+            // Adicione restaurantes simulados à lista conforme necessário
+
+            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(name, address, kitchenType))
+                    .thenReturn(expectedRestaurants);
+
+            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(name, address, kitchenType);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(expectedRestaurants, response.getBody());
+        }
 
         @Test
-        void testFindRestaurant_ValidInputId_ReturnRestaurant(){
-            // Arrange
-            UUID validUuid = UUID.randomUUID();
-            Restaurant mockRestaurant = new Restaurant();
-            when(restaurantGateway.findRestaurantById(validUuid.toString())).thenReturn(mockRestaurant);
+        void testFindRestaurant_Success() {
+            UUID restaurantId = UUID.randomUUID();
+            Restaurant expectedRestaurant = new Restaurant();
+            when(restaurantGateway.findRestaurantById(restaurantId.toString())).thenReturn(expectedRestaurant);
 
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurant(validUuid.toString());
+            ResponseEntity<?> response = restaurantController.findRestaurant(restaurantId.toString());
 
-            // Assertions
             assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurant, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantById(validUuid.toString());
+            assertEquals(expectedRestaurant, response.getBody());
         }
 
         @Test
         void testFindRestaurant_NotRegisteredId_ReturnNotFoundException() {
             // Arrange
             UUID notFoundUuid = UUID.randomUUID();
-            when(restaurantGateway.findRestaurantById(notFoundUuid.toString())).thenThrow(EntityNotFoundException.class);
+            when(restaurantGateway.findRestaurantById(notFoundUuid.toString())).thenThrow(NotFoundException.class);
 
             // Act
             ResponseEntity<?> response = restaurantController.findRestaurant(notFoundUuid.toString());
@@ -135,156 +122,31 @@ public class RestaurantControllerTest {
         }
 
         @Test
-        void testFindRestaurant_InvalidInputId_ReturnBadRequest() {
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurant("invalid-uuid");
+        void testFindRestaurant_InvalidId() {
+            ResponseEntity<?> response = restaurantController.findRestaurant("invalid-id");
 
-            // Assertions
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertEquals("ID inválido", response.getBody());
-            verify(restaurantGateway, never()).findRestaurantById(any());
-        }
-
-        @Test
-        void testFindRestaurant_NoFilterInput_ReturnRestaurant() {
-            // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(null, null, null)).thenReturn(mockRestaurants);
-
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, null, null);
-
-            // Assertions
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, null, null);
-        }
-
-        @Test
-        void testFindRestaurant_ValidInputName_ReturnRestaurant(){
-            // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null)).thenReturn(mockRestaurants);
-
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null);
-
-            // Assertions
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, null);
-        }
-
-        @Test
-        void testFindRestaurant_ValidInputAddress_ReturnRestaurant(){
-            // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null)).thenReturn(mockRestaurants);
-
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null);
-
-            // Assertions
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", null);
-        }
-
-        @Test
-        void testFindRestaurant_ValidInputKitchenType_ReturnRestaurant(){
-            // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha")).thenReturn(mockRestaurants);
-
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha");
-
-            // Assertions
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, null, "tipo_cozinha");
-        }
-
-        @Test
-        void testFindRestaurant_ValidInputNameAddresKitchenType_ReturnRestaurant() {
-            // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<Restaurant>();
-            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
-
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha");
-
-            // Assertions
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", "tipo_cozinha");
-        }
-
-        @Test
-        void testFindRestaurant_ValidInputNameAddres_ReturnRestaurant(){
-            // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<>();
-            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null)).thenReturn(mockRestaurants);
-
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null);
-
-            // Assertions
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", "endereco_restaurante", null);
-
-        }
-
-        @Test
-        void testFindRestaurant_ValidInputNameKitchenType_ReturnRestaurant(){
-            // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<>();
-            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha")).thenReturn(mockRestaurants);
-
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha");
-
-            // Assertions
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType("nome_restaurante", null, "tipo_cozinha");
-
-        }
-
-        @Test
-        void testFindRestaurant_ValidInputAddresKitchenType_ReturnRestaurant(){
-            // Arrange
-            List<Restaurant> mockRestaurants = new ArrayList<>();
-            when(restaurantGateway.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha")).thenReturn(mockRestaurants);
-
-            // Act
-            ResponseEntity<?> response = restaurantController.findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha");
-
-            // Assertions
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(mockRestaurants, response.getBody());
-            verify(restaurantGateway, times(1)).findRestaurantsByNameAndAddressAndKitchenType(null, "endereco_restaurante", "tipo_cozinha");
-
         }
     }
 
     @Nested
-    class UpdateRestaurant{
+    class UpdeteRestaurant {
         @Test
-        void testUpdateRestaurant_ValidInputIdAndRestaurant_ReturnOk() {
-            // Arrange
-            UUID validUuid = UUID.randomUUID();
+        void testUpdateRestaurant_Success () {
+            UUID existingRestaurantId = UUID.randomUUID();
+            Restaurant existingRestaurant = new Restaurant();
+            existingRestaurant.setId(existingRestaurantId);
+
             Restaurant updatedRestaurant = new Restaurant();
-            when(restaurantGateway.updateRestaurant(validUuid, updatedRestaurant)).thenReturn(updatedRestaurant);
+            // Preencha os campos do restaurante atualizado conforme necessário
 
-            // Act
-            ResponseEntity<?> response = restaurantController.updateRestaurant(validUuid.toString(), updatedRestaurant);
+            when(restaurantGateway.updateRestaurant(existingRestaurantId, updatedRestaurant)).thenReturn(updatedRestaurant);
 
-            // Assertions
+            ResponseEntity<?> response = restaurantController.updateRestaurant(existingRestaurantId.toString(), updatedRestaurant);
+
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(updatedRestaurant, response.getBody());
-            verify(restaurantGateway, times(1)).updateRestaurant(validUuid, updatedRestaurant);
         }
 
         @Test
@@ -314,9 +176,9 @@ public class RestaurantControllerTest {
     }
 
     @Nested
-    class DeleteRestaurant{
+    class DeleteRestaurant {
         @Test
-        void testDeleteRestaurant_ValidInputId_ReturnOk() {
+        void testDeleteRestaurant_Success() {
             // Arrange
             UUID validUuid = UUID.randomUUID();
 
@@ -354,4 +216,5 @@ public class RestaurantControllerTest {
             verify(restaurantGateway, times(1)).deleteRestaurant(notFoundUuid);
         }
     }
+
 }

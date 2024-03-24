@@ -65,12 +65,24 @@ class CustomerControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoRegistrarCliente_NomeNulo() throws Exception {
+        void deveGerarExcecaoQuandoRegistrarClienteNomeNulo() throws Exception {
             CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
             customerDTO.setNome(null);
             mockMvc.perform(post("/customers").contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
                 String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
                 assertThat(json).contains("O nome não pode ser nulo.");
+            });
+        }
+
+        @Test
+        void deveGerarExcecaoQuandoRegistrarClienteJaExistente() throws Exception {
+            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            Customer customer = new Customer(customerDTO);
+
+            when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(customer);
+            mockMvc.perform(post("/customers").contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
+                String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+                assertThat(json).contains("Cliente já existe");
             });
         }
     }
@@ -91,7 +103,7 @@ class CustomerControllerTest {
         }
 
         @Test
-        void deveGerarExcecao_QuandoAtualizarCliente_NomeNulo() throws Exception {
+        void deveGerarExcecaoQuandoAtualizarClienteNomeNulo() throws Exception {
             CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
@@ -102,7 +114,20 @@ class CustomerControllerTest {
             mockMvc.perform(put("/customers/{id}", customer.getId())
                     .contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
                 String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-                assertThat(json).contains("O nome não pode ser nulo");
+                assertThat(json).contains("O nome não pode ser nulo.");
+            });
+        }
+        @Test
+        void deveGerarExcecaoQuandoAtualizarClienteNãoEncontrado() throws Exception {
+            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            Customer customer = new Customer(customerDTO);
+
+            when(customerGateway.updateCustomer(customer)).thenReturn(customer);
+
+            mockMvc.perform(put("/customers/{id}", customer.getId())
+                    .contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
+                String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+                assertThat(json).contains("Cliente não encontrado.");
             });
         }
     }
@@ -117,20 +142,20 @@ class CustomerControllerTest {
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(customer);
 
             mockMvc.perform(delete("/customers/{id}", customer.getId())
-                            .contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO)))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
         }
 
         @Test
-        void deveGerarExcecao_QuandoDeletarCliente_NãoEncontrado() throws Exception {
+        void deveGerarExcecaoQuandoDeletarClienteNãoEncontrado() throws Exception {
             CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
             mockMvc.perform(delete("/customers/{id}", customer.getId())
-                            .contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO)))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest()).andExpect(result -> {
                         String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-                        assertThat(json).contains("Cliente não encontrado");
+                        assertThat(json).contains("Cliente não encontrado.");
                     });
         }
     }
@@ -139,7 +164,6 @@ class CustomerControllerTest {
     @Nested
     class FindCustomer {
         @Test
-            //deveGerarExcecao_QuandoDeletarCliente_NãoEncontrado
         void devePermitirPesquisarUmCliente() throws Exception {
             CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
@@ -147,7 +171,7 @@ class CustomerControllerTest {
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(customer);
 
             mockMvc.perform(get("/customers/{id}", customer.getId())
-                            .contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO)))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()).andExpect(result -> {
                         String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
                         assertThat(json).contains(customerDTO.getId());
@@ -162,7 +186,7 @@ class CustomerControllerTest {
             when(customerGateway.listAllCustomers()).thenReturn(customerList);
 
             mockMvc.perform(get("/customers/")
-                            .contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTOList)))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()).andExpect(result -> {
                         String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
                         assertThat(json).contains(customerDTOList.get(0).getId());
@@ -177,13 +201,11 @@ class CustomerControllerTest {
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(null);
 
             mockMvc.perform(get("/customers/{id}", customerDTO.getId())
-                            .contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO)))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()).andExpect(result -> {
                         String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-                        assertThat(json).contains("Cliente não encontrado");
+                        assertThat(json).contains("Cliente não encontrado.");
                     });
         }
-
     }
-
 }

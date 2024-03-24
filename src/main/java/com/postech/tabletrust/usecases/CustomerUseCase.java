@@ -12,14 +12,14 @@ public class CustomerUseCase {
 
     private static void validarCustomer(Customer customer) {
         if (customer == null) {
-            throw new IllegalArgumentException("Cliente não pode ser nulo");
+            throw new IllegalArgumentException("Cliente não pode ser nulo.");
         }
     }
 
     public static void validarInsertCustomer(Customer customerNew, Customer customerOld) {
         validarCustomer(customerNew);
         if (customerOld!= null) {
-            throw new IllegalArgumentException("Cliente já existe");
+            throw new IllegalArgumentException("Cliente já existe.");
         }
     }
 
@@ -27,16 +27,16 @@ public class CustomerUseCase {
 
         validarCustomer(customerNew);
         if (!customerNew.getId().toString().equals(strId)) {
-            throw new IllegalArgumentException("ID do Cliente incorreto");
+            throw new IllegalArgumentException("ID do Cliente incorreto.");
         }
         if (customerToUpdate == null) {
-            throw new IllegalArgumentException("Cliente não encontrado");
+            throw new IllegalArgumentException("Cliente não encontrado.");
         }
     }
     public static void validarDeleteCliente(Customer customer) {
 
         if (customer == null) {
-            throw new IllegalArgumentException("Cliente não encontrado");
+            throw new IllegalArgumentException("Cliente não encontrado.");
         }
     }
 }

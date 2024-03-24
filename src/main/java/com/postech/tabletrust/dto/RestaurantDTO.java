@@ -2,21 +2,19 @@ package com.postech.tabletrust.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
 import java.time.LocalTime;
 import java.util.UUID;
 
+@Builder
 public record RestaurantDTO (
 
-
     UUID id,
-
     @NotNull
     String name,
-
     @NotNull
     String address,
-
     @NotNull
     String kitchenType,
 
@@ -31,6 +29,7 @@ public record RestaurantDTO (
     @NotNull
     Integer availableCapacity
 ){
+
 }
 
 
