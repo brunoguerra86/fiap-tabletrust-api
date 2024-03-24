@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -61,18 +60,6 @@ public class Restaurant implements Cloneable{
         this.openingTime = restaurantDTO.openingTime();
         this.closingTime = restaurantDTO.closingTime();
         this.availableCapacity = restaurantDTO.availableCapacity();
-    }
-
-    public RestaurantDTO convertToDTO(){
-        return new RestaurantDTO(
-                this.id,
-                this.name,
-                this.address,
-                this.kitchenType,
-                this.openingTime,
-                this.closingTime,
-                this.availableCapacity
-        );
     }
 
     @Override

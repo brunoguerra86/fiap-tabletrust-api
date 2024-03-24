@@ -57,20 +57,21 @@ class RestaurantControllerTest {
 
         @Test
         void testNewRestaurant_ValidationException() {
-//            // Crie um objeto RestaurantDTO simulado com campos inválidos
-//            RestaurantDTO invalidRestaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
-//
-//            // Configure o comportamento do mock para lançar uma exceção de validação
-//            when(restaurantGateway.newRestaurant(any(RestaurantDTO.class)))
-//                    .thenThrow(new Exception("Campos inválidos"));
-//
-//            // Chame o método a ser testado
-//            ResponseEntity<?> response = restaurantController.newRestaurant(invalidRestaurantDTO);
-//
-//            // Verifique se o status da resposta é BAD_REQUEST
-//            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//            // Verifique se a mensagem de erro está correta
-//            assertEquals("Campos inválidos", response.getBody());
+            // Mocking the dependencies
+            RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
+
+            // Mocking the behavior of restaurantGateway.newRestaurant() to throw an exception
+            when(restaurantGateway.newRestaurant(any(RestaurantDTO.class))).thenThrow(new RuntimeException("Some error message"));
+
+            // Creating an instance of the controller
+            RestaurantController restaurantController = new RestaurantController(restaurantGateway);
+
+            // Invoking the method under test
+            ResponseEntity responseEntity = restaurantController.newRestaurant(restaurantDTO);
+
+            // Assertions
+            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+            assertEquals("Some error message", responseEntity.getBody());
         }
     }
 
