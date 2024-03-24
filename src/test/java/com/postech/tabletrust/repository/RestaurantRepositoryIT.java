@@ -1,6 +1,7 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalTime;
@@ -19,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
 @DirtiesContext
 @Transactional
 public class RestaurantRepositoryIT {
@@ -38,7 +41,7 @@ public class RestaurantRepositoryIT {
     @Test
     void shouldAllowSaveRestaurant() {
         //Arrange
-        Restaurant restaurant = createARestaurant();
+        Restaurant restaurant = NewEntititesHelper.createARestaurant();
 
         //Act
         var restaurantFoud = restaurantRepository.save(restaurant);
@@ -53,14 +56,12 @@ public class RestaurantRepositoryIT {
     @Test
     void shouldFindRestaurantsByNameAndAddressAndKitchenType() {
         // Arrange - cria e persiste um restaurante de teste
-        Restaurant restaurant = new Restaurant();
+        Restaurant restaurant = NewEntititesHelper.createARestaurant();
         restaurant.setName("Test Restaurant");
         restaurant.setAddress("Test Address");
         restaurant.setKitchenType("Test Kitchen");
-        restaurant.setAvailableCapacity(10);
 
-        entityManager.persist(restaurant);
-        entityManager.flush();
+        restaurantRepository.save(restaurant);
 
         // Act - busca restaurantes usando o método do repositório
         List<Restaurant> foundRestaurants = restaurantRepository.findRestaurantsByNameAndAddressAndKitchenType(
