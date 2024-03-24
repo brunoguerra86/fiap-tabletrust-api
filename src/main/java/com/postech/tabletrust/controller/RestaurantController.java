@@ -4,6 +4,8 @@ import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,9 @@ public class RestaurantController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create a new restaurant", responses = {
+            @ApiResponse(description = "The new restaurant was created", responseCode = "201")
+    })
     public ResponseEntity newRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) {
         log.info("PostMapping - createRestaurant");
         try {
@@ -37,6 +42,9 @@ public class RestaurantController {
     }
 
     @GetMapping("")
+    @Operation(summary = "List of restaurants", responses = {
+            @ApiResponse(description = "All restaurants by kitchen type", responseCode = "200")
+    })
     public ResponseEntity<?> findRestaurantsByNameAndAddressAndKitchenType(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String address,
@@ -48,6 +56,9 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Once restaurant", responses = {
+            @ApiResponse(description = "Get the restaurant by ID", responseCode = "200")
+    })
     public ResponseEntity<?> findRestaurant(@PathVariable String id) {
         log.info("GetMapping - findRestaurant ");
         try {
@@ -63,6 +74,9 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update all informations of a restaurant", responses = {
+            @ApiResponse(description = "The restaurant was updated", responseCode = "200")
+    })
     public ResponseEntity<?> updateRestaurant(
             @PathVariable String id,
             @RequestBody @Valid Restaurant restaurant) {
@@ -79,6 +93,9 @@ public class RestaurantController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a restaurant by ID", responses = {
+            @ApiResponse(description = "The restaurant was deleted", responseCode = "200")
+    })
     public ResponseEntity<?> deleteRestaurant(@PathVariable String id) {
         log.info("DeleteMapping - deleteRestaurant");
         try {
