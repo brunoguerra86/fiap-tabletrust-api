@@ -29,6 +29,7 @@ public record RestaurantDTO (
     @NotNull
     Integer availableCapacity
 ){
+
 }
 
 

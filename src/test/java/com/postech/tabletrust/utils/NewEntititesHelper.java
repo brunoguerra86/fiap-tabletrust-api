@@ -60,7 +60,7 @@ public class NewEntititesHelper {
                 .id(restaurantID)
                 .address("Fragonard")
                 .kitchenType("Sopa")
-                .name("Restaurante-teste")
+//                .name("Restaurante-teste")
                 .openingTime(open)
                 .closingTime(close)
                 .availableCapacity(100)
