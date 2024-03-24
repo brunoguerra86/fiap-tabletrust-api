@@ -23,11 +23,4 @@ public class RestaurantTest {
         assertEquals(original.getId(), cloned.getId());
         assertEquals(original.getName(), cloned.getName());
     }
-
-    @Test
-    void testCloneThrowsException() {
-        Restaurant original = new Restaurant();
-        assertThrows(CloneNotSupportedException.class, () -> original.clone(),
-                "Expected CloneNotSupportedException was not thrown.");
-    }
 }

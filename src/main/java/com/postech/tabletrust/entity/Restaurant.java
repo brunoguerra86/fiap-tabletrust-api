@@ -62,18 +62,6 @@ public class Restaurant implements Cloneable{
         this.availableCapacity = restaurantDTO.availableCapacity();
     }
 
-    public RestaurantDTO convertToDTO(){
-        return new RestaurantDTO(
-                this.id,
-                this.name,
-                this.address,
-                this.kitchenType,
-                this.openingTime,
-                this.closingTime,
-                this.availableCapacity
-        );
-    }
-
     @Override
     public Restaurant clone() {
         try {

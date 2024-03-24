@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class RestaurantGateway implements IRestaurantGateway {
+public class RestaurantGateway implements
+        IRestaurantGateway {
     private final RestaurantRepository restaurantRepository;
 
     public RestaurantGateway(RestaurantRepository restaurantRepository) {

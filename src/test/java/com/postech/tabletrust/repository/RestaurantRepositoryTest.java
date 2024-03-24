@@ -1,7 +1,6 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entity.Restaurant;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -126,8 +125,8 @@ public class RestaurantRepositoryTest {
     }
 
     private Restaurant createARestaurant(){
-        LocalTime open = new LocalTimeJavaType().fromString("19:00:00");
-        LocalTime close = new LocalTimeJavaType().fromString("23:30:00");
+        LocalTime open = LocalTime.of(19, 0, 0);
+        LocalTime close = LocalTime.of(23, 30, 0);
 
         return Restaurant.builder()
                 .id(UUID.randomUUID())

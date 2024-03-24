@@ -3,7 +3,6 @@ package com.postech.tabletrust.repository;
 import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.transaction.Transactional;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +70,20 @@ public class RestaurantRepositoryIT {
         // Assert - verifica se o restaurante correto foi encontrado
         assertThat(foundRestaurants).hasSize(1);
         assertThat(foundRestaurants.get(0).getId()).isEqualTo(restaurant.getId());
+    }
+
+    private Restaurant createARestaurant(){
+        LocalTime open = LocalTime.of(19, 0, 0);
+        LocalTime close = LocalTime.of(23, 30, 0);
+
+        return Restaurant.builder()
+                //.id(UUID.randomUUID())
+                .address("Fragonard")
+                .kitchenType("Tapioca")
+                .name("Restaurante-teste")
+                .openingTime(open)
+                .closingTime(close)
+                .availableCapacity(100)
+                .build();
     }
 }
