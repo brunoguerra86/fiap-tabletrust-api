@@ -27,4 +27,8 @@ Este projeto foi desenvolvido com as seguintes tecnologias e bibliotecas:
 
 ## Documentação
 
+A documentação detalhada da API está acessível na URL:
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+
 ## Segurança
