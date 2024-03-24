@@ -36,22 +36,19 @@ class RestaurantControllerTest {
     class CreateRestaurant {
         @Test
         void testNewRestaurant_Success() {
-            // Crie um objeto RestaurantDTO simulado
+            // Arrange
             RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
 
-            // Crie um objeto Restaurant simulado
             Restaurant restaurantCreated = new Restaurant();
             restaurantCreated.setId(UUID.randomUUID());
 
-            // Configure o comportamento do mock
             when(restaurantGateway.newRestaurant(any(RestaurantDTO.class))).thenReturn(restaurantCreated);
 
-            // Chame o método a ser testado
+            // Act
             ResponseEntity<?> response = restaurantController.newRestaurant(restaurantDTO);
 
-            // Verifique se o status da resposta é CREATED
+            // Assert
             assertEquals(HttpStatus.CREATED, response.getStatusCode());
-            // Verifique se o restaurante retornado é o esperado
             assertEquals(restaurantCreated, response.getBody());
         }
 

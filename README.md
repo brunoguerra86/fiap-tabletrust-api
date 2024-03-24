@@ -4,8 +4,20 @@ Este projeto é uma API desenvolvida com Java e Spring Boot, designada para Rese
 
 ## Funcionalidades Principais
 
-### Cadastro de Restaurantes
-Os restaurantes podem se cadastrar no sistema, fornecendo informações como nome, localização, tipo de cozinha, horários de funcionamento e capacidade.
+### 1 - Registro de Restaurantes
+Os donos de restaurantes podem cadastrar seus estabelecimentos informando o nome, localização, tipo de cozinha, horários de funcionamento e capacidade.
+
+### 2 - Busca de Restaurantes
+Os clientes podem buscar restaurantes por nome, localização ou tipo de cozinha.
+
+### 3 – Reserva de Mesas
+Quando o cliente achar o restaurante, ele pode fazer uma reserva para um dia e hora específica, desde que a capacidade do restaurante não tenha atingido o máximo para aquela data e hora.
+
+### 4 - Avaliação e Comentários
+Após a visita, o cliente pode avaliar o restaurante e deixar comentários sobre sua experiência.
+
+### 5 – Gerenciamento de Reservas
+Os restaurantes podem gerencias as reservas, visualizando e atualizando o status das mesas.
 
 ## Tecnologias Utilizadas
 
