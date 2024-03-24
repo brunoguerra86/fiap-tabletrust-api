@@ -5,6 +5,7 @@ import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
+import com.postech.tabletrust.gateways.RestaurantGateway;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
 import com.postech.tabletrust.utils.NewEntititesHelper;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
@@ -20,11 +22,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,7 +60,9 @@ public class RestaurantControllerTest {
 
     public static String asJsonString(final Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.findAndRegisterModules();
+            return objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -65,54 +71,23 @@ public class RestaurantControllerTest {
     @Nested
     class CreateRestaurant{
 
-//        @Test
-//        public void testNewRestaurant_Success() {
-//            // Crie um objeto RestaurantDTO para o teste
-//            UUID id = UUID.randomUUID();
-//            String name = "Restaurante A";
-//            String address = "Rua Principal";
-//            String kitchenType = "Italiana";
-//            LocalTime openingTime = LocalTime.of(10, 0, 0);
-//            LocalTime closingTime = LocalTime.of(22, 0, 0);
-//            Integer availableCapacity = 50;
-//
-//            RestaurantDTO restaurantDTO = new RestaurantDTO(id, name, address, kitchenType, openingTime, closingTime, availableCapacity);
-//
-//            // Simule o comportamento do gateway
-//            when(restaurantGateway.newRestaurant(restaurantDTO)).thenReturn(new Restaurant());
-//
-//            // Chame o método newRestaurant()
-//            ResponseEntity response = restaurantController.newRestaurant(restaurantDTO);
-//
-//            // Verifique se o restaurante foi criado corretamente
-//            assertEquals(HttpStatus.CREATED, response.getStatusCode());
-//            assertNotNull(response.getBody());
-//        }
         @Test
         void testNewRestaurant_ValidInput_ReturnsCreatedResponse() throws Exception{
-            // Arrange
             RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
-
-            // Act & ASsert
             mockMvc.perform(post("/restaurants")
-                            .contentType(MediaType.APPLICATION_JSON).content(asJsonString(restaurantDTO)))
-                    .andExpect(status().isCreated());
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(restaurantDTO)))
+                            .andExpect(status().isCreated());
         }
 
-//        @Test
-//        void testNewRestaurant_InvalidInput_ReturnsBadRequestResponse() {
-//            // Arrange
-//            Restaurant restaurant = new Restaurant();
-//            when(restaurantGateway.newRestaurant(restaurant)).thenThrow(new IllegalArgumentException("ID inválido"));
-//
-//            // Act
-//            ResponseEntity<?> response = restaurantController.newRestaurant(restaurant);
-//
-//            // Assert
-//            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//            assertEquals("ID inválido", response.getBody());
-//            verify(restaurantGateway, times(1)).newRestaurant(restaurant);
-//        }
+        @Test
+        void testNewRestaurant_InvalidInput_ReturnsBadRequestResponse() throws Exception{
+            RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
+            mockMvc.perform(post("/restaurants")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(restaurantDTO)))
+                            .andExpect(status().isCreated());
+        }
 //
 //        @Test
 //        void testNewRestaurant_RuntimeException_ReturnsNotFoundResponse() {
@@ -128,7 +103,7 @@ public class RestaurantControllerTest {
 //            assertEquals("Erro interno", response.getBody());
 //            verify(restaurantGateway, times(1)).newRestaurant(restaurant);
 //        }
-    }
+//    }
 
 //    @Nested
 //    class ReadRestaurant {
@@ -382,5 +357,5 @@ public class RestaurantControllerTest {
 //            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 //            verify(restaurantGateway, times(1)).deleteRestaurant(notFoundUuid);
 //        }
-//    }
+    }
 }

@@ -5,7 +5,6 @@ import com.postech.tabletrust.gateways.RestaurantGateway;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
 import com.postech.tabletrust.repository.RestaurantRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

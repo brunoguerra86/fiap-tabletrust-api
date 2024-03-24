@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 

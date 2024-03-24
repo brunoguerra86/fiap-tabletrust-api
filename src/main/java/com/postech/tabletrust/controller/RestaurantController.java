@@ -2,8 +2,8 @@ package com.postech.tabletrust.controller;
 
 import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Restaurant;
+import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class RestaurantController {
             return new ResponseEntity<>(restaurant, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("ID inválido");
-        } catch (EntityNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

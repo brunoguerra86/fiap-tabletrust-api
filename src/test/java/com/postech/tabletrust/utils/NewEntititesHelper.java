@@ -8,7 +8,6 @@ import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.entity.Restaurant;
-import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
