@@ -17,18 +17,4 @@ public class CustomerDTO {
     @NotNull(message = "O nome não pode ser nulo.")
     private String nome;
 
-    public CustomerDTO() {
-    }
-    public CustomerDTO(Customer Customer) {
-        if (Customer != null) {
-            this.id = Customer.getId().toString();
-            this.nome = Customer.getNome();
-        }
-    }
-    public List<CustomerDTO> toList(List<Customer> customerList) {
-        return customerList
-                .stream()
-                .map(CustomerDTO::new)
-                .collect(Collectors.toList());
-    }
 }
