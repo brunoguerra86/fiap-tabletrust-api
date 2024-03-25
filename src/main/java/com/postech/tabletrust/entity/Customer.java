@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Data
-@Builder(toBuilder = true)
 @Entity
 @Table(name = "tb_Customer")
 @NoArgsConstructor
