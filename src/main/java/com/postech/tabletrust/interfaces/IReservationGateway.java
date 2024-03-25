@@ -23,4 +23,6 @@ public interface IReservationGateway {
     public List<ReservationDTO> listAllReservations();
 
     List<Reservation> findRestaurantReservationByDate(String restaurantId, String date);
+
+    List<ReservationDTO> findReservationsByRestaurantAndCustomer(String restaurantId, String customerName);
 }

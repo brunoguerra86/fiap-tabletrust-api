@@ -9,7 +9,7 @@ import com.postech.tabletrust.exception.InvalidReservationException;
 import com.postech.tabletrust.gateways.FeedBackGateway;
 import com.postech.tabletrust.gateways.ReservationGateway;
 import com.postech.tabletrust.usecases.FeedBackUseCase;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -62,7 +62,7 @@ public class FeedBackControllerTest {
 
         @Test
         void shouldCreateAFeedBack() throws Exception {
-            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
+            FeedBack feedBack = NewEntitiesHelper.createAFeedBack();
             FeedBackCreateDTO feedBackCreateDTO = feedBack.convertToDTO();
             when(feedBackUseCase.registerFeedBack(feedBackCreateDTO, reservationGateway)).thenReturn(feedBack);
 
@@ -80,7 +80,7 @@ public class FeedBackControllerTest {
 
         @Test
         void shouldReturnExceptionIfReservationNotFound() throws Exception {
-            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
+            FeedBack feedBack = NewEntitiesHelper.createAFeedBack();
             feedBack.setReservationId(UUID.randomUUID());
 
             FeedBackCreateDTO feedBackCreateDTO = feedBack.convertToDTO();
@@ -101,8 +101,8 @@ public class FeedBackControllerTest {
         @Test
         void shouldReturnExceptionIfReservationNotValid() throws Exception {
             //Assert
-            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
-            Reservation reservation = NewEntititesHelper.createAReservation();
+            FeedBack feedBack = NewEntitiesHelper.createAFeedBack();
+            Reservation reservation = NewEntitiesHelper.createAReservation();
             reservation.setApproved(false);
             feedBack.setReservationId(reservation.getId());
 

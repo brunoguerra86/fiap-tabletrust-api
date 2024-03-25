@@ -4,7 +4,7 @@ import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.repository.CustomerRepository;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -41,7 +41,7 @@ class CustomerGatewayTest {
     class InsertCustomer {
         @Test
         void devePermitirRegistrarCliente() {
-            Customer customer = NewEntititesHelper.createACustomer();
+            Customer customer = NewEntitiesHelper.createACustomer();
             when(customerGateway.createCustomer(any(Customer.class))).thenAnswer(i -> i.getArgument(0));
             Customer customerNew = customerGateway.createCustomer(customer);
             assertThat(customerNew).isNotNull().isInstanceOf(Customer.class);
@@ -52,7 +52,7 @@ class CustomerGatewayTest {
     class UpdateCustomer {
         @Test
         void devePermitirAtualizarCliente() {
-            Customer customer = NewEntititesHelper.createACustomer();
+            Customer customer = NewEntitiesHelper.createACustomer();
             when(customerGateway.updateCustomer(any(Customer.class))).thenAnswer(i -> i.getArgument(0));
             Customer customerNew = customerGateway.updateCustomer(customer);
             assertThat(customerNew).isNotNull().isInstanceOf(Customer.class);
@@ -63,7 +63,7 @@ class CustomerGatewayTest {
     class DeleteCustomer {
         @Test
         void devePermitirApagarCliente() {
-            Customer customer = NewEntititesHelper.createACustomer();
+            Customer customer = NewEntitiesHelper.createACustomer();
 
             when(customerRepository.findById(customer.getId())).thenReturn(Optional.of(customer));
             doNothing().when(customerRepository).deleteById(customer.getId());
@@ -86,7 +86,7 @@ class CustomerGatewayTest {
     class FindCustomer {
         @Test
         void devePermitirPesquisarUmCliente() {
-            Customer customer = NewEntititesHelper.createACustomer();
+            Customer customer = NewEntitiesHelper.createACustomer();
             when(customerRepository.findById(customer.getId())).thenReturn(Optional.of(customer));
 
             Customer customerFound = customerGateway.findCustomer(customer.getId().toString());
@@ -105,7 +105,7 @@ class CustomerGatewayTest {
 
         @Test
         void devePermitirListarTodosClientes() {
-            List<CustomerDTO> customerDTOList = NewEntititesHelper.gerarCustomerListRequest();
+            List<CustomerDTO> customerDTOList = NewEntitiesHelper.gerarCustomerListRequest();
             List<Customer> customerList = new Customer().toList(customerDTOList);
 
             when(customerRepository.findAll()).thenReturn(customerList);

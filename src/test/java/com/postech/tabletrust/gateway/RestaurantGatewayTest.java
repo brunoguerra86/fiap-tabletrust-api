@@ -3,7 +3,7 @@ import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.gateways.RestaurantGateway;
 import com.postech.tabletrust.repository.RestaurantRepository;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -33,7 +33,7 @@ class RestaurantGatewayTest {
     @Test
     void testNewRestaurant_Success() {
         // Crie um objeto RestaurantDTO simulado
-        RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
+        RestaurantDTO restaurantDTO = NewEntitiesHelper.gerarRestaurantInsertRequest();
 
         // Crie um objeto Restaurant simulado
         Restaurant restaurantCreated = new Restaurant();
@@ -50,6 +50,7 @@ class RestaurantGatewayTest {
         // Verifique se o restaurante retornado é o esperado
         assertEquals(restaurantCreated, result);
     }
+
 
     @Test
     void testFindRestaurantById_Success() {

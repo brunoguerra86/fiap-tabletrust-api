@@ -97,4 +97,14 @@ public class ReservationGateway implements IReservationGateway {
         }
 
     }
+
+    @Override
+    public List<ReservationDTO> findReservationsByRestaurantAndCustomer(String restaurantId, String customerName) {
+        List<Reservation> reservationEntityList = reservationRepository.findAll();
+
+        return reservationEntityList
+                .stream()
+                .map(ReservationDTO::new)
+                .collect(Collectors.toList());
+    }
 }

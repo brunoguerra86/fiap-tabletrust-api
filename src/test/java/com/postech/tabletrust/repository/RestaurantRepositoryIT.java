@@ -1,7 +1,7 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entity.Restaurant;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +41,7 @@ public class RestaurantRepositoryIT {
     @Test
     void shouldAllowSaveRestaurant() {
         //Arrange
-        Restaurant restaurant = NewEntititesHelper.createARestaurant();
+        Restaurant restaurant = NewEntitiesHelper.createARestaurant();
 
         //Act
         var restaurantFoud = restaurantRepository.save(restaurant);
@@ -56,7 +56,7 @@ public class RestaurantRepositoryIT {
     @Test
     void shouldFindRestaurantsByNameAndAddressAndKitchenType() {
         // Arrange - cria e persiste um restaurante de teste
-        Restaurant restaurant = NewEntititesHelper.createARestaurant();
+        Restaurant restaurant = NewEntitiesHelper.createARestaurant();
         restaurant.setName("Test Restaurant");
         restaurant.setAddress("Test Address");
         restaurant.setKitchenType("Test Kitchen");

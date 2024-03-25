@@ -8,6 +8,7 @@ import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.entity.Restaurant;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class NewEntititesHelper {
+public class NewEntitiesHelper {
 
     private static UUID customerID = UUID.fromString("7247101a-9bab-414a-83e5-a61b07e2146a");
     private static UUID restaurantID = UUID.fromString("c68b4872-6073-4dff-8199-a24c74d4c763");
-    private static UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
+    public static UUID reservationID = UUID.fromString("38f6df39-9118-4610-a435-7572648540a0");
     private static UUID feedbackID = UUID.fromString("7cad184d-6b00-4e20-bdeb-d4e224cf3bbd");
 
     /* ----------------------------- Feedback ------------------------------- */
@@ -93,9 +94,9 @@ public class NewEntititesHelper {
         return customerDTOList;
     }
  /* ----------------------------- Reservation ---------------------------- */
-     public static ReservationDTO gerarReservationInsertRequest() {
+     public static ReservationDTO gerarReservationInsertRequest( String uuid) {
          return ReservationDTO.builder()
-                 .id(UUID.randomUUID().toString())
+                 .id(uuid == null ? UUID.randomUUID().toString() : reservationID.toString())
                  .restaurantId("2b9c1a1e-c257-4bc6-8efe-c1db33d4c52c")
                  .customerId("cecad256-a3c3-4c09-833c-36586cd00f45")
                  .reservationDate("2024-02-20 20:30:00")
@@ -116,9 +117,30 @@ public class NewEntititesHelper {
                 .build();
     }
 
+    public static Reservation createAReservationRandom() {
+        LocalDateTime in3HoursAgo = LocalDateTime.now().minusHours(3);
+
+        return Reservation.builder()
+                .id(UUID.randomUUID())
+                .reservationDate(in3HoursAgo)
+                .restaurant(new Restaurant(restaurantID))
+                .customerId(UUID.randomUUID())
+                .quantity(4)
+                .approved(true)
+                .build();
+    }
+
     public static List<Reservation> createAEmptyReservationList() {
          List<Reservation> reservationList = new ArrayList<>();
          return reservationList;
+    }
+
+    public static List<Reservation> createAFullReservationList(Integer capacity) {
+        List<Reservation> reservationList = new ArrayList<>();
+        for (int i = 0; i < capacity; i++){
+            reservationList.add(createAReservationRandom());
+        }
+        return reservationList;
     }
 
     public static String asJsonString(final Object obj) {

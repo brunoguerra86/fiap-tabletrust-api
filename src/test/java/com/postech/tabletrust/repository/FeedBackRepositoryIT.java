@@ -1,8 +1,7 @@
 package com.postech.tabletrust.repository;
 
 import com.postech.tabletrust.entity.FeedBack;
-import com.postech.tabletrust.entity.Restaurant;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +37,7 @@ public class FeedBackRepositoryIT {
 
     @Test
     void shouldCreateAFeedBack(){
-        FeedBack feedBack = NewEntititesHelper.createAFeedBack();
+        FeedBack feedBack = NewEntitiesHelper.createAFeedBack();
 
         var fbFound = feedBackRepository.save(feedBack);
 

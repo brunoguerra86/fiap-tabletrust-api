@@ -29,13 +29,13 @@ public class ReservationUseCase {
                                                         @NotNull(message = "A quantidade de lugares não pode ser nula.") Integer quantity,
                                                         Boolean isApproved, List<Reservation> reservationList) {
 
-        if (!oldReservation.getId().equals(strId)) {
+        if (!oldReservation.getId().toString().equals(strId)) {
             throw new IllegalArgumentException("ID da reserva incorreto");
         }
-        if(reservationList.size() > 0){
+        if(!reservationList.isEmpty()){
             validateMaxCapacity(reservationList, reservationList.get(0).getRestaurant());
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(newDate, formatter);
         oldReservation.setQuantity(quantity);
         oldReservation.setReservationDate(dateTime);

@@ -3,7 +3,7 @@ package com.postech.tabletrust.repository;
 import com.postech.tabletrust.entity.FeedBack;
 import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.entity.Restaurant;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,9 +44,9 @@ public class FeedBackRepositoryTest {
     @Test
     void shouldListFeedbacksByRestaurantId(){
         //Arrange
-        FeedBack feedback = NewEntititesHelper.createAFeedBack();
-        Restaurant restaurant = NewEntititesHelper.createARestaurant();
-        Reservation reservation = NewEntititesHelper.createAReservation();
+        FeedBack feedback = NewEntitiesHelper.createAFeedBack();
+        Restaurant restaurant = NewEntitiesHelper.createARestaurant();
+        Reservation reservation = NewEntitiesHelper.createAReservation();
         feedback.setRestaurantId(restaurant.getId());
         feedback.setReservationId(reservation.getId());
 
@@ -67,7 +67,7 @@ public class FeedBackRepositoryTest {
 
     @Test
     void shouldCreateAFeedBack(){
-        var feedback = NewEntititesHelper.createAFeedBack();
+        var feedback = NewEntitiesHelper.createAFeedBack();
 
         when(feedBackRepository.save(feedback)).thenReturn(feedback);
 
@@ -79,7 +79,7 @@ public class FeedBackRepositoryTest {
 
     @Test
     void shouldFindById(){
-        var feedback = NewEntititesHelper.createAFeedBack();
+        var feedback = NewEntitiesHelper.createAFeedBack();
         UUID id = feedback.getId();
 
         when(feedBackRepository.findById(id)).thenReturn(Optional.of(feedback));
@@ -91,7 +91,7 @@ public class FeedBackRepositoryTest {
 
     @Test
     void shouldDeleteById(){
-        var feedback = NewEntititesHelper.createAFeedBack();
+        var feedback = NewEntitiesHelper.createAFeedBack();
         UUID id = feedback.getId();
 
         doNothing().when(feedBackRepository).deleteById(any(UUID.class));
