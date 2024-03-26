@@ -8,10 +8,14 @@ import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.gateways.ReservationGateway;
 import com.postech.tabletrust.gateways.RestaurantGateway;
 import com.postech.tabletrust.usecases.ReservationUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +36,12 @@ public class ReservationController {
         this.restaurantGateway = restaurantGateway;
     }
 
-    @PostMapping("")
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create a new reservation", responses = {
+            @ApiResponse(description = "The new reservation was created", responseCode = "201")
+    })
     public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
         log.info("create reservation for customer [{}]", reservationDTO.getCustomerId());
 
@@ -46,104 +55,68 @@ public class ReservationController {
             Reservation reservationCreated = reservationGateway.createReservation(reservation);
 
             return new ResponseEntity<>(reservationCreated, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @PutMapping("/id={id}")
-    public ResponseEntity<?> updateReservation(@PathVariable String id, @RequestBody @Valid ReservationDTO reservationNew) {
-        log.info("PutMapping - updateReservation");
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateReservation(@PathVariable String id, @RequestBody @Valid ReservationDTO reservationDTO) {
+        log.info("update reservation [{}]", reservationDTO.getId());
         try {
             Reservation reservationOld = reservationGateway.findReservation(id);
-            Customer customer = customerGateway.findCustomer(reservationNew.getCustomerId());
-            ReservationUseCase.validarUpdateReserva(id, reservationOld, reservationNew, customer);
-            ReservationDTO newReservation = reservationGateway.updateReservation(reservationNew);
+            customerGateway.findCustomer(reservationDTO.getCustomerId());
+            List<Reservation> reservationList = reservationGateway.findRestaurantReservationByDate(reservationDTO.getRestaurantId(), reservationDTO.getReservationDate());
+
+            ReservationUseCase.validateUpdateReservation(id, reservationOld, reservationDTO.getReservationDate(),
+                    reservationDTO.getQuantity(), reservationDTO.getApproved(), reservationList);
+            ReservationDTO newReservation = reservationGateway.updateReservation(reservationDTO);
             return new ResponseEntity<>(newReservation, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/id={id}")
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a reservation by ID", responses = {
+            @ApiResponse(description = "The reservation was deleted", responseCode = "200")
+    })
     public ResponseEntity<?> deleteReservation(@PathVariable String id) {
-        log.info("DeleteMapping - deleteReservation");
+        log.info("delete Reservation [{}]", id);
         try {
             reservationGateway.deleteReservation(id);
-            return new ResponseEntity<>("reserva removida", HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
+            return new ResponseEntity<>("reserva removida", HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-
-    @GetMapping("/all")
-    public ResponseEntity<List<ReservationDTO>> listAllReservations() {
-        log.info("GetMapping - listReservations");
-        List<ReservationDTO> reservations = reservationGateway.listAllReservations();
-        return new ResponseEntity<>(reservations, HttpStatus.OK);
-    }
-
-    @GetMapping("/id={id}")
-    public ResponseEntity<?> findReservation(@PathVariable String id) {
-        log.info("GetMapping - FindReservation ");
+    @GetMapping("")
+    @Operation(summary = "Find reservations by parameters", responses = {
+            @ApiResponse(description = "All reservations by parameters", responseCode = "200")
+    })
+    public ResponseEntity<?> findRestaurantReservation( @RequestParam(required = false) String restaurantId,
+                                                        @RequestParam(required = false) String customerName) {
+        log.info("find all reservations by parameters restaurant id: {} - customer id: {}",
+                restaurantId == null ? "empty" : restaurantId, customerName == null ? "empty" : customerName);
         try {
-            Reservation reservation = reservationGateway.findReservation(id);
-            return new ResponseEntity<>(reservation, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
+            if (StringUtils.hasText(restaurantId) && StringUtils.hasText(customerName)) {
+                List<ReservationDTO> reservations = reservationGateway.findReservationsByRestaurantAndCustomer(restaurantId, customerName);
+                return ResponseEntity.ok(reservations);
+            } else if (StringUtils.hasText(restaurantId)) {
+                List<ReservationDTO> reservations = reservationGateway.findRestaurantReservation(restaurantId);
+                return ResponseEntity.ok(reservations);
+            } else if (StringUtils.hasText(customerName)) {
+                List<ReservationDTO> reservations = reservationGateway.findCustomerReservation(customerName);
+                return ResponseEntity.ok(reservations);
+            } else {
+                List<ReservationDTO> reservations = reservationGateway.listAllReservations();
+                return ResponseEntity.ok(reservations);
+            }
+        }  catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
-    @GetMapping("/restaurantId={restaurantId}")
-    public ResponseEntity<?> findRestaurantReservation(@PathVariable String restaurantId) {
-        log.info("GetMapping - FindRestaurantReservation");
-        try {
-            List<ReservationDTO> reservations = reservationGateway.findRestaurantReservation(restaurantId);
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/customerId={customerId}")
-    public ResponseEntity<?> findCustomerReservation(@PathVariable String customerId) {
-        log.info("GetMapping - findCustomerReservation");
-        try {
-            List<ReservationDTO> reservations = reservationGateway.findCustomerReservation(customerId);
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/restaurantId/{restaurantId}")
-    public ResponseEntity<?> findRestaurantReservationByDate(@PathVariable String restaurantId, @RequestParam String date) {
-        log.info("find reservation from restaurant {} on date {}", restaurantId, date);
-        try {
-            List<ReservationDTO> reservations = reservationGateway.findRestaurantReservationByDate(restaurantId, date)
-                    .stream()
-                    .map(ReservationDTO::new).collect(Collectors.toList());
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
 
 }
 

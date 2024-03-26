@@ -1,9 +1,10 @@
-import com.postech.tabletrust.controller.RestaurantController;
+package com.postech.tabletrust.controller;
+
 import com.postech.tabletrust.dto.RestaurantDTO;
 import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.interfaces.IRestaurantGateway;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class RestaurantControllerTest {
@@ -37,7 +38,7 @@ class RestaurantControllerTest {
         @Test
         void testNewRestaurant_Success() {
             // Crie um objeto RestaurantDTO simulado
-            RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
+            RestaurantDTO restaurantDTO = NewEntitiesHelper.gerarRestaurantInsertRequest();
 
             // Crie um objeto Restaurant simulado
             Restaurant restaurantCreated = new Restaurant();
@@ -58,7 +59,7 @@ class RestaurantControllerTest {
         @Test
         void testNewRestaurant_ValidationException() {
             // Mocking the dependencies
-            RestaurantDTO restaurantDTO = NewEntititesHelper.gerarRestaurantInsertRequest();
+            RestaurantDTO restaurantDTO = NewEntitiesHelper.gerarRestaurantInsertRequest();
 
             // Mocking the behavior of restaurantGateway.newRestaurant() to throw an exception
             when(restaurantGateway.newRestaurant(any(RestaurantDTO.class))).thenThrow(new RuntimeException("Some error message"));

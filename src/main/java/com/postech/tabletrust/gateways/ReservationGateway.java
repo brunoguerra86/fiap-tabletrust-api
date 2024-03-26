@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class ReservationGateway implements IReservationGateway {
     private final ReservationRepository reservationRepository;
 
-    public ReservationGateway( ReservationRepository reservationRepository) {
+    public ReservationGateway(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
@@ -96,5 +96,15 @@ public class ReservationGateway implements IReservationGateway {
             throw e;
         }
 
+    }
+
+    @Override
+    public List<ReservationDTO> findReservationsByRestaurantAndCustomer(String restaurantId, String customerName) {
+        List<Reservation> reservationEntityList = reservationRepository.findAll();
+
+        return reservationEntityList
+                .stream()
+                .map(ReservationDTO::new)
+                .collect(Collectors.toList());
     }
 }

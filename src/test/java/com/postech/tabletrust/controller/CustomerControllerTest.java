@@ -5,7 +5,7 @@ import com.postech.tabletrust.dto.CustomerDTO;
 import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
 import com.postech.tabletrust.gateways.CustomerGateway;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -58,7 +58,7 @@ class CustomerControllerTest {
     class InsertCustomer {
         @Test
         void devePermitirRegistrarCliente() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             mockMvc.perform(post("/customers")
                             .contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO)))
                     .andExpect(status().isCreated());
@@ -66,7 +66,7 @@ class CustomerControllerTest {
 
         @Test
         void deveGerarExcecaoQuandoRegistrarClienteNomeNulo() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             customerDTO.setNome(null);
             mockMvc.perform(post("/customers").contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerDTO))).andExpect(status().isBadRequest()).andExpect(result -> {
                 String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
@@ -76,7 +76,7 @@ class CustomerControllerTest {
 
         @Test
         void deveGerarExcecaoQuandoRegistrarClienteJaExistente() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(customer);
@@ -91,7 +91,7 @@ class CustomerControllerTest {
     class UpdateCustomer {
         @Test
         void devePermitirAtualizarCliente() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(customer);
@@ -104,7 +104,7 @@ class CustomerControllerTest {
 
         @Test
         void deveGerarExcecaoQuandoAtualizarClienteNomeNulo() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(customer);
@@ -119,7 +119,7 @@ class CustomerControllerTest {
         }
         @Test
         void deveGerarExcecaoQuandoAtualizarClienteNãoEncontrado() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
             when(customerGateway.updateCustomer(customer)).thenReturn(customer);
@@ -136,7 +136,7 @@ class CustomerControllerTest {
     class DeleteCustomer {
         @Test
         void devePermitirApagarCliente() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(customer);
@@ -148,7 +148,7 @@ class CustomerControllerTest {
 
         @Test
         void deveGerarExcecaoQuandoDeletarClienteNãoEncontrado() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
             mockMvc.perform(delete("/customers/{id}", customer.getId())
@@ -165,7 +165,7 @@ class CustomerControllerTest {
     class FindCustomer {
         @Test
         void devePermitirPesquisarUmCliente() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
             Customer customer = new Customer(customerDTO);
 
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(customer);
@@ -180,7 +180,7 @@ class CustomerControllerTest {
 
         @Test
         void devePermitirListarTodosClientes() throws Exception {
-            List<CustomerDTO> customerDTOList = NewEntititesHelper.gerarCustomerListRequest();
+            List<CustomerDTO> customerDTOList = NewEntitiesHelper.gerarCustomerListRequest();
             List<Customer> customerList = new Customer().toList(customerDTOList);
 
             when(customerGateway.listAllCustomers()).thenReturn(customerList);
@@ -196,7 +196,7 @@ class CustomerControllerTest {
 
         @Test
         void deveGerarExcecaoSeNaoEncontrarCliente() throws Exception {
-            CustomerDTO customerDTO = NewEntititesHelper.gerarCustomerInsertRequest();
+            CustomerDTO customerDTO = NewEntitiesHelper.gerarCustomerInsertRequest();
 
             when(customerGateway.findCustomer(customerDTO.getId())).thenReturn(null);
 

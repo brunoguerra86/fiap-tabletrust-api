@@ -5,7 +5,7 @@ import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.gateways.FeedBackGateway;
 import com.postech.tabletrust.repository.FeedBackRepository;
 import com.postech.tabletrust.repository.RestaurantRepository;
-import com.postech.tabletrust.utils.NewEntititesHelper;
+import com.postech.tabletrust.utils.NewEntitiesHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,8 +51,8 @@ public class FeedBackGatewayTest {
     class ListFeedbacks {
         @Test
         void shouldListAllFeedBacksByARestaurantPageable(){
-            Restaurant restaurant = NewEntititesHelper.createARestaurant();
-            FeedBack fb = NewEntititesHelper.createAFeedBack();
+            Restaurant restaurant = NewEntitiesHelper.createARestaurant();
+            FeedBack fb = NewEntitiesHelper.createAFeedBack();
             Pageable pageable = PageRequest.of(0,10);
             List<FeedBack> fbList = Arrays.asList(fb);
 
@@ -71,7 +71,7 @@ public class FeedBackGatewayTest {
         @Test //OK
         void shouldFindByID(){
             //Assert
-            var fb = NewEntititesHelper.createAFeedBack();
+            var fb = NewEntitiesHelper.createAFeedBack();
             UUID id = fb.getId();
 
             when(feedBackRepository.findById(id)).thenReturn(Optional.of(fb));
@@ -90,7 +90,7 @@ public class FeedBackGatewayTest {
     class CreateFeedbacks{
         @Test //OK
         void shouldCreateANewFeedBack() throws Exception {
-            FeedBack feedBack = NewEntititesHelper.createAFeedBack();
+            FeedBack feedBack = NewEntitiesHelper.createAFeedBack();
 
           when(feedBackGateway.createFeedback(any(FeedBack.class))).thenAnswer( i -> i.getArgument(0)); // Mock o save
 
@@ -107,7 +107,7 @@ public class FeedBackGatewayTest {
         @Test
         void shouldDeleteByID(){
             //Assert
-            var feedback = NewEntititesHelper.createAFeedBack();
+            var feedback = NewEntitiesHelper.createAFeedBack();
             UUID id = feedback.getId();
 
             when(feedBackRepository.findById(id)).thenReturn(Optional.of(feedback));

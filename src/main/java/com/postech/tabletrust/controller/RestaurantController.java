@@ -32,7 +32,7 @@ public class RestaurantController {
             @ApiResponse(description = "The new restaurant was created", responseCode = "201")
     })
     public ResponseEntity newRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) {
-        log.info("PostMapping - createRestaurant");
+        log.info("create restaurant [{}]", restaurantDTO.name());
         try {
             Restaurant restaurantCreated = restaurantGateway.newRestaurant(restaurantDTO);
             return new ResponseEntity<>(restaurantCreated, HttpStatus.CREATED);
