@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/feedback")
+@RequestMapping("/feedbacks")
 @RequiredArgsConstructor
 public class FeedBackController {
 
@@ -75,7 +75,7 @@ public class FeedBackController {
         return ResponseEntity.ok(feedBackFound);
     }
 
-    @DeleteMapping(value="/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Delete a feedback by ID", responses = {
             @ApiResponse(description = "The feedback was deleted", responseCode = "200")
     })

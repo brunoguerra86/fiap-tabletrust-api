@@ -61,6 +61,9 @@ public class ReservationController {
     }
 
     @PatchMapping("/{id}")
+    @Operation(summary = "Request for update a reservation", responses = {
+            @ApiResponse(description = "The reservation was updated", responseCode = "200")
+    })
     public ResponseEntity<?> updateReservation(@PathVariable String id, @RequestBody @Valid ReservationDTO reservationDTO) {
         log.info("update reservation [{}]", reservationDTO.getId());
         try {
@@ -117,6 +120,5 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
 }
 
