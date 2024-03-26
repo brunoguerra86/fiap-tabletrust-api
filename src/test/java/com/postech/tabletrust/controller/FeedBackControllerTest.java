@@ -70,7 +70,7 @@ public class FeedBackControllerTest {
             String feedBackCreateDTOJson = new ObjectMapper().writeValueAsString(feedBackCreateDTO);
 
             mockMvc.perform(
-                    post("/feedback")
+                    post("/feedbacks")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(feedBackCreateDTOJson))
                             .andExpect(status().isOk());
@@ -91,7 +91,7 @@ public class FeedBackControllerTest {
             String feedBackCreateDTOJson = new ObjectMapper().writeValueAsString(feedBackCreateDTO);
 
             mockMvc.perform(
-                            post("/feedback")
+                            post("/feedbacks")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(feedBackCreateDTOJson))
                     .andExpect(status().isConflict());
@@ -113,7 +113,7 @@ public class FeedBackControllerTest {
             String feedBackCreateDTOJson = new ObjectMapper().writeValueAsString(feedBackCreateDTO);
 
             mockMvc.perform(
-                            post("/feedback")
+                            post("/feedbacks")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(feedBackCreateDTOJson))
                     .andExpect(status().isConflict());
