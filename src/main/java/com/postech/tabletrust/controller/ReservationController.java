@@ -91,27 +91,6 @@ public class ReservationController {
         }
     }
 
-
-    /*@GetMapping("")
-    public ResponseEntity<List<ReservationDTO>> listAllReservations(@RequestParam Long restauranteId) {
-        log.info("GetMapping - listReservations");
-        List<ReservationDTO> reservations = reservationGateway.listAllReservations();
-        return new ResponseEntity<>(reservations, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findReservation(@PathVariable String id) {
-        log.info("GetMapping - FindReservation ");
-        try {
-            Reservation reservation = reservationGateway.findReservation(id);
-            return new ResponseEntity<>(reservation, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }*/
-
     @GetMapping("")
     @Operation(summary = "Find reservations by parameters", responses = {
             @ApiResponse(description = "All reservations by parameters", responseCode = "200")
@@ -138,19 +117,6 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
-    /*@GetMapping("/restaurantId/{restaurantId}")
-    public ResponseEntity<?> findRestaurantReservationByDate(@PathVariable String restaurantId, @RequestParam String date) {
-        log.info("find reservation from restaurant {} on date {}", restaurantId, date);
-        try {
-            List<ReservationDTO> reservations = reservationGateway.findRestaurantReservationByDate(restaurantId, date)
-                    .stream()
-                    .map(ReservationDTO::new).collect(Collectors.toList());
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
-        }  catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }*/
 
 }
 

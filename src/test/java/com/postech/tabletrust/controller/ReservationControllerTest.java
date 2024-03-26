@@ -6,6 +6,7 @@ import com.postech.tabletrust.dto.ReservationDTO;
 import com.postech.tabletrust.entity.Reservation;
 import com.postech.tabletrust.entity.Restaurant;
 import com.postech.tabletrust.exception.GlobalExceptionHandler;
+import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.gateways.ReservationGateway;
 import com.postech.tabletrust.gateways.RestaurantGateway;
@@ -210,18 +211,18 @@ class ReservationControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$").isArray())
                     .andExpect(jsonPath("$", hasSize(2)))
-                    .andExpect(jsonPath("$[0].id").value(reservation1.getId()))
-                    .andExpect(jsonPath("$[0].customer").value(reservation1.getCustomerId()))
-                    .andExpect(jsonPath("$[0].restaurant").value(reservation1.getRestaurant().getId()))
-                    .andExpect(jsonPath("$[1].id").value(reservation2.getId()))
-                    .andExpect(jsonPath("$[1].customer").value(reservation2.getCustomerId()))
-                    .andExpect(jsonPath("$[1].restaurant").value(reservation2.getRestaurant().getId()));
+                    .andExpect(jsonPath("$[0].id").value(reservation1.getId().toString()))
+                    .andExpect(jsonPath("$[0].customerId").value(reservation1.getCustomerId().toString()))
+                    .andExpect(jsonPath("$[0].restaurantId").value(reservation1.getRestaurant().getId().toString()))
+                    .andExpect(jsonPath("$[1].id").value(reservation2.getId().toString()))
+                    .andExpect(jsonPath("$[1].customerId").value(reservation2.getCustomerId().toString()))
+                    .andExpect(jsonPath("$[1].restaurantId").value(reservation2.getRestaurant().getId().toString()));
 
             verify(reservationGateway, times(1)).listAllReservations();
         }
 
         @Test
-        void testFindReservationsFromCustomer_Success() throws Exception {
+        void testFindReservationsByCustomer_Success() throws Exception {
 
             // Prepare test data
             Reservation reservation1 = NewEntitiesHelper.createAReservationRandom();
@@ -236,15 +237,15 @@ class ReservationControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$").isArray())
                     .andExpect(jsonPath("$", hasSize(1)))
-                    .andExpect(jsonPath("$[0].id").value(reservation1.getId()))
-                    .andExpect(jsonPath("$[0].customer").value(reservation1.getCustomerId()))
-                    .andExpect(jsonPath("$[0].restaurant").value(reservation1.getRestaurant().getId()));
+                    .andExpect(jsonPath("$[0].id").value(reservation1.getId().toString()))
+                    .andExpect(jsonPath("$[0].customerId").value(reservation1.getCustomerId().toString()))
+                    .andExpect(jsonPath("$[0].restaurantId").value(reservation1.getRestaurant().getId().toString()));
 
             verify(reservationGateway, times(1)).findCustomerReservation(reservation1.getCustomerId().toString());
         }
 
         @Test
-        void testFindReservationsFromRestaurant_Success() throws Exception {
+        void testFindReservationsByRestaurant_Success() throws Exception {
 
             // Prepare test data
             Reservation reservation1 = NewEntitiesHelper.createAReservationRandom();
@@ -259,14 +260,15 @@ class ReservationControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$").isArray())
                     .andExpect(jsonPath("$", hasSize(1)))
-                    .andExpect(jsonPath("$[0].id").value(reservation1.getId()))
-                    .andExpect(jsonPath("$[0].customer").value(reservation1.getCustomerId()))
-                    .andExpect(jsonPath("$[0].restaurant").value(reservation1.getRestaurant().getId()));
+                    .andExpect(jsonPath("$[0].id").value(reservation1.getId().toString()))
+                    .andExpect(jsonPath("$[0].customerId").value(reservation1.getCustomerId().toString()))
+                    .andExpect(jsonPath("$[0].restaurantId").value(reservation1.getRestaurant().getId().toString()));
 
-            verify(reservationGateway, times(1)).findRestaurantReservation(reservation1.getCustomerId().toString());
+            verify(reservationGateway, times(1)).findRestaurantReservation(reservation1.getRestaurant().getId().toString());
         }
 
-        void testFindReservationsFromRestaurantOnDate_Success() throws Exception {
+        @Test
+        void testFindReservationsByRestaurantAndCustomer_Success() throws Exception {
 
             // Prepare test data
             Reservation reservation1 = NewEntitiesHelper.createAReservationRandom();
@@ -275,18 +277,30 @@ class ReservationControllerTest {
                     .map(ReservationDTO::new)
                     .collect(Collectors.toList());;
 
-            when(reservationGateway.findRestaurantReservation(anyString())).thenReturn(reservations);
+            when(reservationGateway.findReservationsByRestaurantAndCustomer(anyString(), anyString())).thenReturn(reservations);
 
-            mockMvc.perform(get("/resturantId{restaurantId}", reservation1.getRestaurant().getId()))
+            mockMvc.perform(get("/reservations?restaurantId={restaurantId}&customerName={customerName}", reservation1.getRestaurant().getId(), reservation1.getCustomerId()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$").isArray())
                     .andExpect(jsonPath("$", hasSize(1)))
-                    .andExpect(jsonPath("$[0].id").value(reservation1.getId()))
-                    .andExpect(jsonPath("$[0].customer").value(reservation1.getCustomerId()))
-                    .andExpect(jsonPath("$[0].restaurant").value(reservation1.getRestaurant().getId()));
+                    .andExpect(jsonPath("$[0].id").value(reservation1.getId().toString()))
+                    .andExpect(jsonPath("$[0].customerId").value(reservation1.getCustomerId().toString()))
+                    .andExpect(jsonPath("$[0].restaurantId").value(reservation1.getRestaurant().getId().toString()));
 
-            verify(reservationGateway, times(1)).findRestaurantReservation(reservation1.getCustomerId().toString());
+            verify(reservationGateway, times(1)).findReservationsByRestaurantAndCustomer(reservation1.getRestaurant().getId().toString(), reservation1.getCustomerId().toString());
         }
+
+        @Test
+        void testFindReservations_Error() throws Exception {
+
+            when(reservationGateway.findRestaurantReservation(anyString())).thenThrow(NotFoundException.class);
+
+            mockMvc.perform(get("/reservations?restaurantId={restaurantId}", UUID.randomUUID().toString()))
+                    .andExpect(status().isNotFound());
+
+            verify(reservationGateway, times(1)).findRestaurantReservation(anyString());
+        }
+
 
     }
 
@@ -299,6 +313,17 @@ class ReservationControllerTest {
                     .andExpect(status().isNoContent());
             verify(reservationGateway).deleteReservation(anyString());
 
+        }
+
+        @Test
+        void testDeleteReservation_Error() throws Exception {
+
+            doThrow(RuntimeException.class).when(reservationGateway).deleteReservation(anyString());
+
+            mockMvc.perform(delete("/reservations/{id}", UUID.randomUUID().toString()))
+                    .andExpect(status().isNotFound());
+
+            verify(reservationGateway, times(1)).deleteReservation(anyString());
         }
     }
 
