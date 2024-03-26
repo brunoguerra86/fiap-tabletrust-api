@@ -82,7 +82,7 @@ public class ReservationGateway implements IReservationGateway {
     @Override
     public List<Reservation> findRestaurantReservationByDate(String restaurantId, String date) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
             LocalDateTime start = dateTime.toLocalDate().atTime(LocalTime.MIN);
             LocalDateTime end = dateTime.toLocalDate().atTime(LocalTime.MAX);
