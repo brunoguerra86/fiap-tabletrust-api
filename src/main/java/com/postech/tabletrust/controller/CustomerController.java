@@ -5,6 +5,8 @@ import com.postech.tabletrust.entity.Customer;
 import com.postech.tabletrust.exception.NotFoundException;
 import com.postech.tabletrust.gateways.CustomerGateway;
 import com.postech.tabletrust.usecases.CustomerUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,9 @@ public class CustomerController {
     private final CustomerGateway customerGateway;
 
     @PostMapping("")
+    @Operation(summary = "Request for create a customer", responses = {
+            @ApiResponse(description = "The new customers was created", responseCode = "201")
+    })
     public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
         log.info("PostMapping - createCustomer for customer [{}]", customerDTO.getNome());
         try {
@@ -38,6 +43,9 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Request for update a customer", responses = {
+            @ApiResponse(description = "The customers was updated", responseCode = "200")
+    })
     public ResponseEntity<?> updateCustomer(@PathVariable String id, @RequestBody @Valid CustomerDTO customerDTO) {
         log.info("PutMapping - updateCustomer");
         try {
@@ -52,6 +60,9 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a customer by ID", responses = {
+            @ApiResponse(description = "The customer was deleted", responseCode = "200")
+    })
     public ResponseEntity<?> deleteCustomer(@PathVariable String id) {
         log.info("DeleteMapping - deleteCustomer");
         try {
@@ -65,6 +76,9 @@ public class CustomerController {
     }
 
     @GetMapping("/")
+    @Operation(summary = "Request for list all customers", responses = {
+            @ApiResponse(description = "Customer's list", responseCode = "200")
+    })
     public ResponseEntity<List<Customer>> listAllCustomers() {
         log.info("GetMapping - listCustomers");
         List<Customer> customers = customerGateway.listAllCustomers();
@@ -72,6 +86,9 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get only customer by ID", responses = {
+            @ApiResponse(description = "The customer by ID", responseCode = "200")
+    })
     public ResponseEntity<?> findCustomer(@PathVariable String id) {
         log.info("GetMapping - FindCustomer");
         Customer customer = customerGateway.findCustomer(id);

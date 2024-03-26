@@ -31,15 +31,12 @@ public class FeedBack {
     private UUID id;
 
     @NotEmpty(message = "[restaurant] não pode estar vazio")
-    @JoinColumn(name ="restaurantId")
     private UUID restaurantId;
 
     @NotEmpty(message = "[customer] não pode estar vazio")
-    @JoinColumn(name ="customerId")
     private UUID customerId;
 
     @NotEmpty(message = "[reservation] não pode estar vazio")
-    @JoinColumn(name ="reservationId")
     private UUID reservationId;
 
     private String comment;
