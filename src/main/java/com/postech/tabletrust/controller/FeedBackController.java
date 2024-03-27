@@ -31,14 +31,14 @@ public class FeedBackController {
     private final FeedBackGateway feedbackGateway;
     private final FeedBackUseCase feedBackUseCase;
 
-    @GetMapping(value = "/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "List all Feedbacks for a only restaurant by ID", responses = {
             @ApiResponse(description = "All Feedbacks for a restaurant - pageable", responseCode = "200")
     })
     public ResponseEntity<Page<FeedBack>> listFeedBackByRestaurantId(
             @PageableDefault(size = 10) Pageable pageable,
-            @PathVariable UUID restaurantId) {
-        Page<FeedBack> feedBackPage = feedbackGateway.feedBackByRestaurantIdPageable(pageable, restaurantId);
+            @RequestParam(required = true) String restaurantId) {
+        Page<FeedBack> feedBackPage = feedbackGateway.feedBackByRestaurantIdPageable(pageable, UUID.fromString(restaurantId));
         return new ResponseEntity<>(feedBackPage, HttpStatus.OK);
     }
     @GetMapping(value = "/stars/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)

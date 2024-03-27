@@ -4,12 +4,10 @@ import com.postech.tabletrust.dto.FeedBackCreateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -22,7 +20,6 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Jacksonized
 public class FeedBack {
 
     @Id
@@ -30,13 +27,10 @@ public class FeedBack {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotEmpty(message = "[restaurant] não pode estar vazio")
     private UUID restaurantId;
 
-    @NotEmpty(message = "[customer] não pode estar vazio")
     private UUID customerId;
 
-    @NotEmpty(message = "[reservation] não pode estar vazio")
     private UUID reservationId;
 
     private String comment;
