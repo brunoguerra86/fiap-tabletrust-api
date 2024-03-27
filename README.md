@@ -21,14 +21,15 @@ Este projeto foi desenvolvido com as seguintes tecnologias e bibliotecas:
 - **Springdoc OpenAPI**: Para documentação da API REST com Swagger.
 - **Lombok**: Para reduzir o código boilerplate, como getters e setters.
 - **PostgreSQL**: banco de dados relacional.
+- **Render**: Deploy da aplicação Java e do banco de dados Postgres em plataforma grátis
 
 
-## Como Executar
 
 ## Documentação
+A Collection utilizada no Postman está disponível na URL:
+https://github.com/brunoguerra86/fiap-tabletrust-api/blob/main/src/main/resources/TableTrust.postman_collection.json
 
 A documentação detalhada da API está acessível na URL:
-[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+https://fiap-tabletrust-api.onrender.com/swagger-ui/index.html
 
 
-## Segurança

@@ -1,13 +1,14 @@
-g{
+{
 	"info": {
-		"_postman_id": "816ff07d-da0d-4153-bb98-5215459f81db",
+		"_postman_id": "3681578e-ffd8-4568-be79-ffb04de78df9",
 		"name": "Fiap - Tech Challenge - API TableTrust",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "12858581"
+		"_exporter_id": "3936081",
+		"_collection_link": "https://warped-space-1378.postman.co/workspace/Team-Workspace~12b840d4-b62d-4d10-8c05-2f64ca749b5b/collection/3936081-3681578e-ffd8-4568-be79-ffb04de78df9?action=share&source=collection_link&creator=3936081"
 	},
 	"item": [
 		{
-			"name": "1 - Restaurants",
+			"name": "1 - Restaurants Local",
 			"item": [
 				{
 					"name": "1.0 Create New Restaurant",
@@ -27,7 +28,7 @@ g{
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/restaurants",
+							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -49,7 +50,7 @@ g{
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/restaurants?name=Ristorante",
+							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants?name=Paris 6",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -61,7 +62,7 @@ g{
 							"query": [
 								{
 									"key": "name",
-									"value": "Ristorante"
+									"value": "Paris 6"
 								},
 								{
 									"key": "address",
@@ -87,7 +88,7 @@ g{
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/restaurants/74309f63-8601-4ce4-8db5-7321dd510f64",
+							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants/2b2806e3-2aee-44bf-a0fe-a3583e73b329",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -95,7 +96,7 @@ g{
 							"port": "8080",
 							"path": [
 								"restaurants",
-								"74309f63-8601-4ce4-8db5-7321dd510f64"
+								"2b2806e3-2aee-44bf-a0fe-a3583e73b329"
 							]
 						}
 					},
@@ -119,7 +120,7 @@ g{
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/restaurants/74309f63-8601-4ce4-8db5-7321dd510f64",
+							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants/2b2806e3-2aee-44bf-a0fe-a3583e73b329",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -127,7 +128,7 @@ g{
 							"port": "8080",
 							"path": [
 								"restaurants",
-								"74309f63-8601-4ce4-8db5-7321dd510f64"
+								"2b2806e3-2aee-44bf-a0fe-a3583e73b329"
 							]
 						}
 					},
@@ -142,7 +143,7 @@ g{
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/restaurants/74309f63-8601-4ce4-8db5-7321dd510f64",
+							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants/2b2806e3-2aee-44bf-a0fe-a3583e73b329",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -150,7 +151,506 @@ g{
 							"port": "8080",
 							"path": [
 								"restaurants",
-								"74309f63-8601-4ce4-8db5-7321dd510f64"
+								"2b2806e3-2aee-44bf-a0fe-a3583e73b329"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2 - Customer",
+			"item": [
+				{
+					"name": "2.0 Create Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Tiago\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1 Find All Customers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/customers/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.2 Find Customer By Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/customers/7f19c19e-7078-4385-b75a-7fee0510612e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"7f19c19e-7078-4385-b75a-7fee0510612e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.3 Update Customer By Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"7f19c19e-7078-4385-b75a-7fee0510612e\",\r\n    \"nome\": \"Tiago Maffi\"\r\n}\r\n\r\n//Nesta chamada é necessário que o ID esteja presente tanto na URI quanto no body",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/customers/7f19c19e-7078-4385-b75a-7fee0510612e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"7f19c19e-7078-4385-b75a-7fee0510612e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.4 Delete Customer By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/customers/199dd905-215c-4c13-a5bc-d94646ae05c2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"199dd905-215c-4c13-a5bc-d94646ae05c2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3 - Reservations",
+			"item": [
+				{
+					"name": "3.0 Create Reservation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"restaurantId\": \"7c76e534-14b4-4875-b067-230f51b8638e\",\r\n  \"customerId\": \"40ab6fc7-f71f-420e-873f-40a9f1a0daff\",\r\n  \"reservationDate\": \"2024-03-24 10:12:00\",\r\n  \"quantity\": 2,\r\n  \"approved\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/reservations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.1 Find All Reservations",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/reservations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.2 Update Reservation By Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"f330792c-a85d-4643-a0f7-0c2e2d6eba42\",\r\n  \"restaurantId\": \"7c76e534-14b4-4875-b067-230f51b8638e\",\r\n  \"customerId\": \"40ab6fc7-f71f-420e-873f-40a9f1a0daff\",\r\n  \"reservationDate\": \"2024-03-25 10:12:00\",\r\n  \"quantity\": 2,\r\n  \"approved\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/reservations/f330792c-a85d-4643-a0f7-0c2e2d6eba42",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reservations",
+								"f330792c-a85d-4643-a0f7-0c2e2d6eba42"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.3 Find Reservation By Customer Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/reservations?customerId=40ab6fc7-f71f-420e-873f-40a9f1a0daff",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reservations"
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "40ab6fc7-f71f-420e-873f-40a9f1a0daff"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.5 Find Reservation By Restaurant Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/reservations?restaurantId=7c76e534-14b4-4875-b067-230f51b8638e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reservations"
+							],
+							"query": [
+								{
+									"key": "restaurantId",
+									"value": "7c76e534-14b4-4875-b067-230f51b8638e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.6 Delete Reservation By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/reservations/f330792c-a85d-4643-a0f7-0c2e2d6eba42",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reservations",
+								"f330792c-a85d-4643-a0f7-0c2e2d6eba42"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4 - Feedback",
+			"item": [
+				{
+					"name": "4.0 Create Feedback",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"restaurantId\": \"7c76e534-14b4-4875-b067-230f51b8638e\",\r\n  \"customerId\": \"40ab6fc7-f71f-420e-873f-40a9f1a0daff\",\r\n  \"reservationId\": \"f330792c-a85d-4643-a0f7-0c2e2d6eba42\",\r\n  \"comment\": \"Ótimo Restaurante, recomendo.\",\r\n  \"stars\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedbacks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"feedbacks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.1 Find Feedback By Restaurant Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/59890d57-15a2-4a4f-826e-2b5890d61443",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"feedback",
+								"59890d57-15a2-4a4f-826e-2b5890d61443"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.2 Find Feedback By Feedback Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/59890d57-15a2-4a4f-826e-2b5890d61443",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"feedback",
+								"59890d57-15a2-4a4f-826e-2b5890d61443"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.2 Find Feedback Stars By restaurant id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/stars/59890d57-15a2-4a4f-826e-2b5890d61443",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"feedback",
+								"stars",
+								"59890d57-15a2-4a4f-826e-2b5890d61443"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.3 Delete Feedback By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/delete/59890d57-15a2-4a4f-826e-2b5890d61443",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"feedback",
+								"delete",
+								"59890d57-15a2-4a4f-826e-2b5890d61443"
 							]
 						}
 					},
