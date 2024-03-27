@@ -99,18 +99,18 @@ public class ReservationController {
             @ApiResponse(description = "All reservations by parameters", responseCode = "200")
     })
     public ResponseEntity<?> findRestaurantReservation( @RequestParam(required = false) String restaurantId,
-                                                        @RequestParam(required = false) String customerName) {
+                                                        @RequestParam(required = false) String customerId) {
         log.info("find all reservations by parameters restaurant id: {} - customer id: {}",
-                restaurantId == null ? "empty" : restaurantId, customerName == null ? "empty" : customerName);
+                restaurantId == null ? "empty" : restaurantId, customerId == null ? "empty" : customerId);
         try {
-            if (StringUtils.hasText(restaurantId) && StringUtils.hasText(customerName)) {
-                List<ReservationDTO> reservations = reservationGateway.findReservationsByRestaurantAndCustomer(restaurantId, customerName);
+            if (StringUtils.hasText(restaurantId) && StringUtils.hasText(customerId)) {
+                List<ReservationDTO> reservations = reservationGateway.findReservationsByRestaurantAndCustomer(restaurantId, customerId);
                 return ResponseEntity.ok(reservations);
             } else if (StringUtils.hasText(restaurantId)) {
                 List<ReservationDTO> reservations = reservationGateway.findRestaurantReservation(restaurantId);
                 return ResponseEntity.ok(reservations);
-            } else if (StringUtils.hasText(customerName)) {
-                List<ReservationDTO> reservations = reservationGateway.findCustomerReservation(customerName);
+            } else if (StringUtils.hasText(customerId)) {
+                List<ReservationDTO> reservations = reservationGateway.findCustomerReservation(customerId);
                 return ResponseEntity.ok(reservations);
             } else {
                 List<ReservationDTO> reservations = reservationGateway.listAllReservations();
