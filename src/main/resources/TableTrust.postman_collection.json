@@ -1,14 +1,13 @@
 {
 	"info": {
-		"_postman_id": "3681578e-ffd8-4568-be79-ffb04de78df9",
-		"name": "Fiap - Tech Challenge - API TableTrust",
+		"_postman_id": "1e5f084e-ff71-4ff6-b1f5-b24ebc71da82",
+		"name": "Fiap - Tech Challenge - API TableTrust Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3936081",
-		"_collection_link": "https://warped-space-1378.postman.co/workspace/Team-Workspace~12b840d4-b62d-4d10-8c05-2f64ca749b5b/collection/3936081-3681578e-ffd8-4568-be79-ffb04de78df9?action=share&source=collection_link&creator=3936081"
+		"_exporter_id": "15611332"
 	},
 	"item": [
 		{
-			"name": "1 - Restaurants Local",
+			"name": "1 - Restaurants",
 			"item": [
 				{
 					"name": "1.0 Create New Restaurant",
@@ -29,11 +28,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"restaurants"
 							]
@@ -51,11 +51,12 @@
 						"header": [],
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants?name=Paris 6",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"restaurants"
 							],
@@ -89,11 +90,12 @@
 						"header": [],
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants/2b2806e3-2aee-44bf-a0fe-a3583e73b329",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"restaurants",
 								"2b2806e3-2aee-44bf-a0fe-a3583e73b329"
@@ -121,11 +123,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants/2b2806e3-2aee-44bf-a0fe-a3583e73b329",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"restaurants",
 								"2b2806e3-2aee-44bf-a0fe-a3583e73b329"
@@ -144,11 +147,12 @@
 						"header": [],
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/restaurants/2b2806e3-2aee-44bf-a0fe-a3583e73b329",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"restaurants",
 								"2b2806e3-2aee-44bf-a0fe-a3583e73b329"
@@ -178,11 +182,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/customers",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"customers"
 							]
@@ -197,11 +202,12 @@
 						"header": [],
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/customers/",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"customers",
 								""
@@ -229,11 +235,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/customers/7f19c19e-7078-4385-b75a-7fee0510612e",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"customers",
 								"7f19c19e-7078-4385-b75a-7fee0510612e"
@@ -258,11 +265,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/customers/7f19c19e-7078-4385-b75a-7fee0510612e",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"customers",
 								"7f19c19e-7078-4385-b75a-7fee0510612e"
@@ -287,11 +295,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/customers/199dd905-215c-4c13-a5bc-d94646ae05c2",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"customers",
 								"199dd905-215c-4c13-a5bc-d94646ae05c2"
@@ -321,11 +330,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/reservations",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"reservations"
 							]
@@ -352,11 +362,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/reservations",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"reservations"
 							]
@@ -380,11 +391,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/reservations/f330792c-a85d-4643-a0f7-0c2e2d6eba42",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"reservations",
 								"f330792c-a85d-4643-a0f7-0c2e2d6eba42"
@@ -412,11 +424,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/reservations?customerId=40ab6fc7-f71f-420e-873f-40a9f1a0daff",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"reservations"
 							],
@@ -449,11 +462,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/reservations?restaurantId=7c76e534-14b4-4875-b067-230f51b8638e",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"reservations"
 							],
@@ -483,11 +497,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/reservations/f330792c-a85d-4643-a0f7-0c2e2d6eba42",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"reservations",
 								"f330792c-a85d-4643-a0f7-0c2e2d6eba42"
@@ -517,11 +532,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/feedbacks",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"feedbacks"
 							]
@@ -548,11 +564,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/59890d57-15a2-4a4f-826e-2b5890d61443",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"feedback",
 								"59890d57-15a2-4a4f-826e-2b5890d61443"
@@ -580,11 +597,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/59890d57-15a2-4a4f-826e-2b5890d61443",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"feedback",
 								"59890d57-15a2-4a4f-826e-2b5890d61443"
@@ -612,11 +630,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/stars/59890d57-15a2-4a4f-826e-2b5890d61443",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"feedback",
 								"stars",
@@ -642,11 +661,12 @@
 						},
 						"url": {
 							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/delete/59890d57-15a2-4a4f-826e-2b5890d61443",
-							"protocol": "http",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"fiap-tabletrust-api",
+								"onrender",
+								"com"
 							],
-							"port": "8080",
 							"path": [
 								"feedback",
 								"delete",
