@@ -563,7 +563,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/59890d57-15a2-4a4f-826e-2b5890d61443",
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedbacks?restaurantId=59890d57-15a2-4a4f-826e-2b5890d61443",
 							"protocol": "https",
 							"host": [
 								"fiap-tabletrust-api",
@@ -571,8 +571,13 @@
 								"com"
 							],
 							"path": [
-								"feedback",
-								"59890d57-15a2-4a4f-826e-2b5890d61443"
+								"feedbacks"
+							],
+							"query": [
+								{
+									"key": "restaurantId",
+									"value": "59890d57-15a2-4a4f-826e-2b5890d61443"
+								}
 							]
 						}
 					},
@@ -596,7 +601,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/59890d57-15a2-4a4f-826e-2b5890d61443",
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedbacks/59890d57-15a2-4a4f-826e-2b5890d61443",
 							"protocol": "https",
 							"host": [
 								"fiap-tabletrust-api",
@@ -604,7 +609,7 @@
 								"com"
 							],
 							"path": [
-								"feedback",
+								"feedbacks",
 								"59890d57-15a2-4a4f-826e-2b5890d61443"
 							]
 						}
@@ -612,7 +617,7 @@
 					"response": []
 				},
 				{
-					"name": "4.2 Find Feedback Stars By restaurant id",
+					"name": "4.3 Find Feedback Stars By restaurant id",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -629,7 +634,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/stars/59890d57-15a2-4a4f-826e-2b5890d61443",
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedbacks/stars/59890d57-15a2-4a4f-826e-2b5890d61443",
 							"protocol": "https",
 							"host": [
 								"fiap-tabletrust-api",
@@ -637,7 +642,7 @@
 								"com"
 							],
 							"path": [
-								"feedback",
+								"feedbacks",
 								"stars",
 								"59890d57-15a2-4a4f-826e-2b5890d61443"
 							]
@@ -646,7 +651,7 @@
 					"response": []
 				},
 				{
-					"name": "4.3 Delete Feedback By Id",
+					"name": "4.4 Delete Feedback By Id",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -660,7 +665,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://fiap-tabletrust-api.onrender.com/feedback/delete/59890d57-15a2-4a4f-826e-2b5890d61443",
+							"raw": "https://fiap-tabletrust-api.onrender.com/feedbacks/59890d57-15a2-4a4f-826e-2b5890d61443",
 							"protocol": "https",
 							"host": [
 								"fiap-tabletrust-api",
@@ -668,8 +673,7 @@
 								"com"
 							],
 							"path": [
-								"feedback",
-								"delete",
+								"feedbacks",
 								"59890d57-15a2-4a4f-826e-2b5890d61443"
 							]
 						}
